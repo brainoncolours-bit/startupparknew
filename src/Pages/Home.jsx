@@ -65,33 +65,39 @@ function ScatteredCards({ sectionRef }) {
     }));
 
     const ctx = gsap.context(() => {
-      scatterData.forEach((data) => {
-        gsap.to(data, {
+      // Consolidate card entrance into a single timeline for better performance
+      const entranceTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 90%",
+          toggleActions: "play none none none",
+          refreshPriority: 1,
+        }
+      });
+
+      scatterData.forEach((data, index) => {
+        entranceTl.to(data, {
           x: data.targetX,
           y: data.targetY,
           z: data.targetZ,
           rotX: data.targetRotX,
           rotY: data.targetRotY,
           rotZ: data.targetRotZ,
-          duration: 1.8, 
-          ease: "expo.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 95%", 
-            toggleActions: "play none none none"
-          }
-        });
+          duration: 1.5,
+          ease: "expo.out"
+        }, index * 0.02); // Stagger manually in timeline
       });
 
       gsap.to(meshRef.current.position, {
-        y: 5, 
-        z: 2, 
+        y: 4, 
+        z: 3, 
         ease: "none",
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top bottom", 
           end: "bottom top",       
-          scrub: 1.5,
+          scrub: 0.5, // Reduced scrub delay for more responsive feel
+          refreshPriority: 1,
         }
       });
     }, sectionRef);
@@ -188,12 +194,16 @@ function PhoneCluster({ scrollTriggerRef, insideTextRef }) {
       scrollTrigger: {
         trigger: scrollTriggerRef.current,
         start: "top top",
-        end: "+=5500", 
-        scrub: 1,
+        end: "+=4500", 
+        scrub: 0.5,
         pin: true,
-        anticipatePin: 1,
+        pinSpacing: true,
+        invalidateOnRefresh: true,
+        refreshPriority: 10, // Ensure pinning is calculated first
       },
     });
+
+    ScrollTrigger.refresh();
 
     gsap.set(phones[2].scale, { x: 30, y: 30, z: 30 });
     gsap.set(phones[2].position, { x: 0, y: 0, z: radius });
@@ -205,24 +215,28 @@ function PhoneCluster({ scrollTriggerRef, insideTextRef }) {
       }
     });
 
+    // Tightened timeline to remove scroll gaps (pauses)
     phones.forEach((phone, index) => {
-      tl.to(phone.scale, { x: 26, y: 26, z: 26, duration: 0.8 }, 0);
-      tl.to(phone.position, { x: Math.cos(angles[index]) * radius, z: Math.sin(angles[index]) * radius, duration: 1.2 }, 0.2);
+      tl.to(phone.scale, { x: 26, y: 26, z: 26, duration: 1 }, 0);
+      tl.to(phone.position, { x: Math.cos(angles[index]) * radius, z: Math.sin(angles[index]) * radius, duration: 1.5 }, 0.2);
     });
 
-    tl.to(clusterRef.current.rotation, { y: Math.PI * 2, duration: 3, ease: "power1.inOut" }, 1.5);
-    tl.to(phones[2].position, { x: 0, z: radius, duration: 1.5 }, 4.5);
-    phones.forEach((phone, index) => { if (index !== 2) tl.to(phone.position, { x: 0, z: radius - 1.5, duration: 1.5 }, 4.5); });
-    tl.to(phones[2].position, { z: 25, duration: 2, ease: "expo.in" }, 6.0);
-    tl.to(phones[2].scale, { x: 300, y: 300, z: 300, duration: 2, ease: "expo.in" }, 6.0);
-    phones.forEach((phone, index) => { if (index !== 2) tl.to(phone.scale, { x: 0, y: 0, z: 0, duration: 0.5 }, 6.0); });
+    tl.to(clusterRef.current.rotation, { y: Math.PI * 2, duration: 4, ease: "power1.inOut" }, 1.5);
+    
+    // Smooth transition from rotation to exit
+    tl.to(phones[2].position, { x: 0, z: radius, duration: 1.5 }, 5.5);
+    phones.forEach((phone, index) => { if (index !== 2) tl.to(phone.position, { x: 0, z: radius - 1.5, duration: 1.5 }, 5.5); });
+    
+    tl.to(phones[2].position, { z: 25, duration: 2, ease: "expo.in" }, 7.0);
+    tl.to(phones[2].scale, { x: 300, y: 300, z: 300, duration: 2, ease: "expo.in" }, 7.0);
+    phones.forEach((phone, index) => { if (index !== 2) tl.to(phone.scale, { x: 0, y: 0, z: 0, duration: 0.5 }, 7.0); });
 
-    tl.to(cardRef.current.scale, { x: 1, y: 1, z: 1, duration: 1.5, ease: "back.out(1.2)" }, 7.5);
-    if (insideTextRef?.current) { tl.to(insideTextRef.current, { autoAlpha: 1, y: 0, duration: 1 }, 7.5); }
+    tl.to(cardRef.current.scale, { x: 1, y: 1, z: 1, duration: 1.5, ease: "back.out(1.2)" }, 8.5);
+    if (insideTextRef?.current) { tl.to(insideTextRef.current, { autoAlpha: 1, y: 0, duration: 1 }, 8.5); }
 
-    tl.to(cardRef.current.position, { x: 0, z: 25, duration: 2.5, ease: "power2.in" }, 9.5);
-    tl.to(cardRef.current.scale, { x: 4, y: 4, z: 4, duration: 2.5, ease: "power2.in" }, 9.5);
-    if (insideTextRef?.current) { tl.to(insideTextRef.current, { autoAlpha: 0, y: -40, duration: 1.5 }, 9.5); }
+    tl.to(cardRef.current.position, { x: 0, z: 25, duration: 2.5, ease: "power2.in" }, 10.0);
+    tl.to(cardRef.current.scale, { x: 4, y: 4, z: 4, duration: 2.5, ease: "power2.in" }, 10.0);
+    if (insideTextRef?.current) { tl.to(insideTextRef.current, { autoAlpha: 0, y: -40, duration: 1.5 }, 10.0); }
 
     return () => { if (tl.scrollTrigger) tl.scrollTrigger.kill(); };
   }, [scene, scrollTriggerRef, insideTextRef]);
@@ -265,7 +279,8 @@ export default function Home() {
           trigger: storySectionRef.current,
           start: "top 30%",
           end: "bottom 80%",
-          scrub: 1,
+          scrub: 0.5,
+          refreshPriority: 0,
         },
       });
     });
@@ -289,6 +304,7 @@ export default function Home() {
             trigger: scatterSectionRef.current,
             start: "top 75%",
             toggleActions: "play none none reverse",
+            refreshPriority: 0,
           },
         }
       );
@@ -307,6 +323,7 @@ export default function Home() {
           trigger: featureSectionRef.current,
           start: "top 78%",
           toggleActions: "play none none reverse",
+          refreshPriority: 0,
         },
       });
 
@@ -347,6 +364,8 @@ export default function Home() {
       heroVideoRef.current.playbackRate = 0.5;
       heroVideoRef.current.play().catch(() => {});
     }
+    // Global refresh after everything is mounted
+    ScrollTrigger.refresh();
   }, []);
 
   return (
@@ -356,9 +375,6 @@ export default function Home() {
           <video ref={heroVideoRef} className="h-full w-full object-cover" src={heroVideo} autoPlay muted loop playsInline preload="auto" />
         </div>
         <div className="absolute inset-0 bg-black/40" />
-        {/* <header className="relative z-20 flex items-start justify-between px-5 pt-4 sm:px-10 lg:px-16">
-          <Logo />
-        </header> */}
         <div className="relative z-10 flex min-h-[80vh] items-center justify-center px-5 text-center">
           <h1 className="mx-auto max-w-[11ch] text-[clamp(3.5rem,8vw,8rem)] font-semibold leading-[0.88] tracking-[-0.06em] font-serif">Work, Simplified</h1>
         </div>
@@ -442,7 +458,7 @@ export default function Home() {
             {[
               { id: 0, title: "track", desc: "track your spends, credit limit, bills, and due dates.", icon: <path d="M22 70L62 30 M62 30H45 M62 30V47" stroke="white" strokeWidth="5" strokeLinecap="round" /> },
               { id: 1, title: "savor", desc: "shop smarter by browsing card offers & benefits.", icon: <path d="M30 35H62V69H30V35Z M38 35V26C38 19.3726 43.3726 14 50 14C56.6274 14 62 19.3726 62 26V35" stroke="white" strokeWidth="5" /> },
-              { id: 2, title: "reflect", desc: "get insights on your spends and access to monthly statements.", icon: <path d="M20 24h18v44H20z M54 24h18v44H54z M46 18v56" stroke="white" strokeWidth="5" strokeDasharray="4 4" /> }
+              { id: 2, title: "reflect", desc: "get insights on your spends and access to monthly statements.", icon: <path d="M20 24h18v44H20z M54 24h18v44H54z M46 18v56" stroke="white" strokeWidth="5" strokeLinecap="round" strokeDasharray="4 4" /> }
             ].map((item, i) => (
               <div 
                 key={i} 
@@ -474,24 +490,5 @@ export default function Home() {
 
       <div className="h-[50vh] bg-black" />
     </main>
-  );
-}
-
-function Logo() {
-  return (
-    <div className="flex flex-col items-start gap-2 hero-fade-up">
-      <div className="text-white text-4xl leading-none font-bold">◫</div>
-      <div className="text-white text-[1.65rem] tracking-[0.15em] font-semibold">CRED</div>
-    </div>
-  );
-}
-
-function MenuIcon() {
-  return (
-    <div className="flex flex-col gap-2">
-      <span className="block h-[2px] w-8 bg-white" />
-      <span className="block h-[2px] w-8 bg-white" />
-      <span className="block h-[2px] w-8 bg-white" />
-    </div>
   );
 }
