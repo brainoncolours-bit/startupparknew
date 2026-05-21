@@ -9,6 +9,12 @@ import Home from "./Pages/Home";
 import About from "./Pages/About";
 import Services from "./Pages/Services";
 import Contacts from "./Pages/Contacts";
+import Blogs from "./Pages/Blogs";
+import BlogDetail from "./Pages/BlogDetail";
+import AdminLogin from "./Pages/Admin/Login";
+import AdminDashboard from "./Pages/Admin/Dashboard";
+import CreatePost from "./Pages/Admin/CreatePost";
+import EditPost from "./Pages/Admin/EditPost";
 
 function ScrollManager({ lenisRef }) {
   const { pathname } = useLocation();
@@ -34,6 +40,7 @@ function ScrollManager({ lenisRef }) {
 function App() {
   const location = useLocation();
   const lenisRef = useRef(null);
+  const isAdminPage = location.pathname.startsWith("/admin");
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -79,14 +86,20 @@ function App() {
   return (
     <>
       <ScrollManager lenisRef={lenisRef} />
-      <Navbar />
+      {!isAdminPage && <Navbar />}
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/contact" element={<Contacts />} />
+        <Route path="/blogs" element={<Blogs />} />
+        <Route path="/blogs/:id" element={<BlogDetail />} />
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/create-post" element={<CreatePost />} />
+        <Route path="/admin/edit-post/:id" element={<EditPost />} />
       </Routes>
-      <Footer />
+      {!isAdminPage && <Footer />}
     </>
   );
 }
