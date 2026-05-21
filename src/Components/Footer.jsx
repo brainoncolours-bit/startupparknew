@@ -1,207 +1,328 @@
-import React from 'react';
+
+import React, { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
-export default function Footer() {
+export default function HyperAnimatedFooter() {
   const currentYear = new Date().getFullYear();
+  const footerRef = useRef(null);
+  const glowRef = useRef(null);
+
+  // Real-time local cursor coordinate tracking for the ambient back-glow aura
+  useEffect(() => {
+    const footerElement = footerRef.current;
+    if (!footerElement) return;
+
+    const handleMouseMove = (e) => {
+      if (!glowRef.current) return;
+      const rect = footerElement.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      // Smooth dynamic positioning updates via CSS Variables
+      glowRef.current.style.setProperty('--mouse-x', `${x}px`);
+      glowRef.current.style.setProperty('--mouse-y', `${y}px`);
+    };
+
+    footerElement.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      footerElement.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
   return (
-    <footer style={{
-      background: '#000',
-      borderTop: '1px solid rgba(255,255,255,0.05)',
-      padding: '2rem 0',
-      fontFamily: "'DM Sans', sans-serif"
-    }}>
+    <footer 
+      ref={footerRef}
+      style={{
+        background: '#040405',
+        padding: '5rem 0 2.5rem',
+        fontFamily: "'Syne', 'DM Sans', sans-serif",
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+    >
+      {/* 1. INFINITE CHROMATIC TOP SCANNER BAR (Animated top border substitute) */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '3px',
+        background: 'linear-gradient(90deg, transparent, #64c8ff, #ffffff, #3a8ecb, transparent)',
+        backgroundSize: '200% 100%',
+        animation: 'topScanMove 4s linear infinite',
+        zIndex: 5
+      }} />
+
+      {/* 2. REAL-TIME INTERACTIVE CURSOR GLOW FIELD (Illuminates structural elements dynamically) */}
+      <div 
+        ref={glowRef}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'radial-gradient(400px circle at var(--mouse-x, -999px) var(--mouse-y, -999px), rgba(100,200,255,0.06), transparent 80%)',
+          pointerEvents: 'none',
+          zIndex: 1,
+          transition: 'background 0.1s ease'
+        }}
+      />
+
+      {/* 3. CORE GEOMETRIC MATRIX OVERLAY */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: 'linear-gradient(rgba(255,255,255,0.005) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.005) 1px, transparent 1px)',
+        backgroundSize: '30px 30px',
+        pointerEvents: 'none',
+        opacity: 0.8,
+        zIndex: 0
+      }} />
+
+      {/* Main Content Content Grid Layout Frame */}
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
         padding: '0 2rem',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '1.5rem'
-      }}>
+        position: 'relative',
+        zIndex: 2,
+        display: 'grid',
+        gridTemplateColumns: '1.4fr 1fr 1fr',
+        gap: '4rem',
+        alignItems: 'start'
+      }} className="hyper-footer-grid">
 
-        {/* Logo/Brand */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.75rem'
-        }}>
-          <div style={{
-            width: 32,
-            height: 32,
-            borderRadius: 8,
-            border: '1px solid rgba(34,197,94,0.3)',
-            background: 'rgba(34,197,94,0.07)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <span style={{
-              fontFamily: "'Hattrick', sans-serif",
-              fontSize: 16,
-              color: '#22c55e',
-              textShadow: '0 0 12px rgba(34,197,94,0.5)'
-            }}>C</span>
-          </div>
-          <span style={{
-            fontFamily: "'Hattrick', sans-serif",
-            fontSize: 18,
-            letterSpacing: '0.1em',
-            color: 'rgba(255,255,255,0.9)'
-          }}>CRED</span>
-        </div>
-
-        {/* Navigation Links */}
-        <nav style={{
-          display: 'flex',
-          gap: '2rem',
-          alignItems: 'center'
-        }}>
-          {[
-            { label: 'Home', to: '/' },
-            { label: 'About', to: '/about' },
-            { label: 'Services', to: '/services' },
-            { label: 'Contact', to: '/contact' }
-          ].map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              style={({ isActive }) => ({
-                fontSize: '0.85rem',
-                fontWeight: 500,
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-                color: isActive ? '#22c55e' : 'rgba(255,255,255,0.6)',
-                textDecoration: 'none',
-                transition: 'color 0.3s ease',
-                padding: '0.25rem 0'
-              })}
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* Social Links */}
-        <div style={{
-          display: 'flex',
-          gap: '1rem',
-          alignItems: 'center'
-        }}>
-          {[
-            { icon: '𝕏', label: 'Twitter' },
-            { icon: 'in', label: 'LinkedIn' },
-            { icon: '𝔾', label: 'GitHub' }
-          ].map((social) => (
-            <a
-              key={social.label}
-              href="#"
-              aria-label={social.label}
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: '50%',
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.02)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'rgba(255,255,255,0.5)',
-                textDecoration: 'none',
-                fontSize: '0.9rem',
-                transition: 'all 0.3s ease',
-                cursor: 'pointer'
-              }}
-              onMouseEnter={(e) => {
-                const target = e.currentTarget;
-                target.style.borderColor = 'rgba(34,197,94,0.4)';
-                target.style.background = 'rgba(34,197,94,0.05)';
-                target.style.color = '#22c55e';
-                target.style.transform = 'scale(1.1)';
-              }}
-              onMouseLeave={(e) => {
-                const target = e.currentTarget;
-                target.style.borderColor = 'rgba(255,255,255,0.1)';
-                target.style.background = 'rgba(255,255,255,0.02)';
-                target.style.color = 'rgba(255,255,255,0.5)';
-                target.style.transform = 'scale(1)';
-              }}
-            >
-              {social.icon}
-            </a>
-          ))}
-        </div>
-
-        {/* Bottom Section */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '0.75rem',
-          paddingTop: '1rem',
-          borderTop: '1px solid rgba(255,255,255,0.05)',
-          width: '100%'
-        }}>
-          <p style={{
-            fontSize: '0.75rem',
-            color: 'rgba(255,255,255,0.4)',
-            textAlign: 'center',
-            margin: 0,
-            letterSpacing: '0.02em'
-          }}>
-            © {currentYear} CRED. All rights reserved. | Built with precision and care.
-          </p>
-
-          {/* Status Indicator */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}>
+        {/* Corporate Brand System Identity */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <div style={{
-              width: 6,
-              height: 6,
-              borderRadius: '50%',
-              background: '#22c55e',
-              boxShadow: '0 0 8px rgba(34,197,94,0.6)',
-              animation: 'pulse 2s ease-in-out infinite'
-            }} />
-            <span style={{
-              fontSize: '0.7rem',
-              color: 'rgba(34,197,94,0.7)',
-              fontWeight: 500,
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase'
+              width: 40,
+              height: 40,
+              background: 'linear-gradient(135deg, #000 0%, #0d0d11 100%)',
+              border: '2px solid #64c8ff',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              boxShadow: '0 0 15px rgba(100,200,255,0.2)'
             }}>
-              System Online
-            </span>
+              <span style={{
+                fontFamily: "'Bebas Neue', sans-serif",
+                fontSize: 24,
+                color: '#64c8ff',
+                fontWeight: 900
+              }}>S</span>
+              {/* Micro internal accent block */}
+              <div style={{ position: 'absolute', top: '2px', right: '2px', width: '4px', height: '4px', background: '#fff' }} />
+            </div>
+            <span style={{
+              fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: 28,
+              letterSpacing: '0.08em',
+              color: '#fff',
+              animation: 'textGlitchPulse 6s ease-in-out infinite'
+            }}>STARTUP PARK</span>
           </div>
+          <p style={{
+            fontSize: '0.85rem',
+            lineHeight: 1.6,
+            color: 'rgba(255,255,255,0.35)',
+            maxWidth: '320px',
+            margin: 0
+          }}>
+            India’s premium hyper-growth pipeline. We transform complex engineering concepts into inevitable market leaders.
+          </p>
+        </div>
+
+        {/* Navigation Mapping Node Block */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ width: '6px', height: '6px', background: '#64c8ff' }} />
+            <span style={{ fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#64c8ff' }}>Core Systems //</span>
+          </div>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {[
+              { label: 'Launchpad Matrix', to: '/' },
+              { label: 'Ecosystem Foundation', to: '/about' },
+              { label: 'Accelerator Frameworks', to: '/services' },
+              { label: 'Initialization Sprints', to: '/contact' }
+            ].map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                style={({ isActive }) => ({
+                  fontSize: '0.88rem',
+                  fontWeight: 600,
+                  color: isActive ? '#fff' : 'rgba(255,255,255,0.5)',
+                  textDecoration: 'none',
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                  display: 'inline-block',
+                  position: 'relative'
+                })}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#64c8ff';
+                  e.currentTarget.style.transform = 'translateX(6px)';
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.currentTarget.classList.contains('active')) {
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
+                  } else {
+                    e.currentTarget.style.color = '#fff';
+                  }
+                  e.currentTarget.style.transform = 'none';
+                }}
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+
+        {/* Global Syndicates & Communication Networks */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ width: '6px', height: '6px', background: '#64c8ff' }} />
+            <span style={{ fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#64c8ff' }}>External Feeds //</span>
+          </div>
+          <div style={{ display: 'flex', gap: '0.85rem' }}>
+            {[
+              { icon: '𝕏', label: 'Twitter' },
+              { icon: 'LN', label: 'LinkedIn' },
+              { icon: 'GH', label: 'GitHub' }
+            ].map((social) => (
+              <a
+                key={social.label}
+                href="#"
+                aria-label={social.label}
+                style={{
+                  width: 44,
+                  height: 44,
+                  background: 'rgba(255,255,255,0.01)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'rgba(255,255,255,0.4)',
+                  textDecoration: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: 800,
+                  transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+                onMouseEnter={(e) => {
+                  const target = e.currentTarget;
+                  target.style.color = '#fff';
+                  target.style.borderColor = '#64c8ff';
+                  target.style.boxShadow = '0 0 15px rgba(100,200,255,0.3)';
+                  target.style.transform = 'translateY(-5px) scale(1.05)';
+                }}
+                onMouseLeave={(e) => {
+                  const target = e.currentTarget;
+                  target.style.color = 'rgba(255,255,255,0.4)';
+                  target.style.borderColor = 'rgba(255,255,255,0.06)';
+                  target.style.boxShadow = 'none';
+                  target.style.transform = 'none';
+                }}
+              >
+                {social.icon}
+              </a>
+            ))}
+          </div>
+        </div>
+
+      </div>
+
+      {/* Bottom Infrastructure Band */}
+      <div style={{
+        maxWidth: '1200px',
+        margin: '4rem auto 0',
+        padding: '2rem 2rem 0',
+        borderTop: '1px solid rgba(255,255,255,0.03)',
+        display: 'flex',
+        alignItems: 'center',
+        position: 'relative',
+        zIndex: 2,
+        flexWrap: 'wrap',
+        gap: '1.5rem',
+        justifyContent: 'space-between'
+      }} className="hyper-footer-bottom">
+        <p style={{
+          fontSize: '0.75rem',
+          color: 'rgba(255,255,255,0.25)',
+          margin: 0,
+          letterSpacing: '0.05em'
+        }}>
+          © {currentYear} STARTUP PARK // INTERNAL INFRASTRUCTURE COMPILING COMPLETE. BY <span style={{ color: 'rgba(100,200,255,0.6)', cursor: 'pointer' }}>IQUE-VENTURES</span>
+        </p>
+
+        {/* Chromatic Status Indicator Loop Capsule */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.65rem',
+          background: 'linear-gradient(135deg, rgba(100,200,255,0.02) 0%, rgba(255,255,255,0.01) 100%)',
+          border: '1px solid rgba(100,200,255,0.12)',
+          padding: '0.5rem 1.2rem',
+          borderRadius: '4px',
+          boxShadow: 'inset 0 0 12px rgba(100,200,255,0.02)'
+        }}>
+          <div style={{
+            width: 6,
+            height: 6,
+            borderRadius: '50%',
+            background: '#fff',
+            boxShadow: '0 0 10px #fff, 0 0 20px #64c8ff',
+            animation: 'chromaPulse 2.5s ease-in-out infinite'
+          }} />
+          <span style={{
+            fontSize: '0.6rem',
+            color: 'rgba(255,255,255,0.8)',
+            fontWeight: 800,
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase'
+          }}>
+            LAUNCHPAD ENGINE :: ONLINE
+          </span>
         </div>
       </div>
 
+      {/* Global CSS Inject Keys */}
       <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(34,197,94,0.6); }
-          50% { opacity: 0.5; box-shadow: 0 0 16px rgba(34,197,94,0.3); }
+        @keyframes topScanMove {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 200% 50%; }
         }
 
-        @media (max-width: 768px) {
-          footer > div {
-            padding: 0 1rem;
-          }
+        @keyframes chromaPulse {
+          0%, 100% { transform: scale(1); opacity: 0.8; background: #64c8ff; }
+          50% { transform: scale(1.3); opacity: 1; background: #ffffff; filter: drop-shadow(0 0 4px #64c8ff); }
+        }
 
-          nav {
-            flex-wrap: wrap;
-            gap: 1rem !important;
-          }
+        @keyframes textGlitchPulse {
+          0%, 94%, 100% { transform: skew(0deg); text-shadow: none; }
+          95% { transform: skew(3deg, -1deg); text-shadow: 2px 0 #64c8ff, -1px 0 #fff; }
+          97% { transform: skew(-2deg, 1deg); text-shadow: -2px 0 #64c8ff, 1px 0 #3a8ecb; }
+        }
 
-          nav a {
-            font-size: 0.8rem !important;
+        @media (max-width: 968px) {
+          .hyper-footer-grid {
+            grid-template-columns: 1fr !important;
+            gap: 3rem !important;
+          }
+        }
+
+        @media (max-width: 580px) {
+          .hyper-footer-bottom {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 1.2rem !important;
           }
         }
       `}</style>
     </footer>
   );
 }
-

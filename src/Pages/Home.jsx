@@ -1,3 +1,4 @@
+
 import React, { useLayoutEffect, useRef, Suspense, useEffect, useMemo } from "react";
 import * as THREE from "three"; 
 import { Canvas, useFrame } from "@react-three/fiber";
@@ -65,7 +66,6 @@ function ScatteredCards({ sectionRef }) {
     }));
 
     const ctx = gsap.context(() => {
-      // Consolidate card entrance into a single timeline for better performance
       const entranceTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -85,7 +85,7 @@ function ScatteredCards({ sectionRef }) {
           rotZ: data.targetRotZ,
           duration: 1.5,
           ease: "expo.out"
-        }, index * 0.02); // Stagger manually in timeline
+        }, index * 0.02);
       });
 
       gsap.to(meshRef.current.position, {
@@ -96,7 +96,7 @@ function ScatteredCards({ sectionRef }) {
           trigger: sectionRef.current,
           start: "top bottom", 
           end: "bottom top",       
-          scrub: 0.5, // Reduced scrub delay for more responsive feel
+          scrub: 0.5,
           refreshPriority: 1,
         }
       });
@@ -199,7 +199,7 @@ function PhoneCluster({ scrollTriggerRef, insideTextRef }) {
         pin: true,
         pinSpacing: true,
         invalidateOnRefresh: true,
-        refreshPriority: 10, // Ensure pinning is calculated first
+        refreshPriority: 10,
       },
     });
 
@@ -215,7 +215,6 @@ function PhoneCluster({ scrollTriggerRef, insideTextRef }) {
       }
     });
 
-    // Tightened timeline to remove scroll gaps (pauses)
     phones.forEach((phone, index) => {
       tl.to(phone.scale, { x: 26, y: 26, z: 26, duration: 1 }, 0);
       tl.to(phone.position, { x: Math.cos(angles[index]) * radius, z: Math.sin(angles[index]) * radius, duration: 1.5 }, 0.2);
@@ -223,7 +222,6 @@ function PhoneCluster({ scrollTriggerRef, insideTextRef }) {
 
     tl.to(clusterRef.current.rotation, { y: Math.PI * 2, duration: 4, ease: "power1.inOut" }, 1.5);
     
-    // Smooth transition from rotation to exit
     tl.to(phones[2].position, { x: 0, z: radius, duration: 1.5 }, 5.5);
     phones.forEach((phone, index) => { if (index !== 2) tl.to(phone.position, { x: 0, z: radius - 1.5, duration: 1.5 }, 5.5); });
     
@@ -267,7 +265,8 @@ export default function Home() {
   const heroVideoRef = useRef(null);
   const insideTextRef = useRef(null);
 
-  const storyText = "the story of CRED begins with trust. we believe individuals who've proven their trustworthiness deserve better: better experiences, better rewards, better rules. this is the status quo we're building. make it to the club, and experience the ascension yourself.";
+  // Updated text to reflect Startup Park's "Who We Are" copy
+  const storyText = "Startup Park is the world's first comprehensive ecosystem designed exclusively for entrepreneurs. we bridge the gap between ambitious ideas and market-ready solutions through integrated resources, strategic mentorship, and a thriving community of innovators. from ideation to IPO, we're your trusted partner in building the future.";
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -364,19 +363,29 @@ export default function Home() {
       heroVideoRef.current.playbackRate = 0.5;
       heroVideoRef.current.play().catch(() => {});
     }
-    // Global refresh after everything is mounted
     ScrollTrigger.refresh();
   }, []);
 
   return (
     <main className="w-full bg-black">
+      {/* Header Navigation added into layout flow contextually */}
+     
       <section className="relative min-h-screen w-full overflow-hidden text-white">
         <div className="absolute inset-0">
           <video ref={heroVideoRef} className="h-full w-full object-cover" src={heroVideo} autoPlay muted loop playsInline preload="auto" />
         </div>
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="relative z-10 flex min-h-[80vh] items-center justify-center px-5 text-center">
-          <h1 className="mx-auto max-w-[11ch] text-[clamp(3.5rem,8vw,8rem)] font-semibold leading-[0.88] tracking-[-0.06em] font-serif">Work, Simplified</h1>
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-5 text-center">
+          <span className="mb-4 text-xs font-bold tracking-[0.3em] uppercase text-white/60 bg-white/5 px-4 py-1.5 rounded-full backdrop-blur-sm">Startup Park is Now Open</span>
+          <h1 className="mx-auto max-w-[14ch] text-[clamp(3.5rem,7.5vw,7.5rem)] font-semibold leading-[0.92] tracking-[-0.05em] font-serif uppercase">
+            India’s Launchpad<br />for Founders
+          </h1>
+          <p className="mt-8 text-[clamp(1rem,1.8vw,1.4rem)] tracking-[0.2em] uppercase font-light text-white/70">
+            Innovate <span className="text-white/40">→</span> Accelerate <span className="text-white/40">→</span> Succeed
+          </p>
+          <p className="mt-4 max-w-[50ch] text-sm text-gray-400">
+            Explore, connect, and grow with the next generation of innovators.<br />The future of startup innovation has officially begun ✨
+          </p>
         </div>
       </section>
 
@@ -406,8 +415,8 @@ export default function Home() {
         <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
           <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
             <div ref={insideTextRef} className="max-w-[550px]" style={{ opacity: 0, transform: "translateY(40px)" }}>
-              <h2 className="font-serif text-[clamp(2.5rem,5vw,5rem)] font-semibold leading-[1.1] text-white mb-6">do more with<br />your credit cards</h2>
-              <p className="text-gray-400 text-[1.05rem] leading-relaxed max-w-[480px]">manage your credit cards better and improve your credit score: receive payment reminders, uncover hidden fees, get spending insights, and discover ways to maximize card benefits.</p>
+              <h2 className="font-serif text-[clamp(2.5rem,5vw,5rem)] font-semibold leading-[1.1] text-white mb-6 uppercase">A world-class<br />ecosystem</h2>
+              <p className="text-gray-400 text-[1.05rem] leading-relaxed max-w-[480px]">Designed exclusively to help founders scale faster. We empower builders with premium infrastructure, cross-functional innovation frameworks, and immediate access to capital pathways from idea to IPO.</p>
             </div>
           </div>
         </div>
@@ -435,30 +444,30 @@ export default function Home() {
           </div>
 
           <h3 className="text-white text-[clamp(0.8rem,2vw,1.1rem)] tracking-[0.4em] font-bold uppercase mb-12 transition-opacity duration-700 ease-out opacity-20 group-hover:opacity-100">
-            your data isn't our business. keeping it safe is.
+            Our Foundation & Driven Impact
           </h3>
 
           <p className="text-[clamp(1.8rem,4vw,3.5rem)] leading-[1.3] text-white transition-opacity duration-1000 ease-in-out font-light opacity-20 group-hover:opacity-100">
-            all your personal <span className="font-semibold">data</span> and transactions <span className="font-semibold">are encrypted</span> and secured. there's <span className="font-semibold">no room for</span> mistakes because we <span className="font-semibold">didn't leave any.</span>
+            Powering bold choices with over <span className="font-semibold">200+ startups supported</span>, helping networks unlock <span className="font-semibold">₹600 Cr+ in accessed funding</span>, and enabling over <span className="font-semibold">10,000+ new jobs</span> across competitive tech markets.
           </p>
         </div>
       </section>
 
-      {/* CREATIVE ANIMATED FEATURE SECTION */}
+      {/* RETAINED ANIMATED FEATURE GRID (Why Startup Park Framework) */}
       <section ref={featureSectionRef} className="relative overflow-hidden bg-black text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.05),transparent_50%)]" />
         <div className="relative mx-auto max-w-6xl px-6 py-24 sm:px-10 sm:py-28 lg:px-16 lg:py-32">
           <div className="mb-20 flex items-center gap-6">
             <span className="h-[1px] flex-1 bg-white/10" />
-            <span ref={featureHeaderRef} className="text-[0.7rem] font-bold tracking-[0.5em] uppercase text-white/40">the experience</span>
+            <span ref={featureHeaderRef} className="text-[0.7rem] font-bold tracking-[0.5em] uppercase text-white/40">Why Startup Park</span>
             <span className="h-[1px] flex-1 bg-white/10" />
           </div>
 
           <div className="flex flex-col">
             {[
-              { id: 0, title: "track", desc: "track your spends, credit limit, bills, and due dates.", icon: <path d="M22 70L62 30 M62 30H45 M62 30V47" stroke="white" strokeWidth="5" strokeLinecap="round" /> },
-              { id: 1, title: "savor", desc: "shop smarter by browsing card offers & benefits.", icon: <path d="M30 35H62V69H30V35Z M38 35V26C38 19.3726 43.3726 14 50 14C56.6274 14 62 19.3726 62 26V35" stroke="white" strokeWidth="5" /> },
-              { id: 2, title: "reflect", desc: "get insights on your spends and access to monthly statements.", icon: <path d="M20 24h18v44H20z M54 24h18v44H54z M46 18v56" stroke="white" strokeWidth="5" strokeLinecap="round" strokeDasharray="4 4" /> }
+              { id: 0, title: "spaces", desc: "Premium tech-enabled co-working zones, innovation prototyping labs, and media-ready demo stages.", icon: <path d="M22 70L62 30 M62 30H45 M62 30V47" stroke="white" strokeWidth="5" strokeLinecap="round" /> },
+              { id: 1, title: "growth", desc: "Structured incubator roadmaps, milestone-driven acceleration tracks, and elite masterclasses.", icon: <path d="M30 35H62V69H30V35Z M38 35V26C38 19.3726 43.3726 14 50 14C56.6274 14 62 19.3726 62 26V35" stroke="white" strokeWidth="5" /> },
+              { id: 2, title: "support", desc: "Direct 1:1 access to veteran multi-exit mentors alongside full legal, governance, and cap-table help.", icon: <path d="M20 24h18v44H20z M54 24h18v44H54z M46 18v56" stroke="white" strokeWidth="5" strokeLinecap="round" strokeDasharray="4 4" /> }
             ].map((item, i) => (
               <div 
                 key={i} 
@@ -480,7 +489,6 @@ export default function Home() {
                     </svg>
                   </div>
                 </div>
-                {/* STAGGERED LINE ANIMATION */}
                 <div className="row-line absolute bottom-0 left-0 h-[1px] w-full bg-white/20 origin-left" />
               </div>
             ))}
@@ -488,7 +496,53 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="h-[50vh] bg-black" />
+      {/* Structured Lead Capture, Featured Events, and Global Footer Elements */}
+      <section id="register" className="relative bg-black text-white py-20 px-6 sm:px-10 lg:px-24 border-t border-white/5">
+        <div className="max-w-6xl mx-auto grid gap-16 lg:grid-cols-2 items-start">
+          
+          <div>
+            <span className="text-xs font-bold tracking-widest text-white/40 uppercase block mb-3">Featured Event</span>
+            <h4 className="text-2xl sm:text-3xl font-serif font-medium mb-4">7-Day Startup Expo 2025 — Bangalore</h4>
+            <p className="text-gray-400 mb-6 leading-relaxed max-w-md">Explore recent funding startups, meet top-tier institutional investors, and discover the absolute future of deep tech solutions.</p>
+            <button className="px-6 py-3 border border-white text-sm uppercase tracking-wider font-semibold hover:bg-white hover:text-black transition-all">
+              Reserve Your Spot
+            </button>
+          </div>
+
+          <div className="bg-white/5 p-8 rounded-xl backdrop-blur-md border border-white/10">
+            <h4 className="text-xl font-serif font-semibold mb-2">Ready to Transform Your Startup?</h4>
+            <p className="text-xs text-gray-400 mb-6">Join the world's most comprehensive startup ecosystem and accelerate your journey from idea to IPO.</p>
+            
+            <form onSubmit={(e) => e.preventDefault()} className="grid gap-4">
+              <input type="text" placeholder="Full Name *" required className="w-full bg-black/40 border border-white/10 px-4 py-3 text-sm focus:outline-none focus:border-white/40 transition-colors" />
+              <input type="tel" placeholder="Phone Number *" required className="w-full bg-black/40 border border-white/10 px-4 py-3 text-sm focus:outline-none focus:border-white/40 transition-colors" />
+              <input type="email" placeholder="Email Address *" required className="w-full bg-black/40 border border-white/10 px-4 py-3 text-sm focus:outline-none focus:border-white/40 transition-colors" />
+              <input type="text" placeholder="Company Name *" required className="w-full bg-black/40 border border-white/10 px-4 py-3 text-sm focus:outline-none focus:border-white/40 transition-colors" />
+              <textarea placeholder="Tell us about your startup" rows="3" className="w-full bg-black/40 border border-white/10 px-4 py-3 text-sm focus:outline-none focus:border-white/40 transition-colors resize-none"></textarea>
+              
+              <button type="submit" className="w-full bg-white text-black py-3 text-sm font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors mt-2">
+                Schedule Strategy Session
+              </button>
+            </form>
+            <span className="text-[10px] text-gray-500 block text-center mt-3">We'll respond within 24 hours to schedule your personalized consultation</span>
+          </div>
+
+        </div>
+      </section>
+
+      <footer className="bg-black text-gray-500 py-12 px-6 sm:px-10 lg:px-24 border-t border-white/5 text-xs tracking-wide">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
+          <div className="text-center sm:text-left space-y-1">
+            <p className="text-white/80 font-medium">Bengaluru, Karnataka, India</p>
+            <p className="hover:text-white transition-colors"><a href="mailto:contact@thestartuppark.com">contact@thestartuppark.com</a></p>
+          </div>
+          <div className="text-center sm:text-right space-y-1">
+            <p>© 2026 Startup Park. All rights reserved.</p>
+            <p>Crafted with 🤍 by <span className="text-white/40 hover:text-white/80 transition-colors cursor-pointer">ique-ventures</span></p>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }
+
