@@ -1,6 +1,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import logo from '../assets/logo.png';
 
 export default function HyperAnimatedFooter() {
   const currentYear = new Date().getFullYear();
@@ -96,34 +97,7 @@ export default function HyperAnimatedFooter() {
         {/* Corporate Brand System Identity */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{
-              width: 40,
-              height: 40,
-              background: 'linear-gradient(135deg, #000 0%, #0d0d11 100%)',
-              border: '2px solid #64c8ff',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              boxShadow: '0 0 15px rgba(100,200,255,0.2)'
-            }}>
-              <span style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: 24,
-                color: '#64c8ff',
-                fontWeight: 900
-              }}>S</span>
-              {/* Micro internal accent block */}
-              <div style={{ position: 'absolute', top: '2px', right: '2px', width: '4px', height: '4px', background: '#fff' }} />
-            </div>
-            <span style={{
-              fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: 28,
-              letterSpacing: '0.08em',
-              color: '#fff',
-              animation: 'textGlitchPulse 6s ease-in-out infinite'
-            }}>STARTUP PARK</span>
+            <img src={logo} alt="Startup Park Logo" style={{ height: '60px', width: 'auto' }} />
           </div>
           <p style={{
             fontSize: '0.85rem',

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
+import logo from "../assets/logo.png";
 
 const navItems = [
   { label: "Home", to: "/" },
@@ -61,6 +62,14 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-8 left-0 right-0 z-50 flex justify-center px-4 sm:px-6">
+      {/* Brand Logo */}
+      <NavLink 
+        to="/" 
+        className="absolute left-6 sm:left-12 top-1/2 -translate-y-1/2 z-[60] transition-opacity hover:opacity-80 hidden md:block"
+      >
+        <img src={logo} alt="Startup Park" className="h-10 sm:h-12 w-auto" />
+      </NavLink>
+
       <div className="relative flex w-[min(92vw,640px)] items-center justify-between rounded-full border border-white/12 bg-black/45 px-3 sm:px-4 py-2 shadow-2xl backdrop-blur-2xl">
         
         {/* Three.js Canvas Layer */}

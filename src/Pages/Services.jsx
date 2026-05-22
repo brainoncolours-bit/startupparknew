@@ -5,6 +5,7 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, Environment, Html } from "@react-three/drei";
 import * as THREE from "three";
+import logo from "../assets/logo.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -781,21 +782,17 @@ export function Hero() {
         style={{ opacity: 0, zIndex: 5, willChange: "opacity" }}
       >
         <div className="flex flex-col items-center text-center px-6 select-none">
-          <p
+          <img
             ref={titleRevealEyebrowRef}
+            src={logo}
+            alt="Startup Park"
             style={{
-              fontSize: "clamp(10px,1.1vw,13px)",
-              letterSpacing: "0.32em",
-              textTransform: "uppercase",
-              color: "#fff",
-              fontFamily: "'DM Sans',sans-serif",
+              height: "clamp(40px, 4vw, 60px)",
+              width: "auto",
               opacity: 0,
               marginBottom: "2rem",
-              fontWeight: 500,
             }}
-          >
-            STARTUP PARK
-          </p>
+          />
           <h1
             ref={titleRevealHeadingRef}
             style={{
@@ -886,21 +883,17 @@ export function Hero() {
         className="relative z-20 flex flex-col items-center text-center px-6 select-none"
         style={{ willChange: "transform,opacity", opacity: 1 }}
       >
-        <p
+        <img
           ref={eyebrowRef}
+          src={logo}
+          alt="Startup Park"
           style={{
-            fontSize: "clamp(10px,1.1vw,13px)",
-            letterSpacing: "0.32em",
-            textTransform: "uppercase",
-            color: "white",
-            fontFamily: "'DM Sans',sans-serif",
+            height: "clamp(40px, 4vw, 60px)",
+            width: "auto",
             opacity: 1,
             marginBottom: "2rem",
-            fontWeight: 500,
           }}
-        >
-          STARTUP PARK
-        </p>
+        />
         <h1
           ref={headingRef}
           style={{

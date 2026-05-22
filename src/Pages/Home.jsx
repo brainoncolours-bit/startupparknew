@@ -18,6 +18,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import heroVideo from "../assets/hero-video.mp4";
 import PreBookModal from "../Components/Modals/PreBookModal";
+import { Check } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true });
@@ -761,9 +762,34 @@ export default function Home() {
               Founder Card
             </h2>
             <p className="max-w-[40ch] text-lg leading-relaxed text-black/60 font-medium">
-              Experience the future of entrepreneurial finance. One card for
-              your entire ecosystem.
+              It unlocks the Startup Park ecosystem. With this card, a founder
+              gets:
             </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+              {[
+                "1 seat for 1 month at Startup Park",
+                "Startup research and market intelligence",
+                "Legal and compliance guidance",
+                "Branding and personal branding benefits",
+                "Media and advertising support",
+                "Incubation workshop access",
+                "Founder community membership",
+                "Startup tools and software offers",
+                "Skill and career support",
+                "HR training",
+              ].map((benefit, idx) => (
+                <div key={idx} className="flex items-start gap-3">
+                  <div className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-black text-white">
+                    <Check size={12} strokeWidth={3} />
+                  </div>
+                  <span className="text-sm font-medium text-black/80">
+                    {benefit}
+                  </span>
+                </div>
+              ))}
+            </div>
+
             <button
               onClick={() => setIsModalOpen(true)}
               className="group relative flex items-center gap-4 rounded-full bg-black px-8 py-4 text-xs font-bold uppercase tracking-[0.3em] text-white transition-all hover:pr-12"

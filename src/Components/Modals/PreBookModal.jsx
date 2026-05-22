@@ -120,7 +120,7 @@ export default function PreBookModal({ isOpen, onClose }) {
                 </form>
 
                 <p className="mt-8 text-center text-[10px] uppercase tracking-widest text-white/20">
-                  Startup Park Ecosystem © 2026
+                Startup Park Ecosystem © 2026
                 </p>
               </>
             )}
