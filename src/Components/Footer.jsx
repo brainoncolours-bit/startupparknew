@@ -3,6 +3,36 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
+// Custom SVG Social Icons (Lucide 1.8.0+ removed brand icons)
+const XIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
+    <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+  </svg>
+);
+
+const LinkedinIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+    <rect width="4" height="12" x="2" y="9" />
+    <circle cx="4" cy="4" r="2" />
+  </svg>
+);
+
+const InstagramIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+  </svg>
+);
+
+const FacebookIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+  </svg>
+);
+
 export default function HyperAnimatedFooter() {
   const currentYear = new Date().getFullYear();
   const footerRef = useRef(null);
@@ -162,13 +192,14 @@ export default function HyperAnimatedFooter() {
           </div>
           <div style={{ display: 'flex', gap: '0.85rem' }}>
             {[
-              { icon: '𝕏', label: 'Twitter' },
-              { icon: 'LN', label: 'LinkedIn' },
-              { icon: 'GH', label: 'GitHub' }
+              { icon: <XIcon size={18} />, label: 'X', href: '#' },
+              { icon: <LinkedinIcon size={18} />, label: 'LinkedIn', href: '#' },
+              { icon: <InstagramIcon size={18} />, label: 'Instagram', href: '#' },
+              { icon: <FacebookIcon size={18} />, label: 'Facebook', href: '#' }
             ].map((social) => (
               <a
                 key={social.label}
-                href="#"
+                href={social.href}
                 aria-label={social.label}
                 style={{
                   width: 44,
@@ -181,8 +212,6 @@ export default function HyperAnimatedFooter() {
                   justifyContent: 'center',
                   color: 'rgba(255,255,255,0.4)',
                   textDecoration: 'none',
-                  fontSize: '0.9rem',
-                  fontWeight: 800,
                   transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                   position: 'relative',
                   overflow: 'hidden'

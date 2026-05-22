@@ -16,8 +16,9 @@ import {
 } from "@react-three/drei";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import heroVideo from "../assets/hero-video.mp4";
+import heroVideo from "/cover.mp4";
 import PreBookModal from "../Components/Modals/PreBookModal";
+import Gallery from "../Components/Gallery";
 import { Check } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -470,7 +471,8 @@ export default function Home() {
 
   useEffect(() => {
     if (heroVideoRef.current) {
-      heroVideoRef.current.playbackRate = 0.5;
+      // Manual playbackRate adjustment can cause stuttering on large files.
+      // Better to have the slow motion baked into the video file if needed.
       heroVideoRef.current.play().catch(() => {});
     }
     ScrollTrigger.refresh();
@@ -490,7 +492,7 @@ export default function Home() {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata" // Changed from "auto" to "metadata" to save bandwidth and reduce lag
           />
         </div>
         <div className="absolute inset-0 bg-black/50" />
@@ -803,14 +805,17 @@ export default function Home() {
           <div className="relative flex-1">
             <div className="aspect-[4/3] w-full overflow-hidden rounded-[2rem] bg-black/5 shadow-2xl">
               <img
-                src="/bg.jpg"
+                src="/card.png"
                 alt="Premium Card"
-                className="h-full w-full object-cover opacity-80"
+                className="h-full w-full object-cover "
               />
             </div>
           </div>
         </div>
       </section>
+
+      {/* Auto-scrolling Gallery Section */}
+      <Gallery />
 
       {/* Structured Lead Capture, Featured Events, and Global Footer Elements */}
       <section
@@ -890,29 +895,6 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="bg-black text-gray-500 py-12 px-6 sm:px-10 lg:px-24 border-t border-white/5 text-xs tracking-wide">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
-          <div className="text-center sm:text-left space-y-1">
-            <p className="text-white/80 font-medium">
-              Bengaluru, Karnataka, India
-            </p>
-            <p className="hover:text-white transition-colors">
-              <a href="mailto:contact@thestartuppark.com">
-                contact@thestartuppark.com
-              </a>
-            </p>
-          </div>
-          <div className="text-center sm:text-right space-y-1">
-            <p>© 2026 Startup Park. All rights reserved.</p>
-            <p>
-              Crafted with 🤍 by{" "}
-              <span className="text-white/40 hover:text-white/80 transition-colors cursor-pointer">
-                ique-ventures
-              </span>
-            </p>
-          </div>
-        </div>
-      </footer>
       <PreBookModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
