@@ -14,17 +14,12 @@ const navItems = [
   { label: "Contact", to: "/contact" },
 ];
 
-// --- THREE.JS COMPONENT ---
 function ActiveLight({ activeIndex }) {
   const meshRef = useRef();
-  
-  // Maps the index to an X position for the 3D orb
-  // These values might need slight tweaking based on your padding
   const xPos = (activeIndex - (navItems.length - 1) / 2) * 1.6;
 
   useFrame(() => {
     if (meshRef.current) {
-      // Smoothly interpolate the orb position
       meshRef.current.position.x = THREE.MathUtils.lerp(
         meshRef.current.position.x,
         xPos,
@@ -52,26 +47,26 @@ function ActiveLight({ activeIndex }) {
   );
 }
 
-// --- MAIN NAVBAR ---
 export default function Navbar() {
   const [hoveredPath, setHoveredPath] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const MotionDiv = motion.div;
-  
-  const activeIndex = navItems.findIndex(item => item.to === location.pathname);
+
+  const activeIndex = navItems.findIndex((item) => item.to === location.pathname);
 
   return (
-    <header className="fixed top-8 left-0 right-0 z-50 flex justify-center px-4 sm:px-6">
-      {/* Brand Logo */}
-      <NavLink 
-        to="/" 
-        className="absolute left-6 sm:left-12 top-1/2 -translate-y-1/2 z-[60] transition-opacity hover:opacity-80 hidden md:block"
+    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-6 pt-4 sm:pt-8 md:justify-center">
+      {/* Logo — visible on mobile left, desktop absolute left */}
+      <NavLink
+        to="/"
+        className="z-[60] transition-opacity hover:opacity-80 md:absolute md:left-12 md:top-1/2 md:-translate-y-1/2"
       >
-        <img src={logo} alt="Startup Park" className="h-10 sm:h-12 w-auto" />
+        <img src={logo} alt="Startup Park" className="h-9 sm:h-11 w-auto" />
       </NavLink>
 
-      <div className="relative flex w-[min(92vw,640px)] items-center justify-between rounded-full border border-white/12 bg-black/45 px-3 sm:px-4 py-2 shadow-2xl backdrop-blur-2xl">
-        
+      {/* Desktop pill nav */}
+      <div className="hidden md:flex relative w-[min(92vw,640px)] items-center justify-between rounded-full border border-white/12 bg-black/45 px-4 py-2 shadow-2xl backdrop-blur-2xl">
         {/* Three.js Canvas Layer */}
         <div className="absolute inset-0 z-0 overflow-hidden rounded-full pointer-events-none">
           <Canvas dpr={0.75} camera={{ position: [0, 0, 5], fov: 26 }}>
@@ -90,14 +85,13 @@ export default function Navbar() {
             onMouseEnter={() => setHoveredPath(item.to)}
             onMouseLeave={() => setHoveredPath(null)}
             className={() =>
-              `relative z-10 flex-1 rounded-full px-2 sm:px-3 py-2.5 text-center text-[0.75rem] sm:text-[0.8rem] font-bold uppercase tracking-[0.35em] transition-all duration-700 ${
-                location.pathname === item.to 
-                  ? "text-white scale-105" 
+              `relative z-10 flex-1 rounded-full px-3 py-2.5 text-center text-[0.8rem] font-bold uppercase tracking-[0.35em] transition-all duration-700 ${
+                location.pathname === item.to
+                  ? "text-white scale-105"
                   : "text-white/40 hover:text-white/80"
               }`
             }
           >
-            {/* Framer Motion Active Background (CSS Backup/Enhancement) */}
             {location.pathname === item.to && (
               <MotionDiv
                 layoutId="active-glow"
@@ -105,8 +99,6 @@ export default function Navbar() {
                 transition={{ type: "spring", bounce: 0.2, duration: 0.8 }}
               />
             )}
-
-            {/* Hover State */}
             <AnimatePresence>
               {hoveredPath === item.to && location.pathname !== item.to && (
                 <MotionDiv
@@ -119,11 +111,60 @@ export default function Navbar() {
                 />
               )}
             </AnimatePresence>
-
-        <span className="relative">{item.label}</span>
+            <span className="relative">{item.label}</span>
           </NavLink>
         ))}
       </div>
+
+      {/* Hamburger button — mobile only */}
+      <button
+        className="md:hidden z-[60] flex flex-col justify-center items-center w-10 h-10 gap-[5px]"
+        onClick={() => setMenuOpen((v) => !v)}
+        aria-label="Toggle menu"
+      >
+        <motion.span
+          animate={menuOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
+          className="block w-6 h-[2px] bg-white origin-center transition-all"
+        />
+        <motion.span
+          animate={menuOpen ? { opacity: 0 } : { opacity: 1 }}
+          className="block w-6 h-[2px] bg-white"
+        />
+        <motion.span
+          animate={menuOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
+          className="block w-6 h-[2px] bg-white origin-center transition-all"
+        />
+      </button>
+
+      {/* Mobile dropdown menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="md:hidden fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-2xl border-b border-white/10 pt-20 pb-8 px-6 flex flex-col gap-2"
+          >
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                onClick={() => setMenuOpen(false)}
+                className={() =>
+                  `py-3 text-sm font-bold uppercase tracking-[0.3em] border-b border-white/5 transition-colors ${
+                    location.pathname === item.to
+                      ? "text-white"
+                      : "text-white/40"
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

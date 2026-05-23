@@ -14,6 +14,7 @@ import {
   Environment,
   PresentationControls,
 } from "@react-three/drei";
+import { useThree } from "@react-three/fiber";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import heroVideo from "/cover.mp4";
@@ -145,7 +146,7 @@ function ScatteredCards({ sectionRef }) {
         rotationState.rotY,
         rotationState.rotZ,
       );
-      tempObject.scale.set(0.12, 0.12, 0.12);
+      tempObject.scale.set(0.2, 0.2, 0.2);
       tempObject.updateMatrix();
       meshRef.current.setMatrixAt(i, tempObject.matrix);
     }
@@ -229,6 +230,15 @@ function InteractiveCard({ cardRef }) {
       </PresentationControls>
     </group>
   );
+}
+
+function ResponsiveCamera() {
+  const { camera, size } = useThree();
+  useEffect(() => {
+    camera.fov = size.width < 768 ? 55 : 35;
+    camera.updateProjectionMatrix();
+  }, [camera, size.width]);
+  return null;
 }
 
 function PhoneCluster({ scrollTriggerRef, insideTextRef }) {
@@ -495,7 +505,7 @@ export default function Home() {
             preload="metadata" // Changed from "auto" to "metadata" to save bandwidth and reduce lag
           />
         </div>
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/70" />
         <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-5 text-center">
           <span className="mb-4 text-xs font-bold tracking-[0.3em] uppercase text-white/60 bg-white/5 px-4 py-1.5 rounded-full backdrop-blur-sm">
             Startup Park is Now Open
@@ -552,6 +562,7 @@ export default function Home() {
             <ambientLight intensity={1.8} />
             <Environment preset="city" />
             <Suspense fallback={null}>
+              <ResponsiveCamera />
               <PhoneCluster
                 scrollTriggerRef={phoneSectionRef}
                 insideTextRef={insideTextRef}

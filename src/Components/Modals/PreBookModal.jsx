@@ -49,7 +49,7 @@ export default function PreBookModal({ isOpen, onClose }) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 overflow-y-auto bg-black/95 backdrop-blur-xl">
+        <div className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center px-4 py-6 overflow-y-auto bg-black/95 backdrop-blur-xl">
           
           {/* BACKGROUND ENERGY FIELD: Cosmic Ambient Glowing Atmosphere */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -85,10 +85,10 @@ export default function PreBookModal({ isOpen, onClose }) {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 30 }}
             transition={{ type: "spring", damping: 20, stiffness: 120 }}
-            className="relative w-full max-w-4xl overflow-hidden rounded-[2.5rem] p-[1px] bg-gradient-to-b from-white/20 via-[#0070f3]/40 to-[#00d2ff]/60 shadow-[0_0_80px_rgba(0,210,255,0.25)] my-8"
+            className="relative w-full max-w-4xl overflow-hidden rounded-[2.5rem] p-[1px] bg-gradient-to-b from-white/20 via-[#0070f3]/40 to-[#00d2ff]/60 shadow-[0_0_80px_rgba(0,210,255,0.25)]"
           >
             {/* Glassmorphic Inner Core Deck */}
-            <div className="relative w-full bg-[#02050d]/98 grid grid-cols-1 md:grid-cols-12 rounded-[2.4rem] overflow-hidden min-h-[560px]">
+            <div className="relative w-full bg-[#02050d]/98 grid grid-cols-1 md:grid-cols-12 rounded-[2.4rem] overflow-hidden">
               
               {/* Retro Tech Cyber Dotted Overlay */}
               <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.015)_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
@@ -102,7 +102,7 @@ export default function PreBookModal({ isOpen, onClose }) {
               </button>
 
               {/* ================= COLUMN 1: KINETIC TELEMETRY DATA BAY ================= */}
-              <div className="md:col-span-5 bg-gradient-to-b from-white/[0.02] to-transparent p-8 md:p-10 flex flex-col justify-between border-b md:border-b-0 md:border-r border-white/5 relative overflow-hidden">
+              <div className="md:col-span-5 bg-gradient-to-b from-white/[0.02] to-transparent p-6 md:p-10 flex flex-col justify-between border-b md:border-b-0 md:border-r border-white/5 relative overflow-hidden">
                 {/* Pipeline Flow Grid Track Accent */}
                 <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-[#00d2ff]/40 via-transparent to-transparent" />
                 
@@ -162,7 +162,7 @@ export default function PreBookModal({ isOpen, onClose }) {
 
 
               {/* ================= COLUMN 2: PRIMARY INTERACTIVE CONTROL FORM ================= */}
-              <div className="md:col-span-7 p-8 md:p-10 flex flex-col justify-center relative">
+              <div className="md:col-span-7 p-6 md:p-10 flex flex-col justify-center relative">
                 
                 <AnimatePresence mode="wait">
                   {success ? (
