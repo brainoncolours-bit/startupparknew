@@ -15,9 +15,9 @@ const aboutStyles = `
   :root {
     --black: #080808;
     --off-black: #0d0d0d;
-    --green: #64c8ff;
-    --green-dim: #3a8ecb;
-    --green-glow: rgba(100,200,255,0.12);
+    --green: #1f4aa8;
+    --green-dim: #17306f;
+    --green-glow: rgba(31,74,168,0.12);
     --white: #f0f0f0;
     --muted: #444;
     --glass: rgba(255,255,255,0.04);
@@ -48,8 +48,8 @@ const aboutStyles = `
     50% { transform: scale(1.1); opacity: 0.8; }
   }
   @keyframes glow-text {
-    0% { text-shadow: 0 0 30px rgba(100,200,255,0.3); }
-    100% { text-shadow: 0 0 50px rgba(100,200,255,0.7), 0 0 80px rgba(100,200,255,0.3); }
+    0% { text-shadow: 0 0 30px rgba(31,74,168,0.35); }
+    100% { text-shadow: 0 0 50px rgba(31,74,168,0.75), 0 0 80px rgba(31,74,168,0.35); }
   }
   .about-ticker-wrap {
     width: 100%; overflow: hidden;
@@ -129,8 +129,14 @@ const aboutStyles = `
 
   /* Values */
   .about-value-row {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) 1fr;
+    gap: 2rem;
+    padding: 3.5rem 0;
+    align-items: start;
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    position: relative; cursor: default;
+    position: relative;
+    cursor: default;
   }
   .about-value-row::before {
     content: ''; position: absolute; bottom: 0; left: 0;
@@ -141,10 +147,24 @@ const aboutStyles = `
   .about-value-row::after {
     content: ''; position: absolute; top: 0; left: 0;
     height: 1px; width: 0;
-    background: linear-gradient(to right, rgba(100,200,255,0.3), transparent);
+    background: linear-gradient(to right, rgba(31,74,168,0.3), transparent);
     transition: width 0.7s ease;
   }
   .about-value-row:hover::after { width: 100%; }
+
+  @media (max-width: 900px) {
+    .about-value-row {
+      grid-template-columns: 3rem minmax(0, 1fr);
+      gap: 1rem;
+    }
+    .about-value-row h3 {
+      grid-column: 2 / -1;
+    }
+    .about-value-row p {
+      grid-column: 1 / -1;
+      padding-top: 0.5rem;
+    }
+  }
 
   /* Closing cards */
   .about-closing-card {
@@ -197,7 +217,7 @@ function AboutParticles({ count = 180 }) {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <pointsMaterial size={0.03} color="#64c8ff" transparent opacity={0.3} sizeAttenuation />
+      <pointsMaterial size={0.03} color="#1f4aa8" transparent opacity={0.3} sizeAttenuation />
     </points>
   );
 }
@@ -215,11 +235,11 @@ function AboutIco() {
     <group ref={ref}>
       <mesh>
         <icosahedronGeometry args={[2, 1]} />
-        <meshBasicMaterial color="#64c8ff" wireframe transparent opacity={0.18} />
+        <meshBasicMaterial color="#1f4aa8" wireframe transparent opacity={0.18} />
       </mesh>
       <mesh>
         <torusGeometry args={[3, 0.012, 8, 180]} />
-        <meshStandardMaterial color="#64c8ff" emissive="#64c8ff" emissiveIntensity={1.5} transparent opacity={0.3} />
+        <meshStandardMaterial color="#1f4aa8" emissive="#1f4aa8" emissiveIntensity={1.5} transparent opacity={0.3} />
       </mesh>
     </group>
   );
@@ -288,24 +308,24 @@ export default function About() {
 
   // Updated Team Data to mirror Startup Park's internal network / operators
   const team = [
-    { name: "Shafi Shoukath", role: "Founder, Startup Park", color: "#b5ff4d" },
-    { name: "Mazin Arbaz", role: "Creative Artist", color: "#64c8ff" },
-    { name: "Kiran", role: "Head of Technology", color: "#ff6496" },
-    { name: "Sourav", role: "Product Alchemist", color: "#b5ff4d" },
-    { name: "Hashir", role: "Startup Activator", color: "#64c8ff" },
-    { name: "Nawaf", role: "Venture Catalyst", color: "#ff6496" },
+    { name: "Shafi Shoukath", role: "Founder, Startup Park", color: "#1f4aa8" },
+    { name: "Mazin Arbaz", role: "Creative Lead", color: "#2f5fc4" },
+    { name: "Kiran", role: "Head of Technology", color: "#17306f" },
+    { name: "Sourav", role: "Product Strategy", color: "#1f4aa8" },
+    { name: "Hashir", role: "Startup Activation", color: "#2f5fc4" },
+    { name: "Nawaf", role: "Venture Growth", color: "#17306f" },
   ];
 
   // Updated Mission/Vision text tokens for on-scroll reveal
-  const manifestoText = "Power bold ideas . Into reality through . A builder-centric ecosystem . Turn raw concepts . Into scalable world-class ventures .".split(" ");
+  const manifestoText = "We power bold ideas into reality through a builder-centric ecosystem that transforms raw concepts into scalable, world-class ventures.".split(" ");
 
   // Updated Startup Park verified core metrics
   const stats = [
-    { num: "200+", label: "Startups Supported" },
-    { num: "₹600 Cr+", label: "Funding Accessed" },
-    { num: "10,000+", label: "Jobs Created" },
-    { num: "1st", label: "Full Ecosystem" },
-    { num: "2025", label: "Launched" },
+    { num: "10,000+", label: "Startups Built" },
+    { num: "100,000+", label: "Jobs Created" },
+    { num: "₹50,000 Cr+", label: "Funding Facilitated" },
+    { num: "2025", label: "Launch Year" },
+    { num: "1st", label: "Startup Park in Bengaluru" },
   ];
 
   useEffect(() => {
@@ -463,7 +483,7 @@ export default function About() {
         <div style={{ position: "absolute", inset: 0, zIndex: 0, opacity: 0.65 }}>
           <Canvas dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }} camera={{ position: [0, 0, 7], fov: 50 }}>
             <ambientLight intensity={0.3} />
-            <pointLight position={[4, 4, 4]} color="#b5ff4d" intensity={2} />
+            <pointLight position={[4, 4, 4]} color="#1f4aa8" intensity={2} />
             <Suspense fallback={null}>
               <AboutParticles count={200} />
               <Environment preset="city" />
@@ -478,14 +498,14 @@ export default function About() {
         <div style={{
           position: "absolute", top: "30%", left: "20%",
           width: 560, height: 560, borderRadius: "50%",
-          background: "radial-gradient(ellipse, rgba(100,200,255,0.06), transparent 70%)",
+          background: "radial-gradient(ellipse, rgba(31,74,168,0.08), transparent 70%)",
           filter: "blur(60px)", animation: "about-breathe 7s ease-in-out infinite",
           pointerEvents: "none",
         }} />
         <div style={{
           position: "absolute", top: "20%", right: "15%",
           width: 380, height: 380, borderRadius: "50%",
-          background: "radial-gradient(ellipse, rgba(100,200,255,0.04), transparent 70%)",
+          background: "radial-gradient(ellipse, rgba(31,74,168,0.06), transparent 70%)",
           filter: "blur(40px)", animation: "about-breathe 9s ease-in-out infinite 2s",
           pointerEvents: "none",
         }} />
@@ -496,7 +516,6 @@ export default function About() {
             <span className="about-badge-dot" />
             <span>About Startup Park</span>
             <div style={{ width: 60, height: 1, background: "linear-gradient(to right, var(--green), transparent)", marginLeft: "0.5rem" }} />
-            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.58rem", letterSpacing: "0.4em" }}>Est. MMXXV</span>
           </div>
 
           <div className="about-hero-headline" style={{ maxWidth: "72rem" }}>
@@ -524,7 +543,7 @@ export default function About() {
                 fontSize: "clamp(4.5rem,13vw,13rem)",
                 lineHeight: 0.88, letterSpacing: "0.02em",
                 color: "var(--green)",
-                textShadow: "0 0 60px rgba(181,255,77,0.5), 0 0 120px rgba(181,255,77,0.2)",
+                textShadow: "0 0 60px rgba(31,74,168,0.55), 0 0 120px rgba(31,74,168,0.25)",
                 display: "inline-block", animation: "glow-text 3s ease-in-out infinite alternate",
               }}>innovators.</h1>
               <p className="about-hero-sub" style={{
@@ -536,7 +555,7 @@ export default function About() {
             </div>
           </div>
 
-          <div style={{ height: 1, background: "linear-gradient(to right, transparent, rgba(100,200,255,0.35), transparent)", margin: "3.5rem 0 1rem" }} className="about-hero-sub" />
+          <div style={{ height: 1, background: "linear-gradient(to right, transparent, rgba(31,74,168,0.38), transparent)", margin: "3.5rem 0 1rem" }} className="about-hero-sub" />
 
           <div className="about-hero-stats-row" style={{ display: "flex", flexWrap: "wrap", gap: "2.5rem", marginTop: "1rem" }}>
             {stats.map((s, i) => (
@@ -548,29 +567,7 @@ export default function About() {
           </div>
         </div>
 
-        {/* Scroll hint */}
-        <div className="about-scroll-hint" style={{
-          position: "absolute", bottom: "3rem", left: "50%", transform: "translateX(-50%)",
-          display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem", zIndex: 10,
-        }}>
-          <span style={{ fontSize: "0.58rem", textTransform: "uppercase", letterSpacing: "0.55em", color: "rgba(255,255,255,0.2)" }}>Scroll</span>
-          <div style={{ width: 20, height: 32, border: "1px solid rgba(255,255,255,0.15)", borderRadius: 100, display: "flex", justifyContent: "center" }}>
-            <div style={{ width: 4, height: 8, borderRadius: 4, background: "var(--green)", marginTop: 6, animation: "about-float 1.6s ease-in-out infinite" }} />
-          </div>
-        </div>
-
-        {/* Corner sys info */}
-        <div style={{ position: "absolute", top: "2rem", right: "2rem", zIndex: 20, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "0.3rem" }}>
-          <span style={{ fontSize: "0.44rem", textTransform: "uppercase", letterSpacing: "0.55em", color: "rgba(255,255,255,0.15)" }}>SYS::LAUNCHPAD</span>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--green)", animation: "about-glow-pulse 1.5s ease-in-out infinite" }} />
-            <span style={{ fontSize: "0.44rem", color: "#64c8ff", textTransform: "uppercase", letterSpacing: "0.4em", fontWeight: 700 }}>ACTIVE</span>
-          </div>
-        </div>
       </section>
-
-      {/* ── TICKER 1 ──────────────────────────────────────────────────── */}
-      <AboutTicker items={["INNOVATE", "ACCELERATE", "SUCCEED", "BUILDER CENTRIC", "GLOBAL SCALE", "STRATEGIC MENTORSHIP", "THRIVING COMMUNITY"]} />
 
       {/* ── ORIGIN SECTION ────────────────────────────────────────────── */}
       <section
@@ -592,19 +589,6 @@ export default function About() {
       zIndex: 10,
     }}
   >
-    <span
-      style={{
-        fontFamily: "'Bebas Neue', sans-serif",
-        fontSize: "0.6rem",
-        letterSpacing: "0.55em",
-        textTransform: "uppercase",
-        color: "rgba(255,255,255,0.12)",
-        writingMode: "vertical-rl",
-        transform: "rotate(180deg)",
-      }}
-    >
-      Vision / Mission
-    </span>
   </div>
 
   {/* Right fixed year col */}
@@ -622,17 +606,6 @@ export default function About() {
       zIndex: 10,
     }}
   >
-    <span
-      style={{
-        fontFamily: "'Bebas Neue', sans-serif",
-        fontSize: "0.6rem",
-        letterSpacing: "0.55em",
-        color: "#64c8ff80",
-        writingMode: "vertical-rl",
-      }}
-    >
-      2030
-    </span>
   </div>
 
   {/* Panels container */}
@@ -662,7 +635,7 @@ export default function About() {
       },
       {
         line: "Build Global Impact.",
-        sub: "Attract investments, drive job creation, and position Karnataka startups on the world stage through strong networks, collaborations, and partnerships.",
+        sub: "Attract investments, drive job creation, and position Karnataka startups on the world stage through international collaborations, events, and partnerships.",
         accent: true,
       },
     ].map((item, i) => (
@@ -687,7 +660,7 @@ export default function About() {
               fontSize: "clamp(2.2rem,4.5vw,5rem)",
               lineHeight: 1.05,
               color: item.accent ? "var(--green)" : "var(--white)",
-              textShadow: item.accent ? "0 0 40px rgba(100,200,255,0.35)" : "none",
+              textShadow: item.accent ? "0 0 40px rgba(31,74,168,0.38)" : "none",
               fontWeight: 400,
               margin: 0,
             }}
@@ -745,7 +718,7 @@ export default function About() {
               fontSize: "clamp(2rem,4vw,4rem)",
               lineHeight: 1,
               color: "var(--green)",
-              textShadow: "0 0 30px rgba(100,200,255,0.4)",
+              textShadow: "0 0 30px rgba(31,74,168,0.45)",
             }}
           >
             {c.val}
@@ -777,24 +750,25 @@ export default function About() {
           padding: "0 clamp(1.5rem,8vw,8rem)", overflow: "hidden",
         }}
       >
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(100,200,255,0.03), transparent)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(31,74,168,0.04), transparent)", pointerEvents: "none" }} />
 
         {/* Big BG word */}
         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", pointerEvents: "none" }}>
-          <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "22vw", color: "rgba(100,200,255,0.015)", letterSpacing: "0.1em", userSelect: "none" }}>FOUNDATION</span>
+          <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "22vw", color: "rgba(31,74,168,0.02)", letterSpacing: "0.1em", userSelect: "none" }}>FOUNDATION</span>
         </div>
 
         <div style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: "72rem" }}>
-          <p style={{ fontSize: "0.58rem", textTransform: "uppercase", letterSpacing: "0.65em", color: "#64c8ff", fontWeight: 700, marginBottom: "4rem" }}>— Mission & Vision</p>
+          <div style={{ marginBottom: "4rem" }} />
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem 1.5rem", alignItems: "baseline" }}>
             {manifestoText.map((word, i) => {
-              const highlight = { "Power": "#b5ff4d", "builder-centric": "#b5ff4d", "ventures": "#64c8ff", "world-class": "#ff6496" };
-              const big = ["Power", "builder-centric", "Turn", "scalable", "world-class"].includes(word);
+              const cleanWord = word.replace(/[.,]/g, "").toLowerCase();
+              const highlight = { "power": "#1f4aa8", "builder-centric": "#1f4aa8", "ventures": "#2f5fc4", "world-class": "#17306f" };
+              const big = ["power", "builder-centric", "transforms", "scalable", "world-class"].includes(cleanWord);
               return (
                 <span key={i} className="about-manifesto-word"
                   style={{
                     fontSize: big ? "clamp(3rem,7vw,7rem)" : "clamp(2rem,4vw,4.2rem)",
-                    color: word === "." ? "var(--green)" : (highlight[word] || "white"),
+                    color: word === "." ? "var(--green)" : (highlight[cleanWord] || "white"),
                   }}>
                   {word}
                 </span>
@@ -804,24 +778,12 @@ export default function About() {
         </div>
       </section>
 
-      {/* ── TICKER 2 (reverse) ────────────────────────────────────────── */}
-      <AboutTicker
-        reverse
-        items={["CO-WORKING ZONES", "INNOVATION LABS", "DEMO STAGES", "NETWORKING LOUNGES", "INCUBATOR CORE", "MASTERCLASSES", "LEGAL FRAMEWORKS"]}
-        speed={24}
-      />
-
       {/* ── VALUES SECTION ────────────────────────────────────────────── */}
       <section
         ref={valuesRef}
         style={{ background: "rgba(5,5,9,0.96)", padding: "10vh clamp(1.5rem,8vw,8rem) 12vh" }}
       >
         <div className="about-values-header" style={{ maxWidth: "72rem", marginBottom: "6vh" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "1.2rem", marginBottom: "2.5rem" }}>
-            <div style={{ height: 1, flex: 1, background: "rgba(255,255,255,0.06)" }} />
-            <span style={{ fontSize: "0.62rem", textTransform: "uppercase", letterSpacing: "0.55em", color: "rgba(255,255,255,0.22)", fontWeight: 700 }}>What we stand for</span>
-            <div style={{ height: 1, flex: 1, background: "rgba(255,255,255,0.06)" }} />
-          </div>
           <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem,7vw,7.5rem)", lineHeight: 0.95, color: "var(--white)" }}>
             Ecosystem,
           </h2>
@@ -832,12 +794,12 @@ export default function About() {
 
         <div style={{ maxWidth: "72rem" }}>
           {[
-            { num: "01", title: "Premium infrastructure.", desc: "From high-productivity hot desks and private cabins to prototyping innovation labs and amphitheater demo stages engineered for investor rollouts.", accent: "#b5ff4d" },
-            { num: "02", title: "Structured acceleration.", desc: "Milestone-driven incubation tracks and intensive skills sprints led by industry leaders to fast-track real product-market fit.", accent: "#64c8ff" },
-            { num: "03", title: "Strategic capital pathways.", desc: "Direct network introductions to leading institutional funds, active seed syndicates, and comprehensive pitch floor design help.", accent: "#ff6496" },
-            { num: "04", title: "Corporate governance help.", desc: "In-house startup legal support handling cap-table structuring, IP protection, and fluid fundraising compliance systems.", accent: "#b5ff4d" },
+            { num: "01", title: "Premium infrastructure.", desc: "From high-productivity workspaces and private cabins to prototyping labs and demo stages, everything is designed to support serious startup growth.", accent: "#1f4aa8" },
+            { num: "02", title: "Structured acceleration.", desc: "Milestone-driven incubation tracks and expert-led mentorship help founders move from idea to execution with speed and clarity.", accent: "#2f5fc4" },
+            { num: "03", title: "Strategic capital pathways.", desc: "We connect startups with investors, seed networks, and funding opportunities to strengthen their growth journey.", accent: "#17306f" },
+            { num: "04", title: "Corporate governance help.", desc: "Founders get support with legal structure, IP protection, compliance, and fundraising readiness.", accent: "#1f4aa8" },
           ].map((v, i) => (
-            <div key={i} className="about-value-row" style={{ display: "grid", gridTemplateColumns: "3rem 1fr 1fr", gap: "2rem", padding: "3.5rem 0", alignItems: "start" }}>
+            <div key={i} className="about-value-row">
               <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "3.5rem", lineHeight: 1, color: `${v.accent}18`, transition: "color 0.5s" }}>{v.num}</span>
               <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2rem,3.5vw,3.5rem)", lineHeight: 1, color: "var(--white)", transition: "color 0.4s" }}>{v.title}</h3>
               <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.35)", lineHeight: 1.85, fontWeight: 300, paddingTop: "0.5rem", transition: "color 0.4s" }}>{v.desc}</p>
@@ -852,7 +814,7 @@ export default function About() {
         style={{ position: "relative", background: "rgba(7,7,14,0.97)", padding: "10vh 0 12vh", overflow: "hidden" }}
       >
         {/* Ambient blobs */}
-        {["#b5ff4d", "#64c8ff", "#ff6496"].map((c, i) => (
+        {["#1f4aa8", "#2f5fc4", "#17306f"].map((c, i) => (
           <div key={i} style={{
             position: "absolute", width: 200, height: 200, borderRadius: "50%",
             background: `radial-gradient(circle, ${c}25, transparent 70%)`,
@@ -863,13 +825,11 @@ export default function About() {
         ))}
 
         <div className="about-team-headline" style={{ padding: "0 clamp(1.5rem,8vw,8rem)", marginBottom: "6vh" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "2rem" }}>
-            <div style={{ height: 1, flex: 1, background: "rgba(255,255,255,0.05)" }} />
-            <span style={{ fontSize: "0.58rem", textTransform: "uppercase", letterSpacing: "0.65em", color: "rgba(255,255,255,0.22)", fontWeight: 700 }}>The Ecosystem Drivers</span>
-            <div style={{ height: 1, flex: 1, background: "rgba(255,255,255,0.05)" }} />
-          </div>
           <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem,7.5vw,7.5rem)", lineHeight: 0.95, color: "var(--white)" }}>Builders,</h2>
           <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem,7.5vw,7.5rem)", lineHeight: 0.95, color: "transparent", WebkitTextStroke: "1.5px rgba(255,255,255,0.22)" }}>not managers.</h2>
+          <p style={{ maxWidth: "36rem", marginTop: "1.5rem", color: "rgba(255,255,255,0.34)", lineHeight: 1.8, fontWeight: 300 }}>
+            A network of creators, operators, and catalysts driving Karnataka's startup future.
+          </p>
         </div>
 
         <div style={{ display: "flex", gap: "1.2rem", paddingLeft: "clamp(1.5rem,8vw,8rem)", paddingRight: "2rem", overflowX: "auto", scrollbarWidth: "none" }}>
@@ -937,22 +897,19 @@ export default function About() {
         <div className="about-card-text" style={{ position: "relative", zIndex: 3, textAlign: "center", padding: "0 1.5rem", maxWidth: "52rem", opacity: 0, margin: "0 auto" }}>
           <div style={{ marginBottom: "2.5rem" }}>
             <svg width="54" height="62" viewBox="0 0 60 70" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.35 }}>
-              <path d="M30 0L5 10V30C5 45.42 15.67 59.7 30 65C44.33 59.7 55 45.42 55 30V10L30 0Z" stroke="#b5ff4d" strokeWidth="2" />
-              <rect x="22" y="32" width="16" height="12" rx="2" stroke="#b5ff4d" strokeWidth="2" />
-              <path d="M26 32V28C26 25.7909 27.7909 24 30 24C32.2091 24 34 25.7909 34 28V32" stroke="#b5ff4d" strokeWidth="2" />
+              <path d="M30 0L5 10V30C5 45.42 15.67 59.7 30 65C44.33 59.7 55 45.42 55 30V10L30 0Z" stroke="#1f4aa8" strokeWidth="2" />
+              <rect x="22" y="32" width="16" height="12" rx="2" stroke="#1f4aa8" strokeWidth="2" />
+              <path d="M26 32V28C26 25.7909 27.7909 24 30 24C32.2091 24 34 25.7909 34 28V32" stroke="#1f4aa8" strokeWidth="2" />
             </svg>
           </div>
-          <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.42em", color: "var(--green)", fontWeight: 700, marginBottom: "1.8rem" }}>
-            Founder Note from Shafi Shoukath
-          </p>
-          <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontSize: "clamp(1.4rem,2.8vw,2.5rem)", lineHeight: 1.45, color: "rgba(255,255,255,0.85)", fontWeight: 400, fontStyle: "italic" }}>
-            "Startup Park was created with a clear vision — to give founders, innovators, and dreamers everything they need to turn ideas into thriving businesses. We're not just a workspace; we're an ecosystem. Every corner is designed to help you build, scale, and succeed. At Startup Park, you'll never walk alone."
+          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.5rem,5vw,5rem)", lineHeight: 0.95, color: "var(--white)", marginBottom: "1.8rem" }}>
+            This isn't just a space. It's your launchpad.
+          </h2>
+          <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontSize: "clamp(1.2rem,2.4vw,2.15rem)", lineHeight: 1.45, color: "rgba(255,255,255,0.85)", fontWeight: 400, fontStyle: "italic" }}>
+            "Startup Park was created with a clear vision — to give founders, innovators, and dreamers everything they need to turn ideas into thriving businesses. We are not just a workspace; we are an ecosystem. Every corner is designed to help you build, scale, and succeed. At Startup Park, you will never walk alone."
           </p>
         </div>
       </section>
-
-      {/* ── TICKER 3 ──────────────────────────────────────────────────── */}
-      <AboutTicker items={["FOUNDER DRIVEN", "BENGALURU HUB", "STRATEGIC VISION", "BUILD SCALE SUCCEED", "ZERO COMPROMISE", "LAUNCHPAD ACTIVE", "IQUE VENTURES ENGINE"]} speed={18} />
 
       {/* ── PHILOSOPHY SECTION ─────────────────────────────────────────── */}
       <section style={{
@@ -965,8 +922,8 @@ export default function About() {
         <div style={{ position: "absolute", right: "-5vw", top: 0, bottom: 0, width: "55vw", opacity: 0.65, pointerEvents: "none" }}>
           <Canvas dpr={[1, 1]} gl={{ antialias: true, alpha: true }} camera={{ position: [0, 0, 7], fov: 55 }}>
             <ambientLight intensity={0.1} />
-            <pointLight position={[2, 2, 2]} color="#64c8ff" intensity={2} />
-            <pointLight position={[-2, -2, 2]} color="#64c8ff" intensity={1.5} />
+            <pointLight position={[2, 2, 2]} color="#1f4aa8" intensity={2} />
+            <pointLight position={[-2, -2, 2]} color="#2f5fc4" intensity={1.5} />
             <Suspense fallback={null}>
               <Float speed={1.1} rotationIntensity={0.35} floatIntensity={0.5}>
                 <AboutIco />
@@ -978,18 +935,16 @@ export default function About() {
 
         {/* Left text */}
         <div style={{ maxWidth: "40rem", position: "relative", zIndex: 2 }}>
-          <p style={{ fontSize: "0.58rem", textTransform: "uppercase", letterSpacing: "0.65em", color: "#64c8ff", fontWeight: 700, marginBottom: "2.5rem" }}>Philosophy</p>
           <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.8rem,7.5vw,7.5rem)", lineHeight: 0.95, color: "var(--white)", marginBottom: "0.3rem" }}>We think in</h2>
-          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.8rem,7.5vw,7.5rem)", lineHeight: 0.95, color: "var(--green)", textShadow: "0 0 60px rgba(100,200,255,0.4)", marginBottom: "3rem" }}>ventures.</h2>
+          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.8rem,7.5vw,7.5rem)", lineHeight: 0.95, color: "var(--green)", textShadow: "0 0 60px rgba(31,74,168,0.45)", marginBottom: "3rem" }}>ventures.</h2>
           <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.32)", lineHeight: 1.9, fontWeight: 300, marginBottom: "1.2rem", maxWidth: "36rem" }}>
-            Not standalone desks, not short-term support patches — complete scalable systems. When spatial infrastructure, incubation workflows, mentorship networks, and legal backing run in absolute harmony, your venture grows at maximum velocity.
+            Not standalone desks, not short-term support patches — complete scalable systems. When infrastructure, incubation, mentorship, and legal backing work in harmony, your venture grows at maximum velocity.
           </p>
           <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.14)", lineHeight: 1.9, fontWeight: 300, maxWidth: "36rem" }}>
-            We've built this environment for founders who dream big, execute fast, and want to turn raw technological value into generational businesses.
+            We built this environment for founders who dream big, execute fast, and want to turn raw value into generational businesses.
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginTop: "3.5rem" }}>
-            <div style={{ width: 52, height: 1, background: "rgba(100,200,255,0.35)" }} />
-            <span style={{ fontSize: "0.58rem", textTransform: "uppercase", letterSpacing: "0.45em", color: "rgba(255,255,255,0.2)", fontWeight: 700 }}>Execution over promises</span>
+            <div style={{ width: 52, height: 1, background: "rgba(31,74,168,0.38)" }} />
           </div>
         </div>
       </section>
@@ -999,21 +954,20 @@ export default function About() {
         ref={closingRef}
         style={{ position: "relative", height: "100vh", overflow: "hidden", background: "rgba(0,0,0,0.98)" }}
       >
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(100,200,255,0.03), transparent)" }} />
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(31,74,168,0.04), transparent)" }} />
 
         <div className="about-closing-big" style={{ textAlign: "center", padding: "5rem 1.5rem 3rem", flexShrink: 0, opacity: 0 }}>
-          <p style={{ fontSize: "0.58rem", textTransform: "uppercase", letterSpacing: "0.65em", color: "rgba(255,255,255,0.2)", marginBottom: "0.75rem", fontWeight: 700 }}>The Verdict</p>
           <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2rem,6vw,6.5rem)", lineHeight: 0.95, color: "rgba(255,255,255,0.4)" }}>This isn't just a space.</h2>
-          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3.5rem,10vw,10rem)", lineHeight: 0.95, color: "var(--green)", textShadow: "0 0 60px rgba(100,200,255,0.5)" }}>It's your launchpad.</h2>
+          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3.5rem,10vw,10rem)", lineHeight: 0.95, color: "var(--green)", textShadow: "0 0 60px rgba(31,74,168,0.55)" }}>It's your launchpad.</h2>
         </div>
 
         <div style={{ overflow: "hidden" }}>
           <div ref={hTrackRef} style={{ display: "flex", flexWrap: "nowrap", paddingLeft: "clamp(1.5rem,8vw,8rem)", willChange: "transform" }}>
             {[
-              { index: 0, title: "Co-working Frameworks", desc: "Premium zones, private hot desks, and tech-ready meeting spaces designed specifically to push hyper-growth output.", accent: "#b5ff4d" },
-              { index: 1, title: "Structured Acceleration", desc: "Intensive skill-building paths, execution sprints, and multi-exit mentorship loops to ensure perfect product-market fit.", accent: "#64c8ff" },
-              { index: 2, title: "Funding Ecosystems", desc: "Unlock constant avenues to venture funds, high-scale capital backing, and premium investor presentation channels.", accent: "#ff6496" },
-              { index: 3, title: "Venture Registration", desc: "Immediate linkups to internal legal compliance tracks, secure governance, and streamlined scale strategies.", accent: "#b5ff4d" },
+              { index: 0, title: "Co-working Frameworks", desc: "Premium zones, private desks, and tech-ready meeting spaces designed to support startup productivity and scale.", accent: "#1f4aa8" },
+              { index: 1, title: "Structured Acceleration", desc: "Focused learning paths, execution sprints, and mentorship loops that help founders build with clarity and speed.", accent: "#2f5fc4" },
+              { index: 2, title: "Funding Ecosystems", desc: "Access to venture capital networks, investor presentations, and funding support systems to unlock growth.", accent: "#17306f" },
+              { index: 3, title: "Venture Registration", desc: "Support for legal compliance, governance, and startup structure to make scaling smoother and safer.", accent: "#1f4aa8" },
             ].map((card) => (
               <div key={card.index} className="about-closing-card">
                 <div className="about-closing-card-glow" style={{ background: `radial-gradient(ellipse at top right, ${card.accent}10, transparent 55%)` }} />
@@ -1032,16 +986,19 @@ export default function About() {
 
             {/* FIN marker */}
             <div style={{ minWidth: "320px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1.2rem", margin: "0 3rem" }}>
-              <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(5rem,12vw,9rem)", color: "rgba(255,255,255,0.06)", letterSpacing: "0.12em", lineHeight: 1 }}>FIN.</p>
               <div style={{ width: 80, height: 1, background: "linear-gradient(to right, transparent, var(--green), transparent)" }} />
-              <p style={{ fontSize: "0.58rem", textTransform: "uppercase", letterSpacing: "0.55em", color: "rgba(255,255,255,0.16)" }}>End of story</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── FOOTER LINE ───────────────────────────────────────────────── */}
-      <div style={{ height: 1, background: "linear-gradient(to right, transparent, rgba(100,200,255,0.3), transparent)" }} />
+      <div style={{ background: "rgba(0,0,0,0.98)", padding: "4rem 1.5rem", textAlign: "center" }}>
+        <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2rem,5vw,5rem)", lineHeight: 1.05, color: "rgba(255,255,255,0.65)", margin: 0 }}>
+          Built for founders. Built for Bengaluru. Built for the future.
+        </p>
+      </div>
+      <div style={{ height: 1, background: "linear-gradient(to right, transparent, rgba(31,74,168,0.35), transparent)" }} />
     </div>
   );
 }
