@@ -533,7 +533,7 @@ export default function Home() {
       >
         <div className="w-full px-6 sm:px-10 lg:px-24">
           <div ref={textContainerRef} className="mx-auto max-w-[1100px]">
-            <p className="text-center font-serif text-[clamp(2.1rem,4.5vw,4.5rem)] leading-[1.4] text-[#4a5160]">
+            <p className="text-center font-serif text-[clamp(1.65rem,3.2vw,3.2rem)] leading-[1.4] text-[#4a5160]">
 
               {storyText.split(" ").map((word, index) => (
                 <span key={index} className="word inline-block mr-[0.25em]">

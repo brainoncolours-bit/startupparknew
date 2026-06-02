@@ -43,10 +43,6 @@ const aboutStyles = `
     0% { transform: translateX(-33.33%); }
     100% { transform: translateX(0); }
   }
-  @keyframes about-scan {
-    0% { top: 0; }
-    100% { top: 100%; }
-  }
   @keyframes about-breathe {
     0%, 100% { transform: scale(1); opacity: 0.4; }
     50% { transform: scale(1.1); opacity: 0.8; }
@@ -55,14 +51,6 @@ const aboutStyles = `
     0% { text-shadow: 0 0 30px rgba(100,200,255,0.3); }
     100% { text-shadow: 0 0 50px rgba(100,200,255,0.7), 0 0 80px rgba(100,200,255,0.3); }
   }
-
-  .about-scan-line {
-    position: absolute; left: 0; right: 0; height: 2px;
-    background: linear-gradient(to right, transparent, rgba(100,200,255,0.35), transparent);
-    animation: about-scan 5s linear infinite;
-    pointer-events: none; z-index: 5;
-  }
-
   .about-ticker-wrap {
     width: 100%; overflow: hidden;
     border-top: 1px solid rgba(255,255,255,0.05);
@@ -90,10 +78,6 @@ const aboutStyles = `
   }
 
   /* Hero */
-  .about-hero-grid-line {
-    position: absolute; width: 1px; top: 0; bottom: 0;
-    background: linear-gradient(to bottom, transparent, rgba(100,200,255,0.035) 30%, rgba(100,200,255,0.035) 70%, transparent);
-  }
   .about-badge {
     display: inline-flex; align-items: center; gap: 0.75rem;
     background: var(--glass); border: 1px solid var(--glass-border);
@@ -490,18 +474,6 @@ export default function About() {
         {/* Noise */}
         <div className="about-noise" style={{ position: "absolute", inset: 0, zIndex: 1 }} />
 
-        {/* Grid lines */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 0, opacity: 0.28 }}>
-          {[...Array(14)].map((_, i) => (
-            <div key={i} className="about-hero-grid-line" style={{ left: `${(i + 1) * 6.67}%` }} />
-          ))}
-        </div>
-
-        {/* Scan line */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 2, overflow: "hidden", pointerEvents: "none" }}>
-          <div className="about-scan-line" />
-        </div>
-
         {/* Glows */}
         <div style={{
           position: "absolute", top: "30%", left: "20%",
@@ -602,125 +574,198 @@ export default function About() {
 
       {/* ── ORIGIN SECTION ────────────────────────────────────────────── */}
       <section
-        ref={storyRef}
-        style={{ position: "relative", height: "100vh", overflow: "hidden", background: "#060608" }}
+  ref={storyRef}
+  style={{ position: "relative", height: "100vh", overflow: "hidden", background: "#060608" }}
+>
+  {/* Left fixed label col */}
+  <div
+    style={{
+      position: "absolute",
+      left: 0,
+      top: 0,
+      bottom: 0,
+      width: "clamp(1.5rem,8vw,8rem)",
+      borderRight: "1px solid rgba(255,255,255,0.05)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 10,
+    }}
+  >
+    <span
+      style={{
+        fontFamily: "'Bebas Neue', sans-serif",
+        fontSize: "0.6rem",
+        letterSpacing: "0.55em",
+        textTransform: "uppercase",
+        color: "rgba(255,255,255,0.12)",
+        writingMode: "vertical-rl",
+        transform: "rotate(180deg)",
+      }}
+    >
+      Vision / Mission
+    </span>
+  </div>
+
+  {/* Right fixed year col */}
+  <div
+    style={{
+      position: "absolute",
+      right: 0,
+      top: 0,
+      bottom: 0,
+      width: "clamp(1.5rem,6vw,6rem)",
+      borderLeft: "1px solid rgba(255,255,255,0.05)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 10,
+    }}
+  >
+    <span
+      style={{
+        fontFamily: "'Bebas Neue', sans-serif",
+        fontSize: "0.6rem",
+        letterSpacing: "0.55em",
+        color: "#64c8ff80",
+        writingMode: "vertical-rl",
+      }}
+    >
+      2030
+    </span>
+  </div>
+
+  {/* Panels container */}
+  <div
+    className="about-story-panels"
+    style={{
+      position: "absolute",
+      inset: 0,
+      display: "flex",
+      flexDirection: "column",
+      paddingLeft: "clamp(3rem,10vw,10rem)",
+      paddingRight: "clamp(3rem,8vw,8rem)",
+      justifyContent: "center",
+      gap: 0,
+    }}
+  >
+    {[
+      {
+        line: "Our Vision.",
+        sub: "To make Bengaluru the world’s most founder-friendly city by 2030, creating an ecosystem where 10,000+ startups are built, 100,000 jobs are generated, and Karnataka becomes a global hub for innovation.",
+        accent: false,
+      },
+      {
+        line: "Empower Founders.",
+        sub: "Provide structured incubation, mentorship, and resources to transform raw ideas into scalable ventures.",
+        accent: false,
+      },
+      {
+        line: "Build Global Impact.",
+        sub: "Attract investments, drive job creation, and position Karnataka startups on the world stage through strong networks, collaborations, and partnerships.",
+        accent: true,
+      },
+    ].map((item, i) => (
+      <div
+        key={i}
+        className={`about-story-panel about-story-panel-${i}`}
+        style={{
+          padding: "2.8rem 0",
+          borderBottom: i < 2 ? "1px solid rgba(255,255,255,0.05)" : "none",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "4rem",
+          alignItems: "center",
+          transform: `translateX(${i % 2 === 0 ? "-100%" : "100%"})`,
+          opacity: 0,
+        }}
       >
-        {/* Left fixed label col */}
-        <div style={{
-          position: "absolute", left: 0, top: 0, bottom: 0,
-          width: "clamp(1.5rem,8vw,8rem)",
-          borderRight: "1px solid rgba(255,255,255,0.05)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          zIndex: 10,
-        }}>
-          <span style={{
-            fontFamily: "'Bebas Neue', sans-serif",
-            fontSize: "0.6rem", letterSpacing: "0.55em",
-            textTransform: "uppercase", color: "rgba(255,255,255,0.12)",
-            writingMode: "vertical-rl", transform: "rotate(180deg)",
-          }}>Our Story</span>
+        <div style={{ overflow: "hidden" }}>
+          <h2
+            style={{
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontSize: "clamp(2.2rem,4.5vw,5rem)",
+              lineHeight: 1.05,
+              color: item.accent ? "var(--green)" : "var(--white)",
+              textShadow: item.accent ? "0 0 40px rgba(100,200,255,0.35)" : "none",
+              fontWeight: 400,
+              margin: 0,
+            }}
+          >
+            {item.line}
+          </h2>
         </div>
-
-        {/* Right fixed year col */}
-        <div style={{
-          position: "absolute", right: 0, top: 0, bottom: 0,
-          width: "clamp(1.5rem,6vw,6rem)",
-          borderLeft: "1px solid rgba(255,255,255,0.05)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          zIndex: 10,
-        }}>
-          <span style={{
-            fontFamily: "'Bebas Neue', sans-serif",
-            fontSize: "0.6rem", letterSpacing: "0.55em",
-            color: "#64c8ff80", writingMode: "vertical-rl",
-          }}>2025</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+          <div
+            style={{
+              width: 2,
+              height: "100%",
+              minHeight: 60,
+              background: item.accent ? "var(--green)" : "rgba(255,255,255,0.08)",
+              flexShrink: 0,
+            }}
+          />
+          <p
+            style={{
+              fontSize: "clamp(0.85rem,1.2vw,1.1rem)",
+              color: "rgba(255,255,255,0.35)",
+              lineHeight: 1.8,
+              fontWeight: 300,
+              margin: 0,
+            }}
+          >
+            {item.sub}
+          </p>
         </div>
+      </div>
+    ))}
 
-        {/* Panels container */}
-        <div className="about-story-panels" style={{
-          position: "absolute", inset: 0,
-          display: "flex", flexDirection: "column",
-          paddingLeft: "clamp(3rem,10vw,10rem)",
-          paddingRight: "clamp(3rem,8vw,8rem)",
-          justifyContent: "center", gap: 0,
-        }}>
-          {[
-            { line: "Bridging the gap.", sub: "Connecting highly ambitious startup concepts with scalable, market-ready resource pathways.", accent: false },
-            { line: "An absolute ecosystem.", sub: "Moving far past regular workspaces to integrate architecture, engineering, and tactical growth engines.", accent: false },
-            { line: "From idea to IPO.", sub: "We stand as your multi-stage collaborative partner in building the architecture of the future.", accent: true },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className={`about-story-panel about-story-panel-${i}`}
-              style={{
-                padding: "2.8rem 0",
-                borderBottom: i < 2 ? "1px solid rgba(255,255,255,0.05)" : "none",
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "4rem",
-                alignItems: "center",
-                transform: `translateX(${i % 2 === 0 ? "-100%" : "100%"})`,
-                opacity: 0,
-              }}
-            >
-              <div style={{ overflow: "hidden" }}>
-                <h2 style={{
-                  fontFamily: "Georgia, 'Times New Roman', serif",
-                  fontSize: "clamp(2.2rem,4.5vw,5rem)",
-                  lineHeight: 1.05,
-                  color: item.accent ? "var(--green)" : "var(--white)",
-                  textShadow: item.accent ? "0 0 40px rgba(100,200,255,0.35)" : "none",
-                  fontWeight: 400,
-                  margin: 0,
-                }}>{item.line}</h2>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
-                <div style={{ width: 2, height: "100%", minHeight: 60, background: item.accent ? "var(--green)" : "rgba(255,255,255,0.08)", flexShrink: 0 }} />
-                <p style={{
-                  fontSize: "clamp(0.85rem,1.2vw,1.1rem)",
-                  color: "rgba(255,255,255,0.35)",
-                  lineHeight: 1.8, fontWeight: 300,
-                  margin: 0,
-                }}>{item.sub}</p>
-              </div>
-            </div>
-          ))}
-
-          {/* Counter row */}
-          <div className="about-story-counters" style={{
-            display: "flex", gap: "3rem", marginTop: "3.5rem",
-            paddingTop: "2.5rem",
-            borderTop: "1px solid rgba(255,255,255,0.06)",
-            opacity: 0, transform: "translateY(30px)",
-          }}>
-            {[
-              { val: "200+", label: "startups supported" },
-              { val: "₹600 Cr+", label: "funding accessed" },
-              { val: "10,000+", label: "jobs created" },
-            ].map((c, i) => (
-              <div key={i} style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-                <span style={{
-                  fontFamily: "'Bebas Neue', sans-serif",
-                  fontSize: "clamp(2rem,4vw,4rem)", lineHeight: 1,
-                  color: "var(--green)",
-                  textShadow: "0 0 30px rgba(100,200,255,0.4)",
-                }}>{c.val}</span>
-                <span style={{
-                  fontSize: "0.58rem", textTransform: "uppercase",
-                  letterSpacing: "0.4em", color: "rgba(255,255,255,0.22)", fontWeight: 600,
-                }}>{c.label}</span>
-              </div>
-            ))}
-          </div>
+    {/* Counter row */}
+    <div
+      className="about-story-counters"
+      style={{
+        display: "flex",
+        gap: "3rem",
+        marginTop: "3.5rem",
+        paddingTop: "2.5rem",
+        borderTop: "1px solid rgba(255,255,255,0.06)",
+        opacity: 0,
+        transform: "translateY(30px)",
+      }}
+    >
+      {[
+        { val: "10,000+", label: "startups built" },
+        { val: "₹50,000 Cr+", label: "funding facilitated" },
+        { val: "100,000+", label: "jobs created" },
+      ].map((c, i) => (
+        <div key={i} style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+          <span
+            style={{
+              fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: "clamp(2rem,4vw,4rem)",
+              lineHeight: 1,
+              color: "var(--green)",
+              textShadow: "0 0 30px rgba(100,200,255,0.4)",
+            }}
+          >
+            {c.val}
+          </span>
+          <span
+            style={{
+              fontSize: "0.58rem",
+              textTransform: "uppercase",
+              letterSpacing: "0.4em",
+              color: "rgba(255,255,255,0.22)",
+              fontWeight: 600,
+            }}
+          >
+            {c.label}
+          </span>
         </div>
-
-        {/* Horizontal scan line */}
-        <div style={{
-          position: "absolute", left: 0, right: 0, height: 1,
-          background: "linear-gradient(to right, transparent, rgba(100,200,255,0.25), transparent)",
-          top: "50%", pointerEvents: "none", zIndex: 5,
-        }} />
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* ── MANIFESTO PIN (Mission & Vision) ─────────────────────────── */}
       <section
@@ -1000,4 +1045,3 @@ export default function About() {
     </div>
   );
 }
-
