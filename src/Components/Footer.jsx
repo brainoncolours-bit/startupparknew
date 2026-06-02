@@ -68,6 +68,8 @@ export default function HyperAnimatedFooter() {
         padding: '5rem 0 2.5rem',
         fontFamily: "'Syne', 'DM Sans', sans-serif",
         position: 'relative',
+        zIndex: 30,
+        isolation: 'isolate',
         overflow: 'hidden'
       }}
     >

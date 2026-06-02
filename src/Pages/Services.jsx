@@ -404,6 +404,8 @@ export function PhonePortal() {
   const topTextRef = useRef(null);
   const bottomTextRef = useRef(null);
   const centerGlowRef = useRef(null);
+  const canvasWrapRef = useRef(null);
+  const finalBackdropRef = useRef(null);
   const whyWrapRef = useRef(null);
   const chipsRef = useRef(null);
 
@@ -445,6 +447,12 @@ export function PhonePortal() {
       tl.fromTo(target, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.18, ease: "none" }, 0.3);
       tl.to(target, { opacity: 0, y: -12, duration: 0.12, ease: "none" }, 0.78);
     });
+    withTarget(canvasWrapRef.current, (target) => {
+      tl.to(target, { opacity: 0, scale: 1.04, duration: 0.16, ease: "none" }, 0.76);
+    });
+    withTarget(finalBackdropRef.current, (target) => {
+      tl.fromTo(target, { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "none" }, 0.78);
+    });
     withTarget(whyWrapRef.current, (target) => {
       tl.fromTo(target, { opacity: 0, y: 24, scale: 0.98 }, { opacity: 1, y: 0, scale: 1, duration: 0.22, ease: "none" }, 0.82);
     });
@@ -461,6 +469,8 @@ export function PhonePortal() {
       id="portal"
       style={{
         height: "100vh",
+        width: "100vw",
+        marginLeft: "calc(50% - 50vw)",
         position: "relative",
         overflow: "hidden",
         background: "#070708",
@@ -473,7 +483,7 @@ export function PhonePortal() {
           zIndex: 1,
           pointerEvents: "none",
           background:
-            "radial-gradient(circle at 50% 52%, rgba(100,200,255,0.08) 0%, transparent 70%), linear-gradient(to bottom, rgba(255,255,255,0.02), transparent 30%, transparent 70%, rgba(0,0,0,0.25))",
+            "radial-gradient(circle at 50% 52%, rgba(31,74,168,0.12) 0%, transparent 70%), linear-gradient(to bottom, rgba(255,255,255,0.02), transparent 30%, transparent 70%, rgba(0,0,0,0.25))",
         }}
       />
 
@@ -527,16 +537,19 @@ export function PhonePortal() {
           pointerEvents: "none",
           opacity: 0,
           background:
-            "radial-gradient(circle at 50% 50%, rgba(100,200,255,0.18) 0%, rgba(100,200,255,0.07) 18%, transparent 42%)",
+            "radial-gradient(circle at 50% 50%, rgba(31,74,168,0.26) 0%, rgba(31,74,168,0.11) 18%, transparent 42%)",
           filter: "blur(18px)",
         }}
       />
 
       <div
+        ref={canvasWrapRef}
         style={{
           position: "absolute",
           inset: 0,
           zIndex: 4,
+          transformOrigin: "center center",
+          willChange: "opacity,transform",
         }}
       >
         <Canvas
@@ -552,7 +565,7 @@ export function PhonePortal() {
         >
           <ambientLight intensity={0.85} />
           <directionalLight position={[4, 8, 6]} intensity={2.2} color="#ffffff" />
-          <directionalLight position={[-4, 2, 4]} intensity={1} color="#64c8ff" />
+          <directionalLight position={[-4, 2, 4]} intensity={1} color="#1f4aa8" />
           <pointLight position={[2, -2, 3]} intensity={1.3} color="#ffffff" />
           <spotLight
             position={[0, 10, 4]}
@@ -569,11 +582,25 @@ export function PhonePortal() {
       </div>
 
       <div
-        ref={whyWrapRef}
+        ref={finalBackdropRef}
         style={{
           position: "absolute",
           inset: 0,
           zIndex: 5,
+          pointerEvents: "none",
+          opacity: 0,
+          background:
+            "radial-gradient(circle at 50% 46%, rgba(31,74,168,0.16) 0%, rgba(7,7,8,0.9) 38%, #070708 76%), linear-gradient(180deg, #070708 0%, #050506 100%)",
+          willChange: "opacity",
+        }}
+      />
+
+      <div
+        ref={whyWrapRef}
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 6,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -590,7 +617,7 @@ export function PhonePortal() {
               lineHeight: 0.95,
               letterSpacing: "0.02em",
               color: "#f3f3f3",
-              textShadow: "0 0 36px rgba(100,200,255,0.18)",
+              textShadow: "0 0 36px rgba(31,74,168,0.28)",
             }}
           >
             WHY US
@@ -614,7 +641,7 @@ export function PhonePortal() {
         style={{
           position: "absolute",
           inset: 0,
-          zIndex: 6,
+          zIndex: 5,
           pointerEvents: "none",
           background:
             "linear-gradient(to bottom, rgba(7,7,8,0.12) 0%, transparent 18%, transparent 78%, rgba(7,7,8,0.62) 100%)",
@@ -805,8 +832,8 @@ export function Hero() {
               textShadow: "0 4px 38px rgba(0,0,0,0.65)",
             }}
           >
-            Ecosystems, for the <br />
-            ones who build.
+            Built for founders. <br />
+            Powered by a full ecosystem.
           </h1>
           <p
             ref={titleRevealSubRef}
@@ -821,7 +848,7 @@ export function Hero() {
               maxWidth: 860,
             }}
           >
-            Startup Park is the world’s first comprehensive engine turning raw ambitious ideas into market-ready businesses.
+            Startup Park is India's first startup park in Bengaluru, designed to help founders move from ideation to scale with incubation, mentorship, investor access, and specialized spaces under one roof.
           </p>
         </div>
       </div>
@@ -834,7 +861,7 @@ export function Hero() {
           height: 600,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle, rgba(100,200,255,0.09) 0%, transparent 70%)",
+            "radial-gradient(circle, rgba(31,74,168,0.14) 0%, transparent 70%)",
           transform: "translate(-50%,-50%)",
           willChange: "transform",
         }}
@@ -906,8 +933,8 @@ export function Hero() {
             textShadow: "0 4px 38px rgba(0,0,0,0.65)",
           }}
         >
-          Ecosystems, for the <br />
-          ones who build.
+          Built for founders. <br />
+          Powered by a full ecosystem.
         </h1>
         <p
           ref={subRef}
@@ -922,7 +949,7 @@ export function Hero() {
             maxWidth: 860,
           }}
         >
-          Startup Park is the world’s first comprehensive engine turning raw ambitious ideas into market-ready businesses.
+          Startup Park is India's first startup park in Bengaluru, designed to help founders move from ideation to scale with incubation, mentorship, investor access, and specialized spaces under one roof.
         </p>
         <div
           className="hidden md:block mt-10"
@@ -981,22 +1008,22 @@ export function ServicesHScroll() {
       num: "01",
       tag: "01 / 03 — Infrastructure",
       title: ["Co-working", "Zones"],
-      desc: "High-productivity premium hot desks, dedicated private cabins, and advanced prototyping innovation hardware labs.",
-      accent: "rgba(100,200,255,0.05)",
+      desc: "Flexible desks, private cabins, incubator space, networking areas, and event-ready environments built to support daily startup execution.",
+      accent: "rgba(31,74,168,0.08)",
     },
     {
       num: "02",
       tag: "02 / 03 — Capital",
       title: ["Venture", "Studio"],
-      desc: "Direct integration tracks into institutional funds, pitch floor design setups, and multi-exit seed syndicates.",
-      accent: "rgba(100,200,255,0.04)",
+      desc: "Investor studio, pitch studio, mentors pool, startup school, and direct access to VCs and angels to help founders get investment-ready.",
+      accent: "rgba(31,74,168,0.07)",
     },
     {
       num: "03",
       tag: "03 / 03 — Governance",
       title: ["Legal", "Incubator"],
       desc: "Full in-house strategic backing covering cap-table structuring, IP copyright support, and fluid regulatory filing help.",
-      accent: "rgba(255,100,150,0.04)",
+      accent: "rgba(31,74,168,0.06)",
     },
   ];
   useEffect(() => {
@@ -1063,7 +1090,7 @@ export function ServicesHScroll() {
               style={{
                 fontFamily: "'Bebas Neue',sans-serif",
                 fontSize: "clamp(120px,20vw,240px)",
-                color: "rgba(100,200,255,0.06)",
+                color: "rgba(31,74,168,0.1)",
                 position: "absolute",
                 right: "6vw",
                 top: "50%",
@@ -1080,7 +1107,7 @@ export function ServicesHScroll() {
                 style={{
                   fontSize: 11,
                   letterSpacing: "0.3em",
-                  color: "var(--green,#64c8ff)",
+                  color: "var(--green,#1f4aa8)",
                   textTransform: "uppercase",
                   marginBottom: "1.5rem",
                   display: "block",
@@ -1089,7 +1116,7 @@ export function ServicesHScroll() {
               >
                 {s.tag}
               </span>
-              <div style={{ width: 80, height: 1, background: "var(--green,#64c8ff)", marginBottom: "3rem" }} />
+              <div style={{ width: 80, height: 1, background: "var(--green,#1f4aa8)", marginBottom: "3rem" }} />
               <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "clamp(52px,7vw,108px)", lineHeight: 0.95, marginBottom: "2rem", color: "#fff" }}>
                 {s.title[0]}
                 <br />
@@ -1106,7 +1133,7 @@ export function ServicesHScroll() {
                   style={{
                     width: di === i ? 28 : 8,
                     height: 2,
-                    background: di === i ? "var(--green,#64c8ff)" : "rgba(255,255,255,0.2)",
+                    background: di === i ? "var(--green,#1f4aa8)" : "rgba(255,255,255,0.2)",
                     borderRadius: 2,
                   }}
                 />
@@ -1121,24 +1148,24 @@ export function ServicesHScroll() {
 
 // ─── STYLES ──────────────────────────────────────────────────────────────────
 export const styles = `
-  :root { --black:#080808; --off-black:#0d0d0d; --panel:#111; --green:#64c8ff; --green-dim:#3a8ecb; --green-glow:rgba(100,200,255,0.12); --green-glow-hard:rgba(100,200,255,0.25); --white:#f0f0f0; --muted:#444; --glass:rgba(255,255,255,0.04); --glass-border:rgba(255,255,255,0.07); }
+  :root { --black:#080808; --off-black:#0d0d0d; --panel:#111; --green:#1f4aa8; --green-dim:#17306f; --green-glow:rgba(31,74,168,0.16); --green-glow-hard:rgba(31,74,168,0.32); --white:#f0f0f0; --muted:#444; --glass:rgba(255,255,255,0.04); --glass-border:rgba(255,255,255,0.07); }
   .services-page,.services-page *,.services-page *::before,.services-page *::after{box-sizing:border-box}
   .services-page{scroll-behavior:auto;background:var(--black);color:var(--white);font-family:"DM Sans",sans-serif;overflow-x:hidden;cursor:auto;min-height:100vh}
 
   #statement{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 8vw;position:relative;overflow:hidden}
-  .statement-bg{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.62) 0%,rgba(0,0,0,.9) 100%),radial-gradient(ellipse 80% 60% at 50% 50%,rgba(100,200,255,.035) 0%,transparent 72%),url("/bg.jpg");background-size:cover;background-position:center;background-color:#050505;transform-origin:center;will-change:transform,opacity;pointer-events:none}
+  .statement-bg{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.62) 0%,rgba(0,0,0,.9) 100%),radial-gradient(ellipse 80% 60% at 50% 50%,rgba(31,74,168,.055) 0%,transparent 72%),url("/bg.jpg");background-size:cover;background-position:center;background-color:#050505;transform-origin:center;will-change:transform,opacity;pointer-events:none}
   .statement-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-  .statement-particle{position:absolute;width:3px;height:3px;border-radius:9999px;background:rgba(88,227,255,.82);box-shadow:0 0 6px rgba(88,227,255,.35),0 0 10px rgba(100,200,255,.1);opacity:.28;animation:statementParticleFloat var(--dur,18s) linear infinite;animation-delay:var(--delay,0s)}
-  .statement-particle:nth-child(odd){background:rgba(100,200,255,.7);box-shadow:0 0 7px rgba(100,200,255,.3),0 0 12px rgba(88,227,255,.1)}
+  .statement-particle{position:absolute;width:3px;height:3px;border-radius:9999px;background:rgba(31,74,168,.82);box-shadow:0 0 6px rgba(31,74,168,.4),0 0 10px rgba(31,74,168,.16);opacity:.28;animation:statementParticleFloat var(--dur,18s) linear infinite;animation-delay:var(--delay,0s)}
+  .statement-particle:nth-child(odd){background:rgba(31,74,168,.72);box-shadow:0 0 7px rgba(31,74,168,.36),0 0 12px rgba(31,74,168,.16)}
   .statement-particle:nth-child(1){left:12%;top:24%;--dur:20s;--delay:-2s}
   .statement-particle:nth-child(2){left:28%;top:66%;--dur:22s;--delay:-8s}
   .statement-particle:nth-child(3){left:58%;top:18%;--dur:19s;--delay:-5s}
   .statement-particle:nth-child(4){left:80%;top:58%;--dur:24s;--delay:-10s}
   @keyframes statementParticleFloat{0%{transform:translate3d(0,6px,0) scale(.9);opacity:.08}50%{transform:translate3d(8px,-14px,0) scale(1);opacity:.42}100%{transform:translate3d(-8px,-28px,0) scale(.92);opacity:.1}}
-  @keyframes glow{0%{text-shadow:0 0 30px rgba(100,200,255,0.3)}100%{text-shadow:0 0 40px rgba(100,200,255,0.6),0 0 60px rgba(100,200,255,0.2)}}
+  @keyframes glow{0%{text-shadow:0 0 30px rgba(31,74,168,0.35)}100%{text-shadow:0 0 40px rgba(31,74,168,0.62),0 0 60px rgba(31,74,168,0.24)}}
   .statement-line{font-family:"Bebas Neue",sans-serif;font-size:clamp(48px,7vw,110px);line-height:1;letter-spacing:.01em;opacity:0;transform:translateY(18px);position:relative;z-index:1;will-change:transform,opacity}
   .statement-line:nth-child(2){color:var(--muted);padding-left:8vw}
-  .statement-line:nth-child(3){color:var(--green);text-shadow:0 0 24px rgba(100,200,255,.28)}
+  .statement-line:nth-child(3){color:var(--green);text-shadow:0 0 24px rgba(31,74,168,.34)}
   .statement-line+.statement-line{margin-top:.6rem}
 
   #process{padding:10vh 8vw;position:relative;overflow:hidden}
@@ -1149,8 +1176,8 @@ export const styles = `
   .process-steps{display:flex;gap:0;justify-content:space-between;position:relative}
   .process-step{flex:1;padding-top:60px;opacity:0;transform:translateY(20px)}
   .step-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--muted);background:var(--black);position:absolute;top:21px;left:0;transform:translateX(-50%);transition:border-color .4s,box-shadow .4s}
-  .step-dot.active{border-color:var(--green);box-shadow:0 0 16px rgba(100,200,255,.5)}
-  .step-num{font-family:"Bebas Neue",sans-serif;font-size:48px;color:rgba(100,200,255,.15);line-height:1;margin-bottom:.5rem}
+  .step-dot.active{border-color:var(--green);box-shadow:0 0 16px rgba(31,74,168,.55)}
+  .step-num{font-family:"Bebas Neue",sans-serif;font-size:48px;color:rgba(31,74,168,.2);line-height:1;margin-bottom:.5rem}
   .step-title{font-family:"Syne",sans-serif;font-size:clamp(16px,1.5vw,20px);font-weight:800;margin-bottom:.5rem}
   .step-desc{font-size:13px;color:var(--muted);font-weight:300;line-height:1.6;max-width:180px}
 
@@ -1159,9 +1186,9 @@ export const styles = `
   .features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5px}
   .feature-card{background:var(--glass);border:1px solid var(--glass-border);padding:clamp(2rem,3vw,3.5rem);position:relative;overflow:hidden;opacity:0;transform:translateY(30px);transition:border-color .4s}
   .feature-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent);opacity:0;transition:opacity .4s}
-  .feature-card:hover{border-color:rgba(100,200,255,.15)}
+  .feature-card:hover{border-color:rgba(31,74,168,.22)}
   .feature-card:hover::before{opacity:1}
-  .feature-card-glow{position:absolute;width:200px;height:200px;background:radial-gradient(circle,rgba(100,200,255,.06) 0%,transparent 70%);border-radius:50%;pointer-events:none;opacity:0;transform:translate(-50%,-50%);transition:opacity .3s}
+  .feature-card-glow{position:absolute;width:200px;height:200px;background:radial-gradient(circle,rgba(31,74,168,.1) 0%,transparent 70%);border-radius:50%;pointer-events:none;opacity:0;transform:translate(-50%,-50%);transition:opacity .3s}
   .feature-card:hover .feature-card-glow{opacity:1}
   .feature-icon{width:40px;height:40px;border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;margin-bottom:2rem;font-size:16px}
   .feature-title{font-family:"Syne",sans-serif;font-size:clamp(18px,1.8vw,24px);font-weight:800;margin-bottom:.8rem}
@@ -1178,11 +1205,11 @@ export const styles = `
   .hscroll-bar{width:30px;height:2px;background:var(--green);margin-top:1.5rem}
 
   #cta{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}
-  .cta-glow{position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(100,200,255,.06) 0%,transparent 60%);pointer-events:none}
+  .cta-glow{position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(31,74,168,.1) 0%,transparent 60%);pointer-events:none}
   .cta-heading{font-family:"Bebas Neue",sans-serif;font-size:clamp(52px,8vw,120px);line-height:.95;max-width:800px;opacity:0;transform:translateY(40px);position:relative;z-index:1}
   .cta-heading em{color:var(--green);font-style:normal}
   .cta-btn{margin-top:4rem;display:inline-flex;align-items:center;gap:1rem;background:var(--green);color:var(--black);font-family:"Syne",sans-serif;font-size:13px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;padding:1.2rem 2.8rem;border:none;cursor:pointer;position:relative;z-index:1;opacity:0;transform:translateY(20px);transition:background .3s,box-shadow .3s;text-decoration:none}
-  .cta-btn:hover{background:#c8ff60;box-shadow:0 0 40px rgba(100,200,255,.3)}
+  .cta-btn:hover{background:#17306f;box-shadow:0 0 40px rgba(31,74,168,.36)}
   .cta-btn-arrow{font-size:18px;transition:transform .3s}
   .cta-btn:hover .cta-btn-arrow{transform:translateX(5px)}
   .cta-sub{margin-top:2rem;font-size:12px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;opacity:0;position:relative;z-index:1}
@@ -1411,7 +1438,7 @@ function Services() {
                 id: "dot2",
                 num: "02",
                 title: "Accelerate",
-                desc: "Milestone-driven spatial support and immediate product sprints.",
+                desc: "Milestone-driven incubation, mentorship, and product sprint support.",
               },
               {
                 id: "dot3",
@@ -1423,7 +1450,7 @@ function Services() {
                 id: "dot4",
                 num: "04",
                 title: "Succeed",
-                desc: "Complete go-to-market loops from initial incubation to structured IPO.",
+                desc: "Complete go-to-market loops from initial incubation to structured scale.",
               },
             ].map((s) => (
               <div key={s.id} className="process-step" style={{ position: "relative" }}>
@@ -1497,7 +1524,7 @@ function Services() {
               {
                 title: "Idea to IPO",
                 subtitle: "Built For Tomorrow",
-                description: "A comprehensive developer-focused foundation that expands with your model."
+                description: "A comprehensive ecosystem foundation that expands with your venture."
               },
             ].map((slide, index) => (
               <div className="hscroll-item" key={index} style={{
@@ -1511,7 +1538,7 @@ function Services() {
                 <div style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'linear-gradient(135deg, rgba(100,200,255,0.1) 0%, rgba(7,7,8,0.8) 50%, rgba(100,200,255,0.05) 100%)',
+                  background: 'linear-gradient(135deg, rgba(31,74,168,0.15) 0%, rgba(7,7,8,0.8) 50%, rgba(31,74,168,0.08) 100%)',
                   backdropFilter: 'blur(1px)'
                 }} />
                 <div style={{
@@ -1533,8 +1560,8 @@ function Services() {
                     letterSpacing: '0.02em',
                     lineHeight: 0.9,
                     marginBottom: '0.5rem',
-                    textShadow: '0 0 30px rgba(100,200,255,0.3)',
-                    background: 'linear-gradient(135deg, #64c8ff 0%, #ffffff 50%, #64c8ff 100%)',
+                    textShadow: '0 0 30px rgba(31,74,168,0.42)',
+                    background: 'linear-gradient(135deg, #1f4aa8 0%, #ffffff 50%, #1f4aa8 100%)',
                     backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
@@ -1548,8 +1575,8 @@ function Services() {
                     fontWeight: 400,
                     letterSpacing: '0.1em',
                     marginBottom: '1.5rem',
-                    color: '#64c8ff',
-                    textShadow: "0 0 20px rgba(100,200,255,0.5)",
+                    color: '#1f4aa8',
+                    textShadow: "0 0 20px rgba(31,74,168,0.58)",
                     opacity: 0.9
                   }}>
                     {slide.subtitle}

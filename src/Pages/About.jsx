@@ -309,11 +309,11 @@ export default function About() {
   // Updated Team Data to mirror Startup Park's internal network / operators
   const team = [
     { name: "Shafi Shoukath", role: "Founder, Startup Park", color: "#1f4aa8" },
-    { name: "Mazin Arbaz", role: "Creative Lead", color: "#2f5fc4" },
-    { name: "Kiran", role: "Head of Technology", color: "#17306f" },
+    { name: "Mazin Arbaz", role: "Creative Lead", color: "#1f4aa8" },
+    { name: "Kiran", role: "Head of Technology", color: "#1f4aa8" },
     { name: "Sourav", role: "Product Strategy", color: "#1f4aa8" },
-    { name: "Hashir", role: "Startup Activation", color: "#2f5fc4" },
-    { name: "Nawaf", role: "Venture Growth", color: "#17306f" },
+    { name: "Hashir", role: "Startup Activation", color: "#1f4aa8" },
+    { name: "Nawaf", role: "Venture Growth", color: "#1f4aa8" },
   ];
 
   // Updated Mission/Vision text tokens for on-scroll reveal
@@ -762,7 +762,7 @@ export default function About() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem 1.5rem", alignItems: "baseline" }}>
             {manifestoText.map((word, i) => {
               const cleanWord = word.replace(/[.,]/g, "").toLowerCase();
-              const highlight = { "power": "#1f4aa8", "builder-centric": "#1f4aa8", "ventures": "#2f5fc4", "world-class": "#17306f" };
+              const highlight = { "power": "#1f4aa8", "builder-centric": "#1f4aa8", "ventures": "#1f4aa8", "world-class": "#1f4aa8" };
               const big = ["power", "builder-centric", "transforms", "scalable", "world-class"].includes(cleanWord);
               return (
                 <span key={i} className="about-manifesto-word"
@@ -795,8 +795,8 @@ export default function About() {
         <div style={{ maxWidth: "72rem" }}>
           {[
             { num: "01", title: "Premium infrastructure.", desc: "From high-productivity workspaces and private cabins to prototyping labs and demo stages, everything is designed to support serious startup growth.", accent: "#1f4aa8" },
-            { num: "02", title: "Structured acceleration.", desc: "Milestone-driven incubation tracks and expert-led mentorship help founders move from idea to execution with speed and clarity.", accent: "#2f5fc4" },
-            { num: "03", title: "Strategic capital pathways.", desc: "We connect startups with investors, seed networks, and funding opportunities to strengthen their growth journey.", accent: "#17306f" },
+            { num: "02", title: "Structured acceleration.", desc: "Milestone-driven incubation tracks and expert-led mentorship help founders move from idea to execution with speed and clarity.", accent: "#1f4aa8" },
+            { num: "03", title: "Strategic capital pathways.", desc: "We connect startups with investors, seed networks, and funding opportunities to strengthen their growth journey.", accent: "#1f4aa8" },
             { num: "04", title: "Corporate governance help.", desc: "Founders get support with legal structure, IP protection, compliance, and fundraising readiness.", accent: "#1f4aa8" },
           ].map((v, i) => (
             <div key={i} className="about-value-row">
@@ -814,7 +814,7 @@ export default function About() {
         style={{ position: "relative", background: "rgba(7,7,14,0.97)", padding: "10vh 0 12vh", overflow: "hidden" }}
       >
         {/* Ambient blobs */}
-        {["#1f4aa8", "#2f5fc4", "#17306f"].map((c, i) => (
+        {["#1f4aa8", "#1f4aa8", "#1f4aa8"].map((c, i) => (
           <div key={i} style={{
             position: "absolute", width: 200, height: 200, borderRadius: "50%",
             background: `radial-gradient(circle, ${c}25, transparent 70%)`,
@@ -923,7 +923,7 @@ export default function About() {
           <Canvas dpr={[1, 1]} gl={{ antialias: true, alpha: true }} camera={{ position: [0, 0, 7], fov: 55 }}>
             <ambientLight intensity={0.1} />
             <pointLight position={[2, 2, 2]} color="#1f4aa8" intensity={2} />
-            <pointLight position={[-2, -2, 2]} color="#2f5fc4" intensity={1.5} />
+            <pointLight position={[-2, -2, 2]} color="#1f4aa8" intensity={1.5} />
             <Suspense fallback={null}>
               <Float speed={1.1} rotationIntensity={0.35} floatIntensity={0.5}>
                 <AboutIco />
@@ -965,8 +965,8 @@ export default function About() {
           <div ref={hTrackRef} style={{ display: "flex", flexWrap: "nowrap", paddingLeft: "clamp(1.5rem,8vw,8rem)", willChange: "transform" }}>
             {[
               { index: 0, title: "Co-working Frameworks", desc: "Premium zones, private desks, and tech-ready meeting spaces designed to support startup productivity and scale.", accent: "#1f4aa8" },
-              { index: 1, title: "Structured Acceleration", desc: "Focused learning paths, execution sprints, and mentorship loops that help founders build with clarity and speed.", accent: "#2f5fc4" },
-              { index: 2, title: "Funding Ecosystems", desc: "Access to venture capital networks, investor presentations, and funding support systems to unlock growth.", accent: "#17306f" },
+              { index: 1, title: "Structured Acceleration", desc: "Focused learning paths, execution sprints, and mentorship loops that help founders build with clarity and speed.", accent: "#1f4aa8" },
+              { index: 2, title: "Funding Ecosystems", desc: "Access to venture capital networks, investor presentations, and funding support systems to unlock growth.", accent: "#1f4aa8" },
               { index: 3, title: "Venture Registration", desc: "Support for legal compliance, governance, and startup structure to make scaling smoother and safer.", accent: "#1f4aa8" },
             ].map((card) => (
               <div key={card.index} className="about-closing-card">

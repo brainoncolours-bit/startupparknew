@@ -134,20 +134,22 @@ export default function Contact() {
   }, []);
 
   return (
-    <main ref={globalContainerRef} className="w-full bg-black text-white selection:bg-white selection:text-black">
+    <main ref={globalContainerRef} className="relative w-full overflow-hidden bg-black text-white selection:bg-white selection:text-black">
       
       {/* PERSISTENT 3D CANVAS TRACKING SYSTEM CONTAINER */}
-      <div ref={canvasStickyRef} className="pointer-events-none fixed inset-0 z-10 h-screen w-full">
-        <Canvas dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
-          <PerspectiveCamera makeDefault position={[0, 0, 15]} fov={38} />
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} intensity={1.5} />
-          <directionalLight position={[-10, 8, 5]} intensity={1} />
-          <Environment preset="studio" />
-          <Suspense fallback={null}>
-            <ContactMeshCore scrollTriggerRef={globalContainerRef} meshGroupRef={meshGroupRef} />
-          </Suspense>
-        </Canvas>
+      <div ref={canvasStickyRef} className="pointer-events-none absolute inset-0 z-10 w-full overflow-hidden">
+        <div className="sticky top-0 h-screen w-full">
+          <Canvas dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
+            <PerspectiveCamera makeDefault position={[0, 0, 15]} fov={38} />
+            <ambientLight intensity={0.5} />
+            <pointLight position={[10, 10, 10]} intensity={1.5} />
+            <directionalLight position={[-10, 8, 5]} intensity={1} />
+            <Environment preset="studio" />
+            <Suspense fallback={null}>
+              <ContactMeshCore scrollTriggerRef={globalContainerRef} meshGroupRef={meshGroupRef} />
+            </Suspense>
+          </Canvas>
+        </div>
       </div>
 
       {/* SECTION 1: HERO & GENERAL ENQUIRIES */}
