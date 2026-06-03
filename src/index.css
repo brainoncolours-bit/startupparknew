@@ -27,7 +27,7 @@ body {
   height: 110%;
   top: -5%;
   left: -5%;
-  background-image: url('/src/assets/hero.jpeg');
+  background-image: url('./assets/hero.jpeg');
   background-size: cover;
   background-position: center;
   filter: brightness(0.55) contrast(1.1);
