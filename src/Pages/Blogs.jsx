@@ -103,9 +103,7 @@ export default function Blogs() {
           <h1 className="font-serif text-[clamp(3rem,6vw,5.5rem)] font-bold leading-[0.95] uppercase tracking-[-0.05em]">
             Visual Gallery
           </h1>
-          <p className="mt-6 text-white/70 max-w-2xl mx-auto text-base sm:text-lg leading-8">
-            Explore six visual categories with fast-loading local assets. Each section shows four images in a responsive grid.
-          </p>
+          
         </div>
 
         <div className="space-y-14">
