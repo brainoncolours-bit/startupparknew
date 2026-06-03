@@ -6,6 +6,9 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Float, PresentationControls } from "@react-three/drei";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
+import structuredAccelerationImg from "../assets/aboutimgs/Structured Acceleration.png";
+import fundingEcosystemsImg from "../assets/aboutimgs/Funding Ecosystems.png";
+import ventureRegistrationImg from "../assets/aboutimgs/Venture Registration.jpeg";
 
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true });
@@ -178,8 +181,43 @@ const aboutStyles = `
     display: flex; flex-direction: column; justify-content: space-between;
     position: relative; overflow: hidden; cursor: pointer;
   }
+  .about-closing-card-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.46;
+    filter: saturate(0.82) contrast(1.08);
+    transform: scale(1.02);
+    transition: transform 0.85s ease, opacity 0.85s ease, filter 0.85s ease;
+  }
+  .about-closing-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.44) 0%, rgba(0,0,0,0.18) 38%, rgba(0,0,0,0.88) 100%),
+      radial-gradient(ellipse at top left, rgba(31,74,168,0.24), transparent 58%),
+      linear-gradient(90deg, rgba(0,0,0,0.7), rgba(0,0,0,0.2));
+    pointer-events: none;
+  }
+  .about-closing-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(0,0,0,0) 48%);
+    pointer-events: none;
+  }
+  .about-closing-card:hover .about-closing-card-image {
+    opacity: 0.62;
+    filter: saturate(1) contrast(1.14);
+    transform: scale(1.08);
+  }
   .about-closing-card-glow {
-    position: absolute; inset: 0;
+    position: absolute; inset: 0; z-index: 3;
     opacity: 0; pointer-events: none;
     transition: opacity 0.6s;
   }
@@ -964,23 +1002,24 @@ export default function About() {
         <div style={{ overflow: "hidden" }}>
           <div ref={hTrackRef} style={{ display: "flex", flexWrap: "nowrap", paddingLeft: "clamp(1.5rem,8vw,8rem)", willChange: "transform" }}>
             {[
-              { index: 0, title: "Co-working Frameworks", desc: "Premium zones, private desks, and tech-ready meeting spaces designed to support startup productivity and scale.", accent: "#1f4aa8" },
-              { index: 1, title: "Structured Acceleration", desc: "Focused learning paths, execution sprints, and mentorship loops that help founders build with clarity and speed.", accent: "#1f4aa8" },
-              { index: 2, title: "Funding Ecosystems", desc: "Access to venture capital networks, investor presentations, and funding support systems to unlock growth.", accent: "#1f4aa8" },
-              { index: 3, title: "Venture Registration", desc: "Support for legal compliance, governance, and startup structure to make scaling smoother and safer.", accent: "#1f4aa8" },
+              { index: 0, title: "Co-working Frameworks", desc: "Premium zones, private desks, and tech-ready meeting spaces designed to support startup productivity and scale.", accent: "#1f4aa8", image: "/gallery1.png", imagePosition: "center" },
+              { index: 1, title: "Structured Acceleration", desc: "Focused learning paths, execution sprints, and mentorship loops that help founders build with clarity and speed.", accent: "#1f4aa8", image: structuredAccelerationImg, imagePosition: "center" },
+              { index: 2, title: "Funding Ecosystems", desc: "Access to venture capital networks, investor presentations, and funding support systems to unlock growth.", accent: "#1f4aa8", image: fundingEcosystemsImg, imagePosition: "center" },
+              { index: 3, title: "Venture Registration", desc: "Support for legal compliance, governance, and startup structure to make scaling smoother and safer.", accent: "#1f4aa8", image: ventureRegistrationImg, imagePosition: "center" },
             ].map((card) => (
               <div key={card.index} className="about-closing-card">
+                <img className="about-closing-card-image" src={card.image} alt="" style={{ objectPosition: card.imagePosition }} />
                 <div className="about-closing-card-glow" style={{ background: `radial-gradient(ellipse at top right, ${card.accent}10, transparent 55%)` }} />
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 1, background: `linear-gradient(to right, transparent, ${card.accent}40, transparent)` }} />
+                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 4, height: 1, background: `linear-gradient(to right, transparent, ${card.accent}40, transparent)` }} />
                 {/* Corner marks */}
-                <div style={{ position: "absolute", top: 16, left: 16, width: 18, height: 18, borderTop: `1px solid ${card.accent}40`, borderLeft: `1px solid ${card.accent}40` }} />
-                <div style={{ position: "absolute", bottom: 16, right: 16, width: 18, height: 18, borderBottom: `1px solid ${card.accent}40`, borderRight: `1px solid ${card.accent}40` }} />
-                <div style={{ position: "relative", zIndex: 1 }}>
+                <div style={{ position: "absolute", top: 16, left: 16, zIndex: 4, width: 18, height: 18, borderTop: `1px solid ${card.accent}40`, borderLeft: `1px solid ${card.accent}40` }} />
+                <div style={{ position: "absolute", bottom: 16, right: 16, zIndex: 4, width: 18, height: 18, borderBottom: `1px solid ${card.accent}40`, borderRight: `1px solid ${card.accent}40` }} />
+                <div style={{ position: "relative", zIndex: 5 }}>
                   <span style={{ fontSize: "0.58rem", textTransform: "uppercase", letterSpacing: "0.55em", fontWeight: 700, color: card.accent }}>0{card.index + 1}</span>
                   <div style={{ height: 1, width: 36, margin: "0.75rem 0 2rem", background: card.accent, transition: "width 0.5s" }} />
                   <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2rem,3.5vw,3.5rem)", lineHeight: 1, color: "var(--white)" }}>{card.title}</h3>
                 </div>
-                <p style={{ position: "relative", zIndex: 1, color: "rgba(255,255,255,0.38)", fontWeight: 300, lineHeight: 1.75, fontSize: "0.92rem", transition: "color 0.5s" }}>{card.desc}</p>
+                <p style={{ position: "relative", zIndex: 5, color: "rgba(255,255,255,0.58)", fontWeight: 300, lineHeight: 1.75, fontSize: "0.92rem", transition: "color 0.5s" }}>{card.desc}</p>
               </div>
             ))}
 

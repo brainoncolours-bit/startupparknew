@@ -6,6 +6,10 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, Environment, Html } from "@react-three/drei";
 import * as THREE from "three";
 import logo from "../assets/logo.png";
+import serviceSlide1 from "../assets/serviceslides/slide1.png";
+import serviceSlide2 from "../assets/serviceslides/slide2.png";
+import serviceSlide3 from "../assets/serviceslides/slide3.png";
+import serviceSlide4 from "../assets/serviceslides/slide4.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -1509,26 +1513,30 @@ function Services() {
               {
                 title: "200+ Startups",
                 subtitle: "Supported Core",
-                description: "Nurturing deep tech and consumer applications to active market maturity."
+                description: "Nurturing deep tech and consumer applications to active market maturity.",
+                image: serviceSlide1,
               },
               {
                 title: "₹600 Cr+",
                 subtitle: "Funding Accessed",
-                description: "Direct linkages to seed syndicates and institutional venture tracks."
+                description: "Direct linkages to seed syndicates and institutional venture tracks.",
+                image: serviceSlide2,
               },
               {
                 title: "10,000+",
                 subtitle: "Jobs Created",
-                description: "Enabling high-scale technological employment cross-functionally."
+                description: "Enabling high-scale technological employment cross-functionally.",
+                image: serviceSlide3,
               },
               {
                 title: "Idea to IPO",
                 subtitle: "Built For Tomorrow",
-                description: "A comprehensive ecosystem foundation that expands with your venture."
+                description: "A comprehensive ecosystem foundation that expands with your venture.",
+                image: serviceSlide4,
               },
             ].map((slide, index) => (
               <div className="hscroll-item" key={index} style={{
-                backgroundImage: `url('/sample.jpg')`,
+                backgroundImage: `url('${slide.image}')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
