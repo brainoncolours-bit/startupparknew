@@ -1,4 +1,4 @@
-import { BrowserRouter, HashRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Suspense, lazy, useEffect, useRef } from "react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
@@ -114,12 +114,10 @@ function App() {
 }
 
 function RootApp() {
-  const Router = import.meta.env.PROD ? HashRouter : BrowserRouter;
-
   return (
-    <Router>
+    <BrowserRouter>
       <App />
-    </Router>
+    </BrowserRouter>
   );
 }
 
