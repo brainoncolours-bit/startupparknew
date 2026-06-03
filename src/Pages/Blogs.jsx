@@ -20,30 +20,14 @@ const galleryOneImages = [
   new URL("../assets/galleryone/image copy 16.png", import.meta.url).href,
 ];
 
-const galleryFourImages = [
-  new URL("../assets/galleryfour/image.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 2.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 3.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 4.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 5.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 6.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 7.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 8.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 9.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 10.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 11.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 12.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 13.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 14.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 15.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 16.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 17.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 18.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 19.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 20.png", import.meta.url).href,
-  new URL("../assets/galleryfour/image copy 21.png", import.meta.url).href,
-];
+const galleryFourImages = Object.entries(
+  import.meta.glob("../assets/galleryfour/*.{png,jpg,jpeg,webp,avif}", {
+    eager: true,
+    import: "default",
+  })
+)
+  .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
+  .map(([, src]) => src);
 
 const categories = [
   {
