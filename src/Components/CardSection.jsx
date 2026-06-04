@@ -2,6 +2,10 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
+const publicAsset = (path) => `${import.meta.env.BASE_URL}${path}`;
+const founderCardImage = publicAsset("card.png");
+const founderCardFallbackImage = publicAsset("card.jpeg");
+
 export default function MolithraHero({ onPreBook }) {
   const segments = Array.from({ length: 12 });
   const benefits = [
@@ -118,8 +122,13 @@ export default function MolithraHero({ onPreBook }) {
         >
           <div className="aspect-[4/3] w-full rounded-[2rem] bg-gradient-to-br from-gray-900 to-black border border-blue-500/30 shadow-[0_0_50px_-12px_rgba(37,99,235,0.3)] flex items-center justify-center overflow-hidden">
             <img
-              src="/card.png"
+              src={founderCardImage}
               alt="Founder Card"
+              onError={(event) => {
+                if (event.currentTarget.src !== founderCardFallbackImage) {
+                  event.currentTarget.src = founderCardFallbackImage;
+                }
+              }}
               className="w-full h-full object-cover"
             />
           </div>
