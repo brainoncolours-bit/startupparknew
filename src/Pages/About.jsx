@@ -610,7 +610,14 @@ export default function About() {
       {/* ── ORIGIN SECTION ────────────────────────────────────────────── */}
       <section
   ref={storyRef}
-  style={{ position: "relative", height: "100vh", overflow: "hidden", background: "#060608" }}
+  style={{
+    position: "relative",
+    minHeight: "100vh",
+    height: "auto",
+    overflow: "hidden",
+    background: "#060608",
+    boxSizing: "border-box",
+  }}
 >
   {/* Left fixed label col */}
   <div
@@ -621,13 +628,12 @@ export default function About() {
       bottom: 0,
       width: "clamp(1.5rem,8vw,8rem)",
       borderRight: "1px solid rgba(255,255,255,0.05)",
-      display: "flex",
+      display: window.innerWidth < 768 ? "none" : "flex",
       alignItems: "center",
       justifyContent: "center",
       zIndex: 10,
     }}
-  >
-  </div>
+  ></div>
 
   {/* Right fixed year col */}
   <div
@@ -638,26 +644,33 @@ export default function About() {
       bottom: 0,
       width: "clamp(1.5rem,6vw,6rem)",
       borderLeft: "1px solid rgba(255,255,255,0.05)",
-      display: "flex",
+      display: window.innerWidth < 768 ? "none" : "flex",
       alignItems: "center",
       justifyContent: "center",
       zIndex: 10,
     }}
-  >
-  </div>
+  ></div>
 
   {/* Panels container */}
   <div
     className="about-story-panels"
     style={{
-      position: "absolute",
+      position: "relative",
       inset: 0,
       display: "flex",
       flexDirection: "column",
-      paddingLeft: "clamp(3rem,10vw,10rem)",
-      paddingRight: "clamp(3rem,8vw,8rem)",
+      paddingTop: "clamp(5rem, 8vw, 7rem)",
+      paddingLeft:
+        window.innerWidth < 768
+          ? "1.5rem"
+          : "clamp(3rem,10vw,10rem)",
+      paddingRight:
+        window.innerWidth < 768
+          ? "1.5rem"
+          : "clamp(3rem,8vw,8rem)",
       justifyContent: "center",
       gap: 0,
+      boxSizing: "border-box",
     }}
   >
     {[
@@ -681,11 +694,12 @@ export default function About() {
         key={i}
         className={`about-story-panel about-story-panel-${i}`}
         style={{
-          padding: "2.8rem 0",
+          padding: window.innerWidth < 768 ? "1.6rem 0" : "2.8rem 0",
           borderBottom: i < 2 ? "1px solid rgba(255,255,255,0.05)" : "none",
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "4rem",
+          gridTemplateColumns:
+            window.innerWidth < 768 ? "1fr" : "1fr 1fr",
+          gap: window.innerWidth < 768 ? "1.25rem" : "4rem",
           alignItems: "center",
           transform: `translateX(${i % 2 === 0 ? "-100%" : "100%"})`,
           opacity: 0,
@@ -698,7 +712,9 @@ export default function About() {
               fontSize: "clamp(2.2rem,4.5vw,5rem)",
               lineHeight: 1.05,
               color: item.accent ? "var(--green)" : "var(--white)",
-              textShadow: item.accent ? "0 0 40px rgba(31,74,168,0.38)" : "none",
+              textShadow: item.accent
+                ? "0 0 40px rgba(31,74,168,0.38)"
+                : "none",
               fontWeight: 400,
               margin: 0,
             }}
@@ -706,13 +722,16 @@ export default function About() {
             {item.line}
           </h2>
         </div>
+
         <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
           <div
             style={{
               width: 2,
               height: "100%",
               minHeight: 60,
-              background: item.accent ? "var(--green)" : "rgba(255,255,255,0.08)",
+              background: item.accent
+                ? "var(--green)"
+                : "rgba(255,255,255,0.08)",
               flexShrink: 0,
             }}
           />
@@ -736,7 +755,8 @@ export default function About() {
       className="about-story-counters"
       style={{
         display: "flex",
-        gap: "3rem",
+        flexDirection: window.innerWidth < 768 ? "column" : "row",
+        gap: window.innerWidth < 768 ? "1.5rem" : "3rem",
         marginTop: "3.5rem",
         paddingTop: "2.5rem",
         borderTop: "1px solid rgba(255,255,255,0.06)",
@@ -749,7 +769,10 @@ export default function About() {
         { val: "₹50,000 Cr+", label: "funding facilitated" },
         { val: "100,000+", label: "jobs created" },
       ].map((c, i) => (
-        <div key={i} style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+        <div
+          key={i}
+          style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}
+        >
           <span
             style={{
               fontFamily: "'Bebas Neue', sans-serif",
