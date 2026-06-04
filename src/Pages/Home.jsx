@@ -232,7 +232,7 @@ function InteractiveCard({ cardRef }) {
   if (!cardGeometry) return null;
 
   return (
-    <group ref={cardRef} position={[5.5, 0, 0]} scale={[0, 0, 0]}>
+    <group ref={cardRef} position={[5.5, 0, 0]}>
       <PresentationControls
         global={false}
         cursor={true}
@@ -291,21 +291,6 @@ function PhoneCluster({ scrollTriggerRef, insideTextRef, onReady }) {
         (_, index) => ((index - 2) / 5) * Math.PI * 2 + Math.PI / 2,
       );
 
-      gsap.set(clusterRef.current.rotation, { y: 0 });
-      gsap.set(cardRef.current.position, { x: 5.5, y: 0, z: 0 });
-      gsap.set(cardRef.current.scale, { x: 0, y: 0, z: 0 });
-
-      // 1. Initial Scale (Main center card)
-      gsap.set(phones[2].scale, { x: 4, y: 4, z: 4 });
-      gsap.set(phones[2].position, { x: 0, y: 0, z: radius });
-
-      phones.forEach((phone, index) => {
-        if (index !== 2) {
-          gsap.set(phone.scale, { x: 0, y: 0, z: 0 });
-          gsap.set(phone.position, { x: 0, y: 0, z: radius - 0.5 });
-        }
-      });
-
       tl = gsap.timeline({
         scrollTrigger: {
           trigger: scrollTriggerRef.current,
@@ -317,6 +302,25 @@ function PhoneCluster({ scrollTriggerRef, insideTextRef, onReady }) {
           invalidateOnRefresh: true,
           refreshPriority: 10,
         },
+      });
+
+      gsap.set(clusterRef.current.rotation, { y: 0 });
+      gsap.set(cardRef.current.position, { x: 5.5, y: 0, z: 0 });
+      gsap.set(cardRef.current.scale, { x: 0, y: 0, z: 0 });
+
+      if (insideTextRef?.current) {
+        gsap.set(insideTextRef.current, { autoAlpha: 0, y: 40 });
+      }
+
+      // 1. Initial Scale (Main center card)
+      gsap.set(phones[2].scale, { x: 4, y: 4, z: 4 });
+      gsap.set(phones[2].position, { x: 0, y: 0, z: radius });
+
+      phones.forEach((phone, index) => {
+        if (index !== 2) {
+          gsap.set(phone.scale, { x: 0, y: 0, z: 0 });
+          gsap.set(phone.position, { x: 0, y: 0, z: radius - 0.5 });
+        }
       });
 
       phones.forEach((phone, index) => {
@@ -677,7 +681,6 @@ export default function Home() {
             <div
               ref={insideTextRef}
               className="max-w-[550px]"
-              style={{ opacity: 0, transform: "translateY(40px)" }}
             >
               <h2 className="font-serif text-[clamp(2.5rem,5vw,5rem)] font-semibold leading-[1.1] text-white mb-6 uppercase">
                 A world-class
