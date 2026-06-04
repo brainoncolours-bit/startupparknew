@@ -1,8 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import SoftAurora from "../Components/SoftAurora";
-import Footer from "../Components/Footer";
 
 export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((current) => ({ ...current, [name]: value }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const details = {
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      message: formData.message.trim(),
+      submittedAt: new Date().toISOString(),
+    };
+
+    window.localStorage.setItem("startupParkContactForm", JSON.stringify(details));
+
+    const subject = `Startup Park Contact Enquiry - ${details.name || "Website Visitor"}`;
+    const body = [
+      "Hello Startup Park team,",
+      "",
+      "I would like to get in touch.",
+      "",
+      `Name: ${details.name}`,
+      `Email: ${details.email}`,
+      "",
+      "Message:",
+      details.message,
+    ].join("\n");
+
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+      "contactus@thestartuppark.com",
+    )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    window.location.href = gmailUrl;
+  };
+
   return (
     <main className="relative w-full min-h-screen bg-black text-white overflow-hidden flex flex-col selection:bg-white selection:text-black">
       
@@ -35,58 +77,108 @@ export default function Contact() {
             GET IN TOUCH
           </h1>
 
-          {/* SUBHEADING */}
-          <h2 className="text-xl sm:text-2xl font-bold tracking-[0.15em] uppercase mb-6 text-white/90">
-            DON'T BE SHY
-          </h2>
+          
           
           {/* DESCRIPTION */}
           <p className="text-white/75 text-base sm:text-lg leading-relaxed mb-16 font-light">
-            Feel free to get in touch with me. I am always open to discussing new projects, creative ideas or opportunities to be part of your visions.
-          </p>
+  Connect with Startup Park Bengaluru to explore startup incubation,
+  mentorship, innovation programs, partnerships, events, and founder
+  opportunities. Our team is ready to help you build, scale, and grow.
+</p>
 
           {/* CONTACT DETAILS GRID */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
             
             {/* EMAIL */}
-            <div className="flex flex-col items-center justify-center p-6 sm:p-8 rounded-lg border border-white/20 hover:border-white/50 bg-white/5 hover:bg-white/10 transition-all duration-300">
-              <h3 className="text-[0.75rem] sm:text-[0.85rem] font-bold tracking-[0.3em] uppercase text-white/60 mb-4">Mail me</h3>
-              <a href="mailto:info@mail.com" className="text-base sm:text-lg font-light text-white hover:text-white/90 transition-colors">
-                info@mail.com
-              </a>
-            </div>
+            
+<div className="flex flex-col items-center justify-center p-6 sm:p-8 rounded-lg border border-white/20 hover:border-white/50 bg-white/5 hover:bg-white/10 transition-all duration-300">
+  <h3 className="text-[0.75rem] sm:text-[0.85rem] font-bold tracking-[0.3em] uppercase text-white/60 mb-4">
+    Mail us
+  </h3>
+  <a
+    href="mailto:contactus@thestartuppark.com"
+    className="text-base sm:text-lg font-light text-white hover:text-white/90 transition-colors"
+  >
+    contactus@thestartuppark.com
+  </a>
+</div>
 
             {/* PHONE */}
-            <div className="flex flex-col items-center justify-center p-6 sm:p-8 rounded-lg border border-white/20 hover:border-white/50 bg-white/5 hover:bg-white/10 transition-all duration-300">
-              <h3 className="text-[0.75rem] sm:text-[0.85rem] font-bold tracking-[0.3em] uppercase text-white/60 mb-4">Call me</h3>
-              <a href="tel:+13334545544" className="text-base sm:text-lg font-light text-white hover:text-white/90 transition-colors">
-                +1 333 454 55 44
-              </a>
-            </div>
+<div className="flex flex-col items-center justify-center p-6 sm:p-8 rounded-lg border border-white/20 hover:border-white/50 bg-white/5 hover:bg-white/10 transition-all duration-300">
+  <h3 className="text-[0.75rem] sm:text-[0.85rem] font-bold tracking-[0.3em] uppercase text-white/60 mb-4">
+    Call us
+  </h3>
+  <a
+    href="tel:+919036354905"
+    className="text-base sm:text-lg font-light text-white hover:text-white/90 transition-colors"
+  >
+    +91 9036 354 905
+  </a>
+</div>
 
           </div>
 
+          <div className="mb-16 space-y-6 text-center">
+  <div>
+    <h3 className="text-[0.75rem] sm:text-[0.85rem] font-bold tracking-[0.3em] uppercase text-white/60 mb-3">
+      Website
+    </h3>
+    <p className="text-white text-base sm:text-lg font-light">
+      www.thestartuppark.com
+    </p>
+  </div>
+
+  <div>
+    <h3 className="text-[0.75rem] sm:text-[0.85rem] font-bold tracking-[0.3em] uppercase text-white/60 mb-3">
+      Address
+    </h3>
+    <p className="text-white/80 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
+      Hosur Rd, opp. Madiwala Traffic Police Station,
+      Koramangala 2nd Block, Koramangala,
+      Bengaluru, Karnataka 560068
+    </p>
+  </div>
+</div>
+
           {/* CONTACT FORM CTA */}
-          <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-6 mb-8 text-left">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6 mb-8 text-left">
             <div className="relative border-b border-white/30 pb-4 focus-within:border-white transition-colors duration-300">
-              <input type="text" placeholder="Enter your Name" className="w-full bg-transparent text-base sm:text-lg outline-none placeholder:text-white/40 font-light text-white" />
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Enter your Name"
+                required
+                className="w-full bg-transparent text-base sm:text-lg outline-none placeholder:text-white/40 font-light text-white"
+              />
             </div>
             
             <div className="relative border-b border-white/30 pb-4 focus-within:border-white transition-colors duration-300">
-              <input type="email" placeholder="Enter a valid email address" className="w-full bg-transparent text-base sm:text-lg outline-none placeholder:text-white/40 font-light text-white" />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter a valid email address"
+                required
+                className="w-full bg-transparent text-base sm:text-lg outline-none placeholder:text-white/40 font-light text-white"
+              />
             </div>
 
             <div className="relative border-b border-white/30 pb-4 focus-within:border-white transition-colors duration-300">
-              <textarea rows="3" placeholder="Enter your message" className="w-full bg-transparent text-base sm:text-lg outline-none placeholder:text-white/40 font-light text-white resize-none" />
+              <textarea
+                rows="3"
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                placeholder="Enter your message"
+                required
+                className="w-full bg-transparent text-base sm:text-lg outline-none placeholder:text-white/40 font-light text-white resize-none"
+              />
             </div>
 
-            <div className="flex items-center gap-3 mt-2">
-              <input type="checkbox" id="terms" className="w-4 h-4 cursor-pointer accent-white" />
-              <label htmlFor="terms" className="text-sm font-light text-white/70 cursor-pointer hover:text-white/90 transition-colors">
-                I accept the <span className="text-white/90">Terms of Service</span>
-              </label>
-            </div>
-
+            
             <button type="submit" className="self-center mt-6 px-10 py-3 border border-white/40 rounded-full hover:border-white hover:bg-white hover:text-black font-semibold text-[0.85rem] tracking-[0.2em] uppercase transition-all duration-400 text-white">
               SUBMIT
             </button>
