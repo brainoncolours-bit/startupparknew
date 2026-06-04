@@ -231,7 +231,130 @@ const aboutStyles = `
 
   @media (max-width: 768px) {
     .about-team-card { width: 240px; height: 340px; }
-    .about-closing-card { min-width: 320px; height: 460px; }
+    .about-hero-section { min-height: auto !important; }
+    .about-hero-content {
+      padding-top: 7rem !important;
+      padding-bottom: 4.5rem !important;
+      padding-left: 1.25rem !important;
+      padding-right: 1.25rem !important;
+    }
+    .about-hero-badge { margin-bottom: 2rem !important; }
+    .about-hero-sub { margin-bottom: 0.5rem !important; line-height: 1.65 !important; }
+    .about-hero-divider { margin: 2rem 0 0.75rem !important; }
+    .about-hero-stats-row { gap: 1.25rem 1.5rem !important; }
+    .about-hero-stat { padding-left: 1rem; }
+
+    .about-story-section { min-height: auto !important; overflow: visible !important; }
+    .about-story-panels {
+      padding: 3.5rem 1.25rem 3.75rem !important;
+      justify-content: flex-start !important;
+    }
+    .about-story-panel { padding: 1.25rem 0 !important; gap: 0.9rem !important; }
+    .about-story-panel p { line-height: 1.65 !important; }
+    .about-story-counters {
+      gap: 1rem !important;
+      margin-top: 1.75rem !important;
+      padding-top: 1.5rem !important;
+    }
+
+    .about-manifesto-section {
+      min-height: auto !important;
+      padding-top: 4.25rem !important;
+      padding-bottom: 4.5rem !important;
+    }
+    .about-manifesto-spacer { margin-bottom: 1.25rem !important; }
+    .about-manifesto-copy { gap: 0.45rem 0.85rem !important; }
+
+    .about-values-section { padding-top: 4.5rem !important; padding-bottom: 4.75rem !important; }
+    .about-values-header { margin-bottom: 2rem !important; }
+    .about-value-row { padding: 2rem 0 !important; }
+
+    .about-team-section { padding-top: 4.5rem !important; padding-bottom: 5rem !important; }
+    .about-team-headline { margin-bottom: 2.25rem !important; }
+    .about-team-headline p { margin-top: 1rem !important; line-height: 1.65 !important; }
+
+    .about-card-section {
+      height: auto !important;
+      min-height: 76vh !important;
+      padding: 4.5rem 0 !important;
+    }
+    .about-card-text svg { width: 42px; height: auto; }
+    .about-card-text > div:first-child { margin-bottom: 1.5rem !important; }
+    .about-card-text h2 { margin-bottom: 1.25rem !important; }
+
+    .about-philosophy-section {
+      min-height: auto !important;
+      padding-top: 4.5rem !important;
+      padding-bottom: 4.75rem !important;
+    }
+    .about-philosophy-accent { margin-bottom: 1.35rem !important; }
+    .about-philosophy-rule { margin-top: 2rem !important; }
+
+    .about-closing-section {
+      height: auto !important;
+      min-height: 0 !important;
+      padding-bottom: 3.5rem !important;
+      overflow: hidden !important;
+    }
+    .about-closing-big { padding: 4rem 1.25rem 2rem !important; }
+    .about-closing-big h2:first-child { font-size: clamp(1.8rem, 9vw, 2.6rem) !important; }
+    .about-closing-big h2:last-child { font-size: clamp(3rem, 15vw, 4.6rem) !important; }
+    .about-closing-track-wrap {
+      width: 100% !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x;
+      overscroll-behavior-x: contain;
+    }
+    .about-closing-track-wrap::-webkit-scrollbar { display: none; }
+    .about-closing-track {
+      width: max-content !important;
+      max-width: none !important;
+      gap: 0.75rem !important;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+      transform: translate3d(0, 0, 0) !important;
+      will-change: auto !important;
+    }
+    .about-closing-card {
+      flex: 0 0 clamp(236px, 76vw, 284px) !important;
+      min-width: 0 !important;
+      width: clamp(236px, 76vw, 284px) !important;
+      height: 360px !important;
+      margin: 0 !important;
+      padding: 1.25rem !important;
+      border-radius: 18px !important;
+    }
+    .about-closing-card-image {
+      object-fit: cover !important;
+      transform: none !important;
+    }
+    .about-closing-card span {
+      font-size: 0.52rem !important;
+      letter-spacing: 0.36em !important;
+    }
+    .about-closing-card h3 {
+      font-size: clamp(1.55rem, 8.4vw, 2.2rem) !important;
+      line-height: 0.98 !important;
+      max-width: 100% !important;
+      overflow-wrap: anywhere;
+    }
+    .about-closing-card p {
+      font-size: 0.78rem !important;
+      line-height: 1.55 !important;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .about-closing-card-divider { margin: 0.55rem 0 1.1rem !important; }
+    .about-closing-track > div:last-child {
+      min-width: 72px !important;
+      margin: 0 !important;
+    }
+    .about-footer-line { padding: 3rem 1.25rem !important; }
   }
 `;
 
@@ -368,6 +491,8 @@ export default function About() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      const isMobile = window.innerWidth <= 768;
+
       // ── Hero entrance
       gsap.set([".about-hero-badge", ".about-hero-word", ".about-hero-sub", ".about-hero-stat"], {
         y: 40, opacity: 0,
@@ -380,7 +505,7 @@ export default function About() {
         .to(".about-hero-stat", { y: 0, opacity: 1, duration: 0.8, stagger: 0.06, ease: "expo.out" }, "-=0.6");
 
       // ── Hero parallax
-      if (heroRef.current) {
+      if (heroRef.current && !isMobile) {
         gsap.to(".about-hero-headline", {
           y: -220, opacity: 0.15,
           scrollTrigger: { trigger: heroRef.current, start: "top top", end: "80% top", scrub: 0.6 },
@@ -400,36 +525,43 @@ export default function About() {
         const panels = storyRef.current.querySelectorAll(".about-story-panel");
         const counters = storyRef.current.querySelector(".about-story-counters");
 
-        const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-        panels.forEach((panel, i) => {
-          tl.to(panel, { x: 0, opacity: 1, duration: 0.9 }, i * 0.22);
-        });
-        if (counters) {
-          tl.to(counters, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, "-=0.3");
-        }
+        if (isMobile) {
+          gsap.set(panels, { x: 0, opacity: 1 });
+          if (counters) gsap.set(counters, { y: 0, opacity: 1 });
+        } else {
+          const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+          panels.forEach((panel, i) => {
+            tl.to(panel, { x: 0, opacity: 1, duration: 0.9 }, i * 0.22);
+          });
+          if (counters) {
+            tl.to(counters, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, "-=0.3");
+          }
 
-        ScrollTrigger.create({
-          trigger: storyRef.current,
-          start: "top top",
-          end: `+=${panels.length * 60}vh`,
-          pin: true, pinSpacing: true,
-          scrub: 0.6, anticipatePin: 1,
-          animation: tl, invalidateOnRefresh: true,
-        });
+          ScrollTrigger.create({
+            trigger: storyRef.current,
+            start: "top top",
+            end: `+=${panels.length * 60}vh`,
+            pin: true, pinSpacing: true,
+            scrub: 0.6, anticipatePin: 1,
+            animation: tl, invalidateOnRefresh: true,
+          });
+        }
       }
 
       // ── Manifesto pin
       if (manifestoRef.current) {
         const mWords = manifestoRef.current.querySelectorAll(".about-manifesto-word");
-        gsap.set(mWords, { opacity: 0.06 });
-        ScrollTrigger.create({
-          trigger: manifestoRef.current,
-          start: "top top",
-          end: `+=${mWords.length * 80}`,
-          pin: true, pinSpacing: true,
-          scrub: 0.35,
-          animation: gsap.to(mWords, { opacity: 1, stagger: { each: 0.28 }, ease: "none" }),
-        });
+        gsap.set(mWords, { opacity: isMobile ? 1 : 0.06 });
+        if (!isMobile) {
+          ScrollTrigger.create({
+            trigger: manifestoRef.current,
+            start: "top top",
+            end: `+=${mWords.length * 80}`,
+            pin: true, pinSpacing: true,
+            scrub: 0.35,
+            animation: gsap.to(mWords, { opacity: 1, stagger: { each: 0.28 }, ease: "none" }),
+          });
+        }
       }
 
       // ── Values stagger
@@ -492,14 +624,18 @@ export default function About() {
             scrollTrigger: { trigger: closingRef.current, start: "top 80%", toggleActions: "play none none reverse" },
           }
         );
-        const getDist = () => hTrackRef.current.scrollWidth - closingRef.current.offsetWidth;
-        ScrollTrigger.create({
-          trigger: closingRef.current,
-          start: "top top",
-          end: () => `+=${getDist()}`,
-          pin: true, anticipatePin: 1, scrub: 0.9, invalidateOnRefresh: true,
-          animation: gsap.to(hTrackRef.current, { x: () => -getDist(), ease: "none" }),
-        });
+        if (isMobile) {
+          gsap.set(hTrackRef.current, { x: 0 });
+        } else {
+          const getDist = () => hTrackRef.current.scrollWidth - closingRef.current.offsetWidth;
+          ScrollTrigger.create({
+            trigger: closingRef.current,
+            start: "top top",
+            end: () => `+=${getDist()}`,
+            pin: true, anticipatePin: 1, scrub: 0.9, invalidateOnRefresh: true,
+            animation: gsap.to(hTrackRef.current, { x: () => -getDist(), ease: "none" }),
+          });
+        }
       }
 
       ScrollTrigger.refresh();
@@ -515,6 +651,7 @@ export default function About() {
       {/* ── HERO ──────────────────────────────────────────────────────── */}
       <section
         ref={heroRef}
+        className="about-hero-section"
         style={{ position: "relative", minHeight: "130vh", overflow: "hidden", background: "#070708" }}
       >
         {/* Particle canvas bg */}
@@ -549,7 +686,7 @@ export default function About() {
         }} />
 
         {/* Content */}
-        <div style={{ position: "relative", zIndex: 10, paddingTop: "11rem", paddingBottom: "10rem", paddingLeft: "clamp(1.5rem,8vw,8rem)", paddingRight: "clamp(1.5rem,4vw,4rem)" }}>
+        <div className="about-hero-content" style={{ position: "relative", zIndex: 10, paddingTop: "11rem", paddingBottom: "10rem", paddingLeft: "clamp(1.5rem,8vw,8rem)", paddingRight: "clamp(1.5rem,4vw,4rem)" }}>
           <div className="about-hero-badge" style={{ marginBottom: "3.5rem" }}>
             <span className="about-badge-dot" />
             <span>About Startup Park</span>
@@ -593,7 +730,7 @@ export default function About() {
             </div>
           </div>
 
-          <div style={{ height: 1, background: "linear-gradient(to right, transparent, rgba(31,74,168,0.38), transparent)", margin: "3.5rem 0 1rem" }} className="about-hero-sub" />
+          <div style={{ height: 1, background: "linear-gradient(to right, transparent, rgba(31,74,168,0.38), transparent)", margin: "3.5rem 0 1rem" }} className="about-hero-sub about-hero-divider" />
 
           <div className="about-hero-stats-row" style={{ display: "flex", flexWrap: "wrap", gap: "2.5rem", marginTop: "1rem" }}>
             {stats.map((s, i) => (
@@ -608,8 +745,9 @@ export default function About() {
       </section>
 
       {/* ── ORIGIN SECTION ────────────────────────────────────────────── */}
-      <section
+<section
   ref={storyRef}
+  className="about-story-section"
   style={{
     position: "relative",
     minHeight: "100vh",
@@ -804,6 +942,7 @@ export default function About() {
       {/* ── MANIFESTO PIN (Mission & Vision) ─────────────────────────── */}
       <section
         ref={manifestoRef}
+        className="about-manifesto-section"
         style={{
           position: "relative", minHeight: "100vh",
           background: "rgba(4,4,8,0.97)", backdropFilter: "blur(4px)",
@@ -819,8 +958,8 @@ export default function About() {
         </div>
 
         <div style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: "72rem" }}>
-          <div style={{ marginBottom: "4rem" }} />
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem 1.5rem", alignItems: "baseline" }}>
+          <div className="about-manifesto-spacer" style={{ marginBottom: "4rem" }} />
+          <div className="about-manifesto-copy" style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem 1.5rem", alignItems: "baseline" }}>
             {manifestoText.map((word, i) => {
               const cleanWord = word.replace(/[.,]/g, "").toLowerCase();
               const highlight = { "power": "#1f4aa8", "builder-centric": "#1f4aa8", "ventures": "#1f4aa8", "world-class": "#1f4aa8" };
@@ -842,6 +981,7 @@ export default function About() {
       {/* ── VALUES SECTION ────────────────────────────────────────────── */}
       <section
         ref={valuesRef}
+        className="about-values-section"
         style={{ background: "rgba(5,5,9,0.96)", padding: "10vh clamp(1.5rem,8vw,8rem) 12vh" }}
       >
         <div className="about-values-header" style={{ maxWidth: "72rem", marginBottom: "6vh" }}>
@@ -872,6 +1012,7 @@ export default function About() {
       {/* ── TEAM SECTION (Founder & Core Operators) ───────────────────── */}
       <section
         ref={teamRef}
+        className="about-team-section"
         style={{ position: "relative", background: "rgba(7,7,14,0.97)", padding: "10vh 0 12vh", overflow: "hidden" }}
       >
         {/* Ambient blobs */}
@@ -937,6 +1078,7 @@ export default function About() {
       {/* ── CARD / TRUST SECTION ────────────────────────────────────────── */}
       <section
         ref={cardSectionRef}
+        className="about-card-section"
         style={{ position: "relative", height: "100vh", overflow: "hidden", background: "rgba(0,0,0,0.98)", display: "flex", alignItems: "center", justifyValue: "center" }}
       >
         {/* 3D canvas */}
@@ -973,7 +1115,8 @@ export default function About() {
       </section>
 
       {/* ── PHILOSOPHY SECTION ─────────────────────────────────────────── */}
-      <section
+<section
+  className="about-philosophy-section"
   style={{
     position: "relative",
     minHeight: "100vh",
@@ -1024,6 +1167,7 @@ export default function About() {
     }}
   >
     <h2
+      className="about-philosophy-accent"
       style={{
         fontFamily: "'Bebas Neue', sans-serif",
         fontSize: "clamp(2.8rem,7.5vw,7.5rem)",
@@ -1080,6 +1224,7 @@ export default function About() {
     </p>
 
     <div
+      className="about-philosophy-rule"
       style={{
         display: "flex",
         alignItems: "center",
@@ -1100,6 +1245,7 @@ export default function About() {
       {/* ── CLOSING HORIZONTAL SCROLL ─────────────────────────────────── */}
       <section
         ref={closingRef}
+        className="about-closing-section"
         style={{ position: "relative", height: "100vh", overflow: "hidden", background: "rgba(0,0,0,0.98)" }}
       >
         <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(31,74,168,0.04), transparent)" }} />
@@ -1109,8 +1255,8 @@ export default function About() {
           <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3.5rem,10vw,10rem)", lineHeight: 0.95, color: "var(--green)", textShadow: "0 0 60px rgba(31,74,168,0.55)" }}>It's your launchpad.</h2>
         </div>
 
-        <div style={{ overflow: "hidden" }}>
-          <div ref={hTrackRef} style={{ display: "flex", flexWrap: "nowrap", paddingLeft: "clamp(1.5rem,8vw,8rem)", willChange: "transform" }}>
+        <div className="about-closing-track-wrap" style={{ overflow: "hidden" }}>
+          <div ref={hTrackRef} className="about-closing-track" style={{ display: "flex", flexWrap: "nowrap", paddingLeft: "clamp(1.5rem,8vw,8rem)", willChange: "transform" }}>
             {[
               { index: 0, title: "Co-working Frameworks", desc: "Premium zones, private desks, and tech-ready meeting spaces designed to support startup productivity and scale.", accent: "#1f4aa8", image: "/gallery1.png", imagePosition: "center" },
               { index: 1, title: "Structured Acceleration", desc: "Focused learning paths, execution sprints, and mentorship loops that help founders build with clarity and speed.", accent: "#1f4aa8", image: structuredAccelerationImg, imagePosition: "center" },
@@ -1126,7 +1272,7 @@ export default function About() {
                 <div style={{ position: "absolute", bottom: 16, right: 16, zIndex: 4, width: 18, height: 18, borderBottom: `1px solid ${card.accent}40`, borderRight: `1px solid ${card.accent}40` }} />
                 <div style={{ position: "relative", zIndex: 5 }}>
                   <span style={{ fontSize: "0.58rem", textTransform: "uppercase", letterSpacing: "0.55em", fontWeight: 700, color: card.accent }}>0{card.index + 1}</span>
-                  <div style={{ height: 1, width: 36, margin: "0.75rem 0 2rem", background: card.accent, transition: "width 0.5s" }} />
+                  <div className="about-closing-card-divider" style={{ height: 1, width: 36, margin: "0.75rem 0 2rem", background: card.accent, transition: "width 0.5s" }} />
                   <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2rem,3.5vw,3.5rem)", lineHeight: 1, color: "var(--white)" }}>{card.title}</h3>
                 </div>
                 <p style={{ position: "relative", zIndex: 5, color: "rgba(255,255,255,0.58)", fontWeight: 300, lineHeight: 1.75, fontSize: "0.92rem", transition: "color 0.5s" }}>{card.desc}</p>
@@ -1134,7 +1280,7 @@ export default function About() {
             ))}
 
             {/* FIN marker */}
-            <div style={{ minWidth: "320px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1.2rem", margin: "0 3rem" }}>
+            <div className="about-closing-end-marker" style={{ minWidth: "320px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1.2rem", margin: "0 3rem" }}>
               <div style={{ width: 80, height: 1, background: "linear-gradient(to right, transparent, var(--green), transparent)" }} />
             </div>
           </div>
@@ -1142,7 +1288,7 @@ export default function About() {
       </section>
 
       {/* ── FOOTER LINE ───────────────────────────────────────────────── */}
-      <div style={{ background: "rgba(0,0,0,0.98)", padding: "4rem 1.5rem", textAlign: "center" }}>
+      <div className="about-footer-line" style={{ background: "rgba(0,0,0,0.98)", padding: "4rem 1.5rem", textAlign: "center" }}>
         <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2rem,5vw,5rem)", lineHeight: 1.05, color: "rgba(255,255,255,0.65)", margin: 0 }}>
           Built for founders. Built for Bengaluru. Built for the future.
         </p>
