@@ -699,80 +699,80 @@ export default function Home() {
       </section>
 
       <section
-        ref={scatterSectionRef}
-        className="relative h-screen w-full bg-black flex items-center justify-center overflow-hidden"
+  ref={scatterSectionRef}
+  className="relative h-screen w-full bg-black flex items-center justify-center overflow-hidden"
+>
+  <div className="absolute inset-0 z-0 h-full w-full">
+    <Canvas
+      dpr={[1, 1.25]}
+      gl={{
+        antialias: false,
+        powerPreference: "high-performance",
+        alpha: false,
+      }}
+    >
+      <PerspectiveCamera makeDefault position={[0, 0, 20]} fov={40} />
+      <ambientLight intensity={1.5} />
+      <Environment preset="city" />
+      <Suspense fallback={null}>
+        <ScatteredCards
+          sectionRef={scatterSectionRef}
+          onReady={markScatterSceneReady}
+        />
+      </Suspense>
+    </Canvas>
+  </div>
+
+  <div
+    ref={scatterTextRef}
+    className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl group cursor-default"
+    style={{ opacity: 0 }}
+  >
+    <div className="mb-10 transition-opacity duration-700 ease-out opacity-100 md:opacity-20 md:group-hover:opacity-100">
+      <svg
+        width="60"
+        height="70"
+        viewBox="0 0 60 70"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <div className="absolute inset-0 z-0 h-full w-full">
-          <Canvas
-            dpr={[1, 1.25]}
-            gl={{
-              antialias: false,
-              powerPreference: "high-performance",
-              alpha: false,
-            }}
-          >
-            <PerspectiveCamera makeDefault position={[0, 0, 20]} fov={40} />
-            <ambientLight intensity={1.5} />
-            <Environment preset="city" />
-            <Suspense fallback={null}>
-              <ScatteredCards
-                sectionRef={scatterSectionRef}
-                onReady={markScatterSceneReady}
-              />
-            </Suspense>
-          </Canvas>
-        </div>
+        <path
+          d="M30 0L5 10V30C5 45.42 15.67 59.7 30 65C44.33 59.7 55 45.42 55 30V10L30 0Z"
+          stroke="white"
+          strokeWidth="2"
+        />
+        <rect
+          x="22"
+          y="32"
+          width="16"
+          height="12"
+          rx="2"
+          stroke="white"
+          strokeWidth="2"
+        />
+        <path
+          d="M26 32V28C26 25.7909 27.7909 24 30 24C32.2091 24 34 25.7909 34 28V32"
+          stroke="white"
+          strokeWidth="2"
+        />
+      </svg>
+    </div>
 
-        <div
-          ref={scatterTextRef}
-          className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl group cursor-default"
-          style={{ opacity: 0 }}
-        >
-          <div className="mb-10 transition-opacity duration-700 ease-out opacity-20 group-hover:opacity-100">
-            <svg
-              width="60"
-              height="70"
-              viewBox="0 0 60 70"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M30 0L5 10V30C5 45.42 15.67 59.7 30 65C44.33 59.7 55 45.42 55 30V10L30 0Z"
-                stroke="white"
-                strokeWidth="2"
-              />
-              <rect
-                x="22"
-                y="32"
-                width="16"
-                height="12"
-                rx="2"
-                stroke="white"
-                strokeWidth="2"
-              />
-              <path
-                d="M26 32V28C26 25.7909 27.7909 24 30 24C32.2091 24 34 25.7909 34 28V32"
-                stroke="white"
-                strokeWidth="2"
-              />
-            </svg>
-          </div>
+    <h3 className="text-white text-[clamp(0.8rem,2vw,1.1rem)] tracking-[0.4em] font-bold uppercase mb-12 transition-opacity duration-700 ease-out opacity-100 md:opacity-20 md:group-hover:opacity-100">
+      Our Foundation & Driven Impact
+    </h3>
 
-          <h3 className="text-white text-[clamp(0.8rem,2vw,1.1rem)] tracking-[0.4em] font-bold uppercase mb-12 transition-opacity duration-700 ease-out opacity-20 group-hover:opacity-100">
-            Our Foundation & Driven Impact
-          </h3>
-
-          <p className="text-[clamp(1.8rem,4vw,3.5rem)] leading-[1.3] text-white transition-opacity duration-1000 ease-in-out font-light opacity-20 group-hover:opacity-100">
-            Powering bold choices with over{" "}
-            <span className="font-semibold">200+ startups supported</span>,
-            helping networks unlock{" "}
-            <span className="font-semibold">₹600 Cr+ in accessed funding</span>,
-            and enabling over{" "}
-            <span className="font-semibold">10,000+ new jobs</span> across
-            competitive tech markets.
-          </p>
-        </div>
-      </section>
+    <p className="text-[clamp(1.8rem,4vw,3.5rem)] leading-[1.3] text-white transition-opacity duration-1000 ease-in-out font-light opacity-100 md:opacity-20 md:group-hover:opacity-100">
+      Powering bold choices with over{" "}
+      <span className="font-semibold">200+ startups supported</span>,
+      helping networks unlock{" "}
+      <span className="font-semibold">₹600 Cr+ in accessed funding</span>,
+      and enabling over{" "}
+      <span className="font-semibold">10,000+ new jobs</span> across
+      competitive tech markets.
+    </p>
+  </div>
+</section>
 
       {/* RETAINED ANIMATED FEATURE GRID (Why Startup Park Framework) */}
       <section
