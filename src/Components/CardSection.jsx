@@ -38,8 +38,9 @@ export default function MolithraHero({ onPreBook }) {
           return (
             <motion.div
               key={i}
-              initial={{ height: 0 }}
+              initial={false}
               animate={{ height: `${height}%` }}
+              style={{ height: `${height}%` }}
               className="w-[8%] mx-[1px] bg-gradient-to-b from-black via-gray-900 to-black border-x border-white/[0.05]"
             />
           );
@@ -50,7 +51,7 @@ export default function MolithraHero({ onPreBook }) {
         {/* Left Side: Content */}
         <div className="flex-1 space-y-8">
           <motion.span
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             className="text-[10px] font-bold uppercase tracking-[0.4em] text-blue-500"
           >
@@ -58,7 +59,7 @@ export default function MolithraHero({ onPreBook }) {
           </motion.span>
 
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-7xl font-bold leading-[1.1] tracking-tighter uppercase"
@@ -68,7 +69,7 @@ export default function MolithraHero({ onPreBook }) {
           </motion.h2>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="max-w-[40ch] text-lg text-gray-400 font-medium"
@@ -81,7 +82,7 @@ export default function MolithraHero({ onPreBook }) {
             {benefits.map((benefit, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, x: -10 }}
+                initial={false}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + idx * 0.05 }}
                 className="flex items-start gap-3"
@@ -99,7 +100,7 @@ export default function MolithraHero({ onPreBook }) {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
             onClick={onPreBook}
@@ -111,7 +112,7 @@ export default function MolithraHero({ onPreBook }) {
 
         {/* Right Side: Floating Card Visual */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={false}
           animate={{ opacity: 1, scale: 1, y: [0, -20, 0] }}
           transition={{
             y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
