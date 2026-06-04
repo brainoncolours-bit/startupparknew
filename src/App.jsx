@@ -18,22 +18,46 @@ const CreatePost = lazy(() => import("./Pages/Admin/CreatePost"));
 const EditPost = lazy(() => import("./Pages/Admin/EditPost"));
 
 function ScrollManager({ lenisRef }) {
-  const { pathname } = useLocation();
+  const location = useLocation();
 
   useEffect(() => {
     window.history.scrollRestoration = "manual";
-    const rafId = window.requestAnimationFrame(() => {
+    const frameIds = [];
+
+    const scrollToTop = () => {
       const lenis = lenisRef.current;
       if (lenis) {
+        lenis.stop?.();
         lenis.scrollTo(0, { immediate: true, force: true });
+        lenis.start?.();
       } else {
         window.scrollTo({ top: 0, left: 0, behavior: "auto" });
       }
-      window.requestAnimationFrame(() => ScrollTrigger.refresh());
-    });
 
-    return () => window.cancelAnimationFrame(rafId);
-  }, [pathname, lenisRef]);
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+
+    scrollToTop();
+
+    const resetAcrossFrames = (framesRemaining) => {
+      const frameId = window.requestAnimationFrame(() => {
+        scrollToTop();
+        if (framesRemaining > 1) {
+          resetAcrossFrames(framesRemaining - 1);
+        } else {
+          lenisRef.current?.resize?.();
+          ScrollTrigger.refresh();
+        }
+      });
+      frameIds.push(frameId);
+    };
+
+    resetAcrossFrames(3);
+
+    return () => frameIds.forEach((id) => window.cancelAnimationFrame(id));
+  }, [location.pathname, location.search, location.hash, location.key, lenisRef]);
 
   return null;
 }
