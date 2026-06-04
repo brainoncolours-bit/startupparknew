@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useMemo,
   useState,
+  useCallback,
 } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
@@ -25,7 +26,23 @@ import CardSection from "../Components/CardSection";
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true });
 useGLTF.preload("/card.glb");
-useGLTF.preload("/card.glb");
+
+function refreshAfterLayout() {
+  const frameIds = [];
+
+  frameIds.push(
+    window.requestAnimationFrame(() => {
+      frameIds.push(
+        window.requestAnimationFrame(() => {
+          window.__lenis?.resize?.();
+          ScrollTrigger.refresh();
+        }),
+      );
+    }),
+  );
+
+  return () => frameIds.forEach((id) => window.cancelAnimationFrame(id));
+}
 
 function pseudoRandom(index, salt = 0) {
   const value = Math.sin(index * 12.9898 + salt * 78.233) * 43758.5453;
@@ -33,7 +50,7 @@ function pseudoRandom(index, salt = 0) {
 }
 
 // --- Scattered Cards Component ---
-function ScatteredCards({ sectionRef }) {
+function ScatteredCards({ sectionRef, onReady }) {
   const { scene: cardScene } = useGLTF("/card.glb");
   const meshRef = useRef();
   const rotationStateRef = useRef([]);
@@ -125,8 +142,10 @@ function ScatteredCards({ sectionRef }) {
       });
     }, sectionRef);
 
+    onReady?.();
+
     return () => ctx.revert();
-  }, [scatterData, sectionRef]);
+  }, [scatterData, sectionRef, onReady]);
 
   useFrame((state) => {
     if (!meshRef.current) return;
@@ -241,7 +260,7 @@ function ResponsiveCamera() {
   return null;
 }
 
-function PhoneCluster({ scrollTriggerRef, insideTextRef }) {
+function PhoneCluster({ scrollTriggerRef, insideTextRef, onReady }) {
   const { scene } = useGLTF("/card.glb");
   const clusterRef = useRef();
   const phoneRefs = useRef([]);
@@ -249,108 +268,134 @@ function PhoneCluster({ scrollTriggerRef, insideTextRef }) {
   const createPhone = () => scene.clone();
 
   useLayoutEffect(() => {
-    if (!clusterRef.current) return;
-    const phones = phoneRefs.current.filter(Boolean);
-    const radius = 4.8;
-    const angles = phones.map(
-      (_, index) => ((index - 2) / 5) * Math.PI * 2 + Math.PI / 2,
-    );
+    let rafId;
+    let tl;
+    let isCancelled = false;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: scrollTriggerRef.current,
-        start: "top top",
-        end: "+=4500",
-        scrub: 0.5,
-        pin: true,
-        pinSpacing: true,
-        invalidateOnRefresh: true,
-        refreshPriority: 10,
-      },
-    });
+    const setupTimeline = () => {
+      if (isCancelled) return;
 
-    ScrollTrigger.refresh();
-
-    // 1. Initial Scale (Main center card)
-    gsap.set(phones[2].scale, { x: 4, y: 4, z: 4 });
-    gsap.set(phones[2].position, { x: 0, y: 0, z: radius });
-
-    phones.forEach((phone, index) => {
-      if (index !== 2) {
-        gsap.set(phone.scale, { x: 0, y: 0, z: 0 });
-        gsap.set(phone.position, { x: 0, y: 0, z: radius - 0.5 });
+      const phones = phoneRefs.current.filter(Boolean);
+      if (
+        !clusterRef.current ||
+        !scrollTriggerRef.current ||
+        !cardRef.current ||
+        phones.length < 5
+      ) {
+        rafId = window.requestAnimationFrame(setupTimeline);
+        return;
       }
-    });
 
-    phones.forEach((phone, index) => {
-      // 2. Cluster Scale (When they form the ring)
-      tl.to(phone.scale, { x: 2, y: 2, z: 2, duration: 1 }, 0);
-      tl.to(
-        phone.position,
-        {
-          x: Math.cos(angles[index]) * radius,
-          z: Math.sin(angles[index]) * radius,
-          duration: 1.5,
-        },
-        0.2,
+      const radius = 4.8;
+      const angles = phones.map(
+        (_, index) => ((index - 2) / 5) * Math.PI * 2 + Math.PI / 2,
       );
-    });
 
-    tl.to(
-      clusterRef.current.rotation,
-      { y: Math.PI * 2, duration: 4, ease: "power1.inOut" },
-      1.5,
-    );
+      gsap.set(clusterRef.current.rotation, { y: 0 });
+      gsap.set(cardRef.current.position, { x: 5.5, y: 0, z: 0 });
+      gsap.set(cardRef.current.scale, { x: 0, y: 0, z: 0 });
 
-    tl.to(phones[2].position, { x: 0, z: radius, duration: 1.5 }, 5.5);
-    phones.forEach((phone, index) => {
-      if (index !== 2)
-        tl.to(phone.position, { x: 0, z: radius - 1.5, duration: 1.5 }, 5.5);
-    });
+      // 1. Initial Scale (Main center card)
+      gsap.set(phones[2].scale, { x: 4, y: 4, z: 4 });
+      gsap.set(phones[2].position, { x: 0, y: 0, z: radius });
 
-    tl.to(phones[2].position, { z: 25, duration: 2, ease: "expo.in" }, 7.0);
-    // 3. Zoom Scale (When it zooms into the camera)
-    tl.to(
-      phones[2].scale,
-      { x: 250, y: 250, z: 250, duration: 2, ease: "expo.in" },
-      7.0,
-    );
-    phones.forEach((phone, index) => {
-      if (index !== 2)
-        tl.to(phone.scale, { x: 0, y: 0, z: 0, duration: 0.5 }, 7.0);
-    });
+      phones.forEach((phone, index) => {
+        if (index !== 2) {
+          gsap.set(phone.scale, { x: 0, y: 0, z: 0 });
+          gsap.set(phone.position, { x: 0, y: 0, z: radius - 0.5 });
+        }
+      });
 
-    tl.to(
-      cardRef.current.scale,
-      { x: 1, y: 1, z: 1, duration: 1.5, ease: "back.out(1.2)" },
-      8.5,
-    );
-    if (insideTextRef?.current) {
-      tl.to(insideTextRef.current, { autoAlpha: 1, y: 0, duration: 1 }, 8.5);
-    }
+      tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: scrollTriggerRef.current,
+          start: "top top",
+          end: "+=4500",
+          scrub: 0.5,
+          pin: true,
+          pinSpacing: true,
+          invalidateOnRefresh: true,
+          refreshPriority: 10,
+        },
+      });
 
-    tl.to(
-      cardRef.current.position,
-      { x: 0, z: 25, duration: 2.5, ease: "power2.in" },
-      10.0,
-    );
-    tl.to(
-      cardRef.current.scale,
-      { x: 4, y: 4, z: 4, duration: 2.5, ease: "power2.in" },
-      10.0,
-    );
-    if (insideTextRef?.current) {
+      phones.forEach((phone, index) => {
+        // 2. Cluster Scale (When they form the ring)
+        tl.to(phone.scale, { x: 2, y: 2, z: 2, duration: 1 }, 0);
+        tl.to(
+          phone.position,
+          {
+            x: Math.cos(angles[index]) * radius,
+            z: Math.sin(angles[index]) * radius,
+            duration: 1.5,
+          },
+          0.2,
+        );
+      });
+
       tl.to(
-        insideTextRef.current,
-        { autoAlpha: 0, y: -40, duration: 1.5 },
+        clusterRef.current.rotation,
+        { y: Math.PI * 2, duration: 4, ease: "power1.inOut" },
+        1.5,
+      );
+
+      tl.to(phones[2].position, { x: 0, z: radius, duration: 1.5 }, 5.5);
+      phones.forEach((phone, index) => {
+        if (index !== 2)
+          tl.to(phone.position, { x: 0, z: radius - 1.5, duration: 1.5 }, 5.5);
+      });
+
+      tl.to(phones[2].position, { z: 25, duration: 2, ease: "expo.in" }, 7.0);
+      // 3. Zoom Scale (When it zooms into the camera)
+      tl.to(
+        phones[2].scale,
+        { x: 250, y: 250, z: 250, duration: 2, ease: "expo.in" },
+        7.0,
+      );
+      phones.forEach((phone, index) => {
+        if (index !== 2)
+          tl.to(phone.scale, { x: 0, y: 0, z: 0, duration: 0.5 }, 7.0);
+      });
+
+      tl.to(
+        cardRef.current.scale,
+        { x: 1, y: 1, z: 1, duration: 1.5, ease: "back.out(1.2)" },
+        8.5,
+      );
+      if (insideTextRef?.current) {
+        tl.to(insideTextRef.current, { autoAlpha: 1, y: 0, duration: 1 }, 8.5);
+      }
+
+      tl.to(
+        cardRef.current.position,
+        { x: 0, z: 25, duration: 2.5, ease: "power2.in" },
         10.0,
       );
-    }
+      tl.to(
+        cardRef.current.scale,
+        { x: 4, y: 4, z: 4, duration: 2.5, ease: "power2.in" },
+        10.0,
+      );
+      if (insideTextRef?.current) {
+        tl.to(
+          insideTextRef.current,
+          { autoAlpha: 0, y: -40, duration: 1.5 },
+          10.0,
+        );
+      }
+
+      onReady?.();
+    };
+
+    rafId = window.requestAnimationFrame(setupTimeline);
 
     return () => {
-      if (tl.scrollTrigger) tl.scrollTrigger.kill();
+      isCancelled = true;
+      if (rafId) window.cancelAnimationFrame(rafId);
+      if (tl?.scrollTrigger) tl.scrollTrigger.kill();
+      if (tl) tl.kill();
     };
-  }, [scene, scrollTriggerRef, insideTextRef]);
+  }, [scene, scrollTriggerRef, insideTextRef, onReady]);
 
   return (
     <group position={[0, -1, 0]}>
@@ -373,6 +418,15 @@ function PhoneCluster({ scrollTriggerRef, insideTextRef }) {
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [windowLoaded, setWindowLoaded] = useState(
+    () => document.readyState === "complete",
+  );
+  const [fontsReady, setFontsReady] = useState(
+    () => !document.fonts || document.fonts.status === "loaded",
+  );
+  const [heroVideoReady, setHeroVideoReady] = useState(false);
+  const [phoneSceneReady, setPhoneSceneReady] = useState(false);
+  const [scatterSceneReady, setScatterSceneReady] = useState(false);
   const storySectionRef = useRef(null);
   const textContainerRef = useRef(null);
   const phoneSectionRef = useRef(null);
@@ -383,10 +437,55 @@ export default function Home() {
   const featureRowsRef = useRef([]);
   const heroVideoRef = useRef(null);
   const insideTextRef = useRef(null);
+  const refreshReady =
+    windowLoaded &&
+    fontsReady &&
+    heroVideoReady &&
+    phoneSceneReady &&
+    scatterSceneReady;
+  const markPhoneSceneReady = useCallback(() => setPhoneSceneReady(true), []);
+  const markScatterSceneReady = useCallback(
+    () => setScatterSceneReady(true),
+    [],
+  );
 
   // Updated text to reflect Startup Park's "Who We Are" copy
   const storyText =
     "Startup Park is the world's first comprehensive ecosystem designed exclusively for entrepreneurs. we bridge the gap between ambitious ideas and market-ready solutions through integrated resources, strategic mentorship, and a thriving community of innovators. from ideation to IPO, we're your trusted partner in building the future.";
+
+  useEffect(() => {
+    if (document.readyState === "complete") {
+      setWindowLoaded(true);
+      return undefined;
+    }
+
+    const handleLoad = () => setWindowLoaded(true);
+    window.addEventListener("load", handleLoad, { once: true });
+
+    return () => window.removeEventListener("load", handleLoad);
+  }, []);
+
+  useEffect(() => {
+    if (!document.fonts || document.fonts.status === "loaded") {
+      setFontsReady(true);
+      return undefined;
+    }
+
+    let isActive = true;
+    document.fonts.ready.then(() => {
+      if (isActive) setFontsReady(true);
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!refreshReady) return undefined;
+
+    return refreshAfterLayout();
+  }, [refreshReady]);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -480,12 +579,13 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (heroVideoRef.current) {
+    const heroVideo = heroVideoRef.current;
+    if (heroVideo) {
       // Manual playbackRate adjustment can cause stuttering on large files.
       // Better to have the slow motion baked into the video file if needed.
-      heroVideoRef.current.play().catch(() => {});
+      heroVideo.play().catch(() => {});
+      if (heroVideo.readyState >= 2) setHeroVideoReady(true);
     }
-    ScrollTrigger.refresh();
   }, []);
 
   return (
@@ -502,6 +602,7 @@ export default function Home() {
             muted
             loop
             playsInline
+            onLoadedData={() => setHeroVideoReady(true)}
             preload="metadata" // Changed from "auto" to "metadata" to save bandwidth and reduce lag
           />
         </div>
@@ -566,6 +667,7 @@ export default function Home() {
               <PhoneCluster
                 scrollTriggerRef={phoneSectionRef}
                 insideTextRef={insideTextRef}
+                onReady={markPhoneSceneReady}
               />
             </Suspense>
           </Canvas>
@@ -610,7 +712,10 @@ export default function Home() {
             <ambientLight intensity={1.5} />
             <Environment preset="city" />
             <Suspense fallback={null}>
-              <ScatteredCards sectionRef={scatterSectionRef} />
+              <ScatteredCards
+                sectionRef={scatterSectionRef}
+                onReady={markScatterSceneReady}
+              />
             </Suspense>
           </Canvas>
         </div>
