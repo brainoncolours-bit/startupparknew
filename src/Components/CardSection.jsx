@@ -21,7 +21,7 @@ export default function MolithraHero({ onPreBook }) {
   ];
 
   return (
-    <section className="relative w-full min-h-screen bg-[#050505] overflow-hidden flex flex-col items-center justify-center py-20 text-white">
+    <section className="relative w-full min-h-screen bg-[#050505] overflow-visible lg:overflow-hidden flex flex-col items-center justify-start lg:justify-center py-24 lg:py-20 text-white">
       {/* Animated Background Glow (Blue Tone) */}
       <div
         className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.15)_0%,transparent_70%)]"
@@ -42,7 +42,7 @@ export default function MolithraHero({ onPreBook }) {
         })}
       </div>
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-16">
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
         {/* Left Side: Content */}
         <div className="flex-1 space-y-8">
           <span
@@ -52,7 +52,7 @@ export default function MolithraHero({ onPreBook }) {
           </span>
 
           <h2
-            className="text-5xl md:text-7xl font-bold leading-[1.1] tracking-tighter uppercase"
+            className="text-4xl sm:text-5xl md:text-7xl font-bold leading-[1.1] tracking-tighter uppercase"
           >
             The Next Gen
             <br /> <span className="text-blue-500">Founder Card</span>
