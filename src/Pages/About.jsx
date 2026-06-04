@@ -973,43 +973,130 @@ export default function About() {
       </section>
 
       {/* ── PHILOSOPHY SECTION ─────────────────────────────────────────── */}
-      <section style={{
-        position: "relative", minHeight: "100vh",
-        display: "flex", alignItems: "center",
-        overflow: "hidden", background: "rgba(0,0,0,0.97)",
-        padding: "10vh clamp(1.5rem,8vw,8rem)",
-      }}>
-        {/* 3D Right canvas */}
-        <div style={{ position: "absolute", right: "-5vw", top: 0, bottom: 0, width: "55vw", opacity: 0.65, pointerEvents: "none" }}>
-          <Canvas dpr={[1, 1]} gl={{ antialias: true, alpha: true }} camera={{ position: [0, 0, 7], fov: 55 }}>
-            <ambientLight intensity={0.1} />
-            <pointLight position={[2, 2, 2]} color="#1f4aa8" intensity={2} />
-            <pointLight position={[-2, -2, 2]} color="#1f4aa8" intensity={1.5} />
-            <Suspense fallback={null}>
-              <Float speed={1.1} rotationIntensity={0.35} floatIntensity={0.5}>
-                <AboutIco />
-              </Float>
-              <Environment preset="night" />
-            </Suspense>
-          </Canvas>
-        </div>
+      <section
+  style={{
+    position: "relative",
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "center",
+    overflow: "hidden",
+    background: "rgba(0,0,0,0.97)",
+    padding: "10vh clamp(1.5rem,8vw,8rem)",
+  }}
+>
+  {/* 3D Right canvas */}
+  <div
+    style={{
+      position: "absolute",
+      right: window.innerWidth <= 768 ? "-35vw" : "-5vw",
+      top: 0,
+      bottom: 0,
+      width: window.innerWidth <= 768 ? "100vw" : "55vw",
+      opacity: window.innerWidth <= 768 ? 0.15 : 0.65,
+      pointerEvents: "none",
+    }}
+  >
+    <Canvas
+      dpr={[1, 1]}
+      gl={{ antialias: true, alpha: true }}
+      camera={{ position: [0, 0, 7], fov: 55 }}
+    >
+      <ambientLight intensity={0.1} />
+      <pointLight position={[2, 2, 2]} color="#1f4aa8" intensity={2} />
+      <pointLight position={[-2, -2, 2]} color="#1f4aa8" intensity={1.5} />
 
-        {/* Left text */}
-        <div style={{ maxWidth: "40rem", position: "relative", zIndex: 2 }}>
-          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.8rem,7.5vw,7.5rem)", lineHeight: 0.95, color: "var(--white)", marginBottom: "0.3rem" }}>We think in</h2>
-          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.8rem,7.5vw,7.5rem)", lineHeight: 0.95, color: "var(--green)", textShadow: "0 0 60px rgba(31,74,168,0.45)", marginBottom: "3rem" }}>ventures.</h2>
-          <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.32)", lineHeight: 1.9, fontWeight: 300, marginBottom: "1.2rem", maxWidth: "36rem" }}>
-            Not standalone desks, not short-term support patches — complete scalable systems. When infrastructure, incubation, mentorship, and legal backing work in harmony, your venture grows at maximum velocity.
-          </p>
-          <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.14)", lineHeight: 1.9, fontWeight: 300, maxWidth: "36rem" }}>
-            We built this environment for founders who dream big, execute fast, and want to turn raw value into generational businesses.
-          </p>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginTop: "3.5rem" }}>
-            <div style={{ width: 52, height: 1, background: "rgba(31,74,168,0.38)" }} />
-          </div>
-        </div>
-      </section>
+      <Suspense fallback={null}>
+        <Float speed={1.1} rotationIntensity={0.35} floatIntensity={0.5}>
+          <AboutIco />
+        </Float>
+        <Environment preset="night" />
+      </Suspense>
+    </Canvas>
+  </div>
 
+  {/* Left text */}
+  <div
+    style={{
+      maxWidth: "40rem",
+      width: "100%",
+      position: "relative",
+      zIndex: 2,
+    }}
+  >
+    <h2
+      style={{
+        fontFamily: "'Bebas Neue', sans-serif",
+        fontSize: "clamp(2.8rem,7.5vw,7.5rem)",
+        lineHeight: 0.95,
+        color: "var(--white)",
+        marginBottom: "0.3rem",
+      }}
+    >
+      We think in
+    </h2>
+
+    <h2
+      style={{
+        fontFamily: "'Bebas Neue', sans-serif",
+        fontSize: "clamp(2.8rem,7.5vw,7.5rem)",
+        lineHeight: 0.95,
+        color: "var(--green)",
+        textShadow: "0 0 60px rgba(31,74,168,0.45)",
+        marginBottom: window.innerWidth <= 768 ? "2rem" : "3rem",
+      }}
+    >
+      ventures.
+    </h2>
+
+    <p
+      style={{
+        fontSize: window.innerWidth <= 768 ? "1rem" : "0.9rem",
+        color:
+          window.innerWidth <= 768
+            ? "rgba(255,255,255,0.65)"
+            : "rgba(255,255,255,0.32)",
+        lineHeight: 1.9,
+        fontWeight: 300,
+        marginBottom: "1.2rem",
+        maxWidth: "36rem",
+      }}
+    >
+      Not standalone desks, not short-term support patches — complete scalable systems. When infrastructure, incubation, mentorship, and legal backing work in harmony, your venture grows at maximum velocity.
+    </p>
+
+    <p
+      style={{
+        fontSize: window.innerWidth <= 768 ? "0.95rem" : "0.78rem",
+        color:
+          window.innerWidth <= 768
+            ? "rgba(255,255,255,0.45)"
+            : "rgba(255,255,255,0.14)",
+        lineHeight: 1.9,
+        fontWeight: 300,
+        maxWidth: "36rem",
+      }}
+    >
+      We built this environment for founders who dream big, execute fast, and want to turn raw value into generational businesses.
+    </p>
+
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "1rem",
+        marginTop: "3.5rem",
+      }}
+    >
+      <div
+        style={{
+          width: 52,
+          height: 1,
+          background: "rgba(31,74,168,0.38)",
+        }}
+      />
+    </div>
+  </div>
+</section>
       {/* ── CLOSING HORIZONTAL SCROLL ─────────────────────────────────── */}
       <section
         ref={closingRef}
