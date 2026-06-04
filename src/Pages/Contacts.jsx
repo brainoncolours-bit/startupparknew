@@ -119,15 +119,7 @@ export default function Contact() {
           </div>
 
           <div className="mb-16 space-y-6 text-center">
-  <div>
-    <h3 className="text-[0.75rem] sm:text-[0.85rem] font-bold tracking-[0.3em] uppercase text-white/60 mb-3">
-      Website
-    </h3>
-    <p className="text-white text-base sm:text-lg font-light">
-      www.thestartuppark.com
-    </p>
-  </div>
-
+  
   <div>
     <h3 className="text-[0.75rem] sm:text-[0.85rem] font-bold tracking-[0.3em] uppercase text-white/60 mb-3">
       Address
