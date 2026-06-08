@@ -10,7 +10,8 @@ const navItems = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
   { label: "Services", to: "/services" },
-  { label: "Gallery", to: "/blogs" },
+  { label: "Blogs", to: "/blogs" },
+  { label: "Membership", to: "/membership" },
   { label: "Contact", to: "/contact" },
 ];
 
@@ -65,8 +66,8 @@ export default function Navbar() {
         <img src={logo} alt="Startup Park" className="h-9 sm:h-11 w-auto" />
       </NavLink>
 
-      {/* Desktop pill nav */}
-      <div className="hidden md:flex relative w-[min(92vw,640px)] items-center justify-between rounded-full border border-white/12 bg-black/45 px-4 py-2 shadow-2xl backdrop-blur-2xl">
+      <div className="relative flex w-[min(96vw,920px)] items-center justify-between rounded-full border border-white/12 bg-black/45 px-3 sm:px-6 py-2 shadow-2xl backdrop-blur-2xl max-w-4xl">
+        
         {/* Three.js Canvas Layer */}
         <div className="absolute inset-0 z-0 overflow-hidden rounded-full pointer-events-none">
           <Canvas dpr={0.75} camera={{ position: [0, 0, 5], fov: 26 }}>
@@ -78,42 +79,81 @@ export default function Navbar() {
           </Canvas>
         </div>
 
-        {navItems.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            onMouseEnter={() => setHoveredPath(item.to)}
-            onMouseLeave={() => setHoveredPath(null)}
-            className={() =>
-              `relative z-10 flex-1 rounded-full px-3 py-2.5 text-center text-[0.8rem] font-bold uppercase tracking-[0.35em] transition-all duration-700 ${
-                location.pathname === item.to
-                  ? "text-white scale-105"
-                  : "text-white/40 hover:text-white/80"
-              }`
-            }
-          >
-            {location.pathname === item.to && (
-              <MotionDiv
-                layoutId="active-glow"
-                className="absolute inset-0 z-[-1] rounded-full bg-white/14 blur-[4px]"
-                transition={{ type: "spring", bounce: 0.2, duration: 0.8 }}
-              />
-            )}
-            <AnimatePresence>
-              {hoveredPath === item.to && location.pathname !== item.to && (
+        {/* Desktop nav (hidden on small screens) */}
+        <nav className="hidden md:flex z-10 w-full items-center justify-between gap-3">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              onMouseEnter={() => setHoveredPath(item.to)}
+              onMouseLeave={() => setHoveredPath(null)}
+              className={() =>
+                `relative z-10 flex-1 rounded-full px-3 sm:px-4 py-2.5 text-center text-[0.8rem] sm:text-[0.95rem] font-bold uppercase tracking-[0.18em] transition-all duration-700 ${
+                  location.pathname === item.to 
+                    ? "text-white scale-105" 
+                    : "text-white/40 hover:text-white/80"
+                }`
+              }
+            >
+              {location.pathname === item.to && (
                 <MotionDiv
-                  layoutId="hover-pill"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="absolute inset-0 z-[-1] rounded-full bg-white/6"
-                  transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                  layoutId="active-glow"
+                  className="absolute inset-0 z-[-1] rounded-full bg-white/14 blur-[4px]"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.8 }}
                 />
               )}
-            </AnimatePresence>
-            <span className="relative">{item.label}</span>
-          </NavLink>
-        ))}
+
+              <AnimatePresence>
+                {hoveredPath === item.to && location.pathname !== item.to && (
+                  <MotionDiv
+                    layoutId="hover-pill"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="absolute inset-0 z-[-1] rounded-full bg-white/6"
+                    transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                  />
+                )}
+              </AnimatePresence>
+
+              <span className="relative">{item.label}</span>
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* Mobile hamburger and menu */}
+        <div className="md:hidden relative z-20 flex items-center">
+          <button
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            onClick={() => setMenuOpen((s) => !s)}
+            className="relative z-30 inline-flex items-center justify-center h-10 w-10 rounded-full bg-white/6 hover:bg-white/10 transition"
+          >
+            <span className={`block h-0.5 w-5 bg-white transition-transform ${menuOpen ? "rotate-45 translate-y-0.5" : "-translate-y-1"}`}></span>
+            <span className={`block h-0.5 w-5 bg-white mt-1 transition-all ${menuOpen ? "opacity-0" : "opacity-100"}`}></span>
+            <span className={`block h-0.5 w-5 bg-white mt-1 transition-transform ${menuOpen ? "-rotate-45 -translate-y-0.5" : "translate-y-1"}`}></span>
+          </button>
+
+          {menuOpen && (
+            <div className="absolute right-0 top-full mt-3 w-[min(92vw,320px)] rounded-xl bg-black/70 backdrop-blur px-3 py-3 shadow-xl">
+              <div className="flex flex-col gap-2">
+                {navItems.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => setMenuOpen(false)}
+                    className={({ isActive }) =>
+                      `block rounded px-3 py-2 text-sm font-semibold uppercase tracking-wider ${
+                        isActive ? "text-white bg-white/6" : "text-white/70 hover:text-white"
+                      }`
+                    }
+                  >
+                    {item.label}
+                  </NavLink>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Hamburger button — mobile only */}

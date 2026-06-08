@@ -5,17 +5,17 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
-
-const Home = lazy(() => import("./Pages/Home"));
-const About = lazy(() => import("./Pages/About"));
-const Services = lazy(() => import("./Pages/Services"));
-const Contacts = lazy(() => import("./Pages/Contacts"));
-const Blogs = lazy(() => import("./Pages/Blogs"));
-const BlogDetail = lazy(() => import("./Pages/BlogDetail"));
-const AdminLogin = lazy(() => import("./Pages/Admin/Login"));
-const AdminDashboard = lazy(() => import("./Pages/Admin/Dashboard"));
-const CreatePost = lazy(() => import("./Pages/Admin/CreatePost"));
-const EditPost = lazy(() => import("./Pages/Admin/EditPost"));
+import Home from "./Pages/Home";
+import About from "./Pages/About";
+import Services from "./Pages/Services";
+import Contacts from "./Pages/Contacts";
+import Blogs from "./Pages/Blogs";
+import BlogDetail from "./Pages/BlogDetail";
+import Membership from "./Pages/Membership";
+import AdminLogin from "./Pages/Admin/Login";
+import AdminDashboard from "./Pages/Admin/Dashboard";
+import CreatePost from "./Pages/Admin/CreatePost";
+import EditPost from "./Pages/Admin/EditPost";
 
 function ScrollManager({ lenisRef }) {
   const location = useLocation();
@@ -112,26 +112,19 @@ function App() {
     <>
       <ScrollManager lenisRef={lenisRef} />
       {!isAdminPage && <Navbar />}
-      <Suspense
-        fallback={
-          <div className="min-h-screen bg-black text-white flex items-center justify-center">
-            Loading...
-          </div>
-        }
-      >
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/contact" element={<Contacts />} />
-          <Route path="/blogs" element={<Blogs />} />
-          <Route path="/blogs/:id" element={<BlogDetail />} />
-          <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/create-post" element={<CreatePost />} />
-          <Route path="/admin/edit-post/:id" element={<EditPost />} />
-        </Routes>
-      </Suspense>
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/contact" element={<Contacts />} />
+        <Route path="/membership" element={<Membership />} />
+        <Route path="/blogs" element={<Blogs />} />
+        <Route path="/blogs/:id" element={<BlogDetail />} />
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/create-post" element={<CreatePost />} />
+        <Route path="/admin/edit-post/:id" element={<EditPost />} />
+      </Routes>
       {!isAdminPage && <Footer />}
     </>
   );
