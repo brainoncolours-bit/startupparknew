@@ -1,439 +1,30 @@
 ﻿
-import { useEffect, useRef, Suspense, useMemo } from "react";
+import { useEffect, useRef, useMemo, useState, Suspense } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, Float, PresentationControls } from "@react-three/drei";
-import { useGLTF } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Environment, PresentationControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import structuredAccelerationImg from "../assets/aboutimgs/Structured Acceleration.png";
 import fundingEcosystemsImg from "../assets/aboutimgs/Funding Ecosystems.png";
 import ventureRegistrationImg from "../assets/aboutimgs/Venture Registration.jpeg";
+import "./About.css";
 
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true });
 
-// ─── SHARED CSS ──────────────────────────────────────────────────────────────
-const aboutStyles = `
-  :root {
-    --black: #080808;
-    --off-black: #0d0d0d;
-    --green: #1f4aa8;
-    --green-dim: #17306f;
-    --green-glow: rgba(31,74,168,0.12);
-    --white: #f0f0f0;
-    --muted: #444;
-    --glass: rgba(255,255,255,0.04);
-    --glass-border: rgba(255,255,255,0.07);
-  }
-
-  .about-page { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
-  .about-page *, .about-page *::before, .about-page *::after { box-sizing: border-box; }
-
-  @keyframes about-glow-pulse {
-    0%, 100% { opacity: 0.5; transform: scale(1); }
-    50% { opacity: 0.9; transform: scale(1.08); }
-  }
-  @keyframes about-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-14px); }
-  }
-  @keyframes about-ticker {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-33.33%); }
-  }
-  @keyframes about-ticker-r {
-    0% { transform: translateX(-33.33%); }
-    100% { transform: translateX(0); }
-  }
-  @keyframes about-breathe {
-    0%, 100% { transform: scale(1); opacity: 0.4; }
-    50% { transform: scale(1.1); opacity: 0.8; }
-  }
-  @keyframes glow-text {
-    0% { text-shadow: 0 0 30px rgba(31,74,168,0.35); }
-    100% { text-shadow: 0 0 50px rgba(31,74,168,0.75), 0 0 80px rgba(31,74,168,0.35); }
-  }
-  .about-ticker-wrap {
-    width: 100%; overflow: hidden;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    padding: 0.9rem 0;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(12px);
-  }
-  .about-ticker-inner {
-    display: flex;
-    white-space: nowrap;
-    animation: about-ticker 20s linear infinite;
-  }
-  .about-ticker-inner.rev { animation: about-ticker-r 22s linear infinite; }
-  .about-ticker-item {
-    display: inline-flex; align-items: center; gap: 1.4rem;
-    padding: 0 1.4rem;
-    font-size: 0.6rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.42em;
-    color: rgba(255,255,255,0.2);
-  }
-  .about-ticker-dot {
-    width: 4px; height: 4px; border-radius: 50%;
-    background: var(--green); opacity: 0.65; flex-shrink: 0;
-  }
-
-  /* Hero */
-  .about-badge {
-    display: inline-flex; align-items: center; gap: 0.75rem;
-    background: var(--glass); border: 1px solid var(--glass-border);
-    backdrop-filter: blur(12px); border-radius: 100px;
-    padding: 0.5rem 1.2rem;
-    font-size: 0.58rem; letter-spacing: 0.55em; text-transform: uppercase;
-    color: var(--green); font-weight: 700;
-  }
-  .about-badge-dot {
-    width: 6px; height: 6px; border-radius: 50%; background: var(--green);
-    animation: about-glow-pulse 1.5s ease-in-out infinite;
-  }
-  .about-hero-stat {
-    border-left: 1px solid rgba(255,255,255,0.1);
-    padding-left: 1.5rem;
-    display: flex; flex-direction: column; gap: 0.25rem;
-  }
-  .about-hero-stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(2.4rem, 4vw, 3.2rem);
-    line-height: 1; color: var(--white);
-  }
-  .about-hero-stat-label {
-    font-size: 0.58rem; text-transform: uppercase;
-    letter-spacing: 0.38em; color: rgba(255,255,255,0.28);
-    font-weight: 600;
-  }
-
-  /* Manifesto / Word-reveal */
-  .about-manifesto-word {
-    font-family: 'Bebas Neue', sans-serif;
-    line-height: 0.95; opacity: 0.06;
-    display: inline-block; transition: color 0.3s;
-  }
-
-  /* Team cards */
-  .about-team-card {
-    flex-shrink: 0;
-    width: 280px; height: 380px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.06);
-    position: relative; overflow: hidden; cursor: pointer;
-  }
-  .about-team-card-inner {
-    position: absolute; inset: 0;
-    transition: transform 0.7s;
-  }
-  .about-team-card:hover .about-team-card-inner { transform: scale(1.04); }
-
-  /* Values */
-  .about-value-row {
-    display: grid;
-    grid-template-columns: 3rem minmax(0, 1fr) 1fr;
-    gap: 2rem;
-    padding: 3.5rem 0;
-    align-items: start;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    position: relative;
-    cursor: default;
-  }
-  .about-value-row::before {
-    content: ''; position: absolute; bottom: 0; left: 0;
-    height: 1px; width: 0; background: var(--green);
-    transition: width 1s ease;
-  }
-  .about-value-row:hover::before { width: 100%; }
-  .about-value-row::after {
-    content: ''; position: absolute; top: 0; left: 0;
-    height: 1px; width: 0;
-    background: linear-gradient(to right, rgba(31,74,168,0.3), transparent);
-    transition: width 0.7s ease;
-  }
-  .about-value-row:hover::after { width: 100%; }
-
-  @media (max-width: 900px) {
-    .about-value-row {
-      grid-template-columns: 3rem minmax(0, 1fr);
-      gap: 1rem;
-    }
-    .about-value-row h3 {
-      grid-column: 2 / -1;
-    }
-    .about-value-row p {
-      grid-column: 1 / -1;
-      padding-top: 0.5rem;
-    }
-  }
-
-  /* Closing cards */
-  .about-closing-card {
-    flex-shrink: 0;
-    min-width: 420px; height: 540px;
-    border-radius: 24px;
-    border: 1px solid rgba(255,255,255,0.06);
-    background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 100%);
-    backdrop-filter: blur(16px);
-    padding: 2.5rem; margin: 0 1.2rem;
-    display: flex; flex-direction: column; justify-content: space-between;
-    position: relative; overflow: hidden; cursor: pointer;
-  }
-  .about-closing-card-image {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.46;
-    filter: saturate(0.82) contrast(1.08);
-    transform: scale(1.02);
-    transition: transform 0.85s ease, opacity 0.85s ease, filter 0.85s ease;
-  }
-  .about-closing-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background:
-      linear-gradient(180deg, rgba(0,0,0,0.44) 0%, rgba(0,0,0,0.18) 38%, rgba(0,0,0,0.88) 100%),
-      radial-gradient(ellipse at top left, rgba(31,74,168,0.24), transparent 58%),
-      linear-gradient(90deg, rgba(0,0,0,0.7), rgba(0,0,0,0.2));
-    pointer-events: none;
-  }
-  .about-closing-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(0,0,0,0) 48%);
-    pointer-events: none;
-  }
-  .about-closing-card:hover .about-closing-card-image {
-    opacity: 0.62;
-    filter: saturate(1) contrast(1.14);
-    transform: scale(1.08);
-  }
-  .about-closing-card-glow {
-    position: absolute; inset: 0; z-index: 3;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.6s;
-  }
-  .about-closing-card:hover .about-closing-card-glow { opacity: 1; }
-
-  /* Noise overlay */
-  .about-noise {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-    opacity: 0.04; pointer-events: none;
-  }
-
-  @media (max-width: 768px) {
-    .about-team-card { width: 240px; height: 340px; }
-    .about-hero-section { min-height: auto !important; }
-    .about-hero-content {
-      padding-top: 7rem !important;
-      padding-bottom: 4.5rem !important;
-      padding-left: 1.25rem !important;
-      padding-right: 1.25rem !important;
-    }
-    .about-hero-badge { margin-bottom: 2rem !important; }
-    .about-hero-sub { margin-bottom: 0.5rem !important; line-height: 1.65 !important; }
-    .about-hero-divider { margin: 2rem 0 0.75rem !important; }
-    .about-hero-stats-row { gap: 1.25rem 1.5rem !important; }
-    .about-hero-stat { padding-left: 1rem; }
-
-    .about-story-section { min-height: auto !important; overflow: visible !important; }
-    .about-story-panels {
-      padding: 3.5rem 1.25rem 3.75rem !important;
-      justify-content: flex-start !important;
-    }
-    .about-story-panel { padding: 1.25rem 0 !important; gap: 0.9rem !important; }
-    .about-story-panel p { line-height: 1.65 !important; }
-    .about-story-counters {
-      gap: 1rem !important;
-      margin-top: 1.75rem !important;
-      padding-top: 1.5rem !important;
-    }
-
-    .about-manifesto-section {
-      min-height: auto !important;
-      padding-top: 4.25rem !important;
-      padding-bottom: 4.5rem !important;
-    }
-    .about-manifesto-spacer { margin-bottom: 1.25rem !important; }
-    .about-manifesto-copy { gap: 0.45rem 0.85rem !important; }
-
-    .about-values-section { padding-top: 4.5rem !important; padding-bottom: 4.75rem !important; }
-    .about-values-header { margin-bottom: 2rem !important; }
-    .about-value-row { padding: 2rem 0 !important; }
-
-    .about-team-section { padding-top: 4.5rem !important; padding-bottom: 5rem !important; }
-    .about-team-headline { margin-bottom: 2.25rem !important; }
-    .about-team-headline p { margin-top: 1rem !important; line-height: 1.65 !important; }
-
-    .about-card-section {
-      height: auto !important;
-      min-height: 76vh !important;
-      padding: 4.5rem 0 !important;
-    }
-    .about-card-text svg { width: 42px; height: auto; }
-    .about-card-text > div:first-child { margin-bottom: 1.5rem !important; }
-    .about-card-text h2 { margin-bottom: 1.25rem !important; }
-
-    .about-philosophy-section {
-      min-height: auto !important;
-      padding-top: 4.5rem !important;
-      padding-bottom: 4.75rem !important;
-    }
-    .about-philosophy-accent { margin-bottom: 1.35rem !important; }
-    .about-philosophy-rule { margin-top: 2rem !important; }
-
-    .about-closing-section {
-      height: auto !important;
-      min-height: 0 !important;
-      padding-bottom: 3.5rem !important;
-      overflow: hidden !important;
-    }
-    .about-closing-big { padding: 4rem 1.25rem 2rem !important; }
-    .about-closing-big h2:first-child { font-size: clamp(1.8rem, 9vw, 2.6rem) !important; }
-    .about-closing-big h2:last-child { font-size: clamp(3rem, 15vw, 4.6rem) !important; }
-    .about-closing-track-wrap {
-      width: 100% !important;
-      overflow-x: auto !important;
-      overflow-y: hidden !important;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-x;
-      overscroll-behavior-x: contain;
-    }
-    .about-closing-track-wrap::-webkit-scrollbar { display: none; }
-    .about-closing-track {
-      width: max-content !important;
-      max-width: none !important;
-      gap: 0.75rem !important;
-      padding-left: 1rem !important;
-      padding-right: 1rem !important;
-      transform: translate3d(0, 0, 0) !important;
-      will-change: auto !important;
-    }
-    .about-closing-card {
-      flex: 0 0 clamp(236px, 76vw, 284px) !important;
-      min-width: 0 !important;
-      width: clamp(236px, 76vw, 284px) !important;
-      height: 360px !important;
-      margin: 0 !important;
-      padding: 1.25rem !important;
-      border-radius: 18px !important;
-    }
-    .about-closing-card-image {
-      object-fit: cover !important;
-      transform: none !important;
-    }
-    .about-closing-card span {
-      font-size: 0.52rem !important;
-      letter-spacing: 0.36em !important;
-    }
-    .about-closing-card h3 {
-      font-size: clamp(1.55rem, 8.4vw, 2.2rem) !important;
-      line-height: 0.98 !important;
-      max-width: 100% !important;
-      overflow-wrap: anywhere;
-    }
-    .about-closing-card p {
-      font-size: 0.78rem !important;
-      line-height: 1.55 !important;
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .about-closing-card-divider { margin: 0.55rem 0 1.1rem !important; }
-    .about-closing-track > div:last-child {
-      min-width: 72px !important;
-      margin: 0 !important;
-    }
-    .about-footer-line { padding: 3rem 1.25rem !important; }
-  }
-`;
-
-// ─── FLOATING PARTICLES ──────────────────────────────────────────────────────
-function AboutParticles({ count = 180 }) {
-  const ref = useRef();
-  const positions = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 22;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 18;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 8 - 4;
-    }
-    return pos;
-  }, [count]);
-  useFrame((state) => {
-    if (ref.current) ref.current.rotation.y = state.clock.elapsedTime * 0.008;
-  });
-  return (
-    <points ref={ref}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-      </bufferGeometry>
-      <pointsMaterial size={0.03} color="#1f4aa8" transparent opacity={0.3} sizeAttenuation />
-    </points>
-  );
-}
-
-// ─── ICOSAHEDRON ─────────────────────────────────────────────────────────────
-function AboutIco() {
-  const ref = useRef();
-  useFrame((state) => {
-    if (!ref.current) return;
-    const t = state.clock.elapsedTime;
-    ref.current.rotation.x = t * 0.14;
-    ref.current.rotation.y = t * 0.19;
-  });
-  return (
-    <group ref={ref}>
-      <mesh>
-        <icosahedronGeometry args={[2, 1]} />
-        <meshBasicMaterial color="#1f4aa8" wireframe transparent opacity={0.18} />
-      </mesh>
-      <mesh>
-        <torusGeometry args={[3, 0.012, 8, 180]} />
-        <meshStandardMaterial color="#1f4aa8" emissive="#1f4aa8" emissiveIntensity={1.5} transparent opacity={0.3} />
-      </mesh>
-    </group>
-  );
-}
-
-// ─── TICKER ──────────────────────────────────────────────────────────────────
-function AboutTicker({ items, reverse = false, speed = 20 }) {
-  const all = [...items, ...items, ...items];
-  return (
-    <div className="about-ticker-wrap">
-      <div className={`about-ticker-inner${reverse ? " rev" : ""}`} style={{ animationDuration: `${speed}s` }}>
-        {all.map((item, i) => (
-          <span key={i} className="about-ticker-item">
-            {item}
-            <span className="about-ticker-dot" />
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ─── METAL CARD ──────────────────────────────────────────────────────────────
+// ─── METAL CARD ─────────────────────────────────────────────────────────────
 function MetalCardOrb() {
   const { scene } = useGLTF("/metal_credit_card.glb");
   const ref = useRef();
+  const { invalidate } = useThree();
   const geo = useMemo(() => { let g = null; scene.traverse((c) => { if (c.isMesh && !g) g = c.geometry; }); return g; }, [scene]);
   const mat = useMemo(() => { let m = null; scene.traverse((c) => { if (c.isMesh && !m) m = c.material; }); return m; }, [scene]);
   const tempObj = useMemo(() => new THREE.Object3D(), []);
-  const count = 10;
-  const radius = 3.2;
+  const count = 6;
+  const radius = 2.8;
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (!ref.current) return;
     ref.current.rotation.z += delta * 0.12;
     for (let i = 0; i < count; i++) {
@@ -445,13 +36,54 @@ function MetalCardOrb() {
       ref.current.setMatrixAt(i, tempObj.matrix);
     }
     ref.current.instanceMatrix.needsUpdate = true;
+    invalidate();
   });
 
   if (!geo) return null;
   return (
-    <PresentationControls global={false} cursor snap speed={0.8} polar={[-0.2, 0.2]} azimuth={[-0.2, 0.2]}>
+    <PresentationControls global={false} cursor snap speed={0.4} polar={[-0.1, 0.1]} azimuth={[-0.1, 0.1]}>
       <instancedMesh ref={ref} args={[geo, mat, count]} />
     </PresentationControls>
+  );
+}
+
+// ─── CARD CANVAS WRAPPER (mounts once when near viewport) ────────────────────
+function CardCanvas({ sectionRef }) {
+  const [show, setShow] = useState(false);
+  const showRef = useRef(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !showRef.current) {
+          showRef.current = true;
+          setShow(true);
+        }
+      },
+      { rootMargin: "400px 0px", threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [sectionRef]);
+
+  if (!show) return null;
+
+  return (
+    <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+      <Canvas
+        dpr={[1, 1]}
+        gl={{ antialias: false, alpha: false, powerPreference: "high-performance" }}
+        camera={{ position: [0, 0, 10], fov: 40 }}
+      >
+        <ambientLight intensity={1.5} />
+        <Environment preset="city" />
+        <Suspense fallback={null}>
+          <MetalCardOrb />
+        </Suspense>
+      </Canvas>
+    </div>
   );
 }
 
@@ -493,14 +125,14 @@ export default function About() {
 
       // ── Hero entrance
       gsap.set([".about-hero-badge", ".about-hero-word", ".about-hero-sub", ".about-hero-stat"], {
-        y: 40, opacity: 0,
+        y: 40, opacity: 0, willChange: "transform",
       });
       const heroTl = gsap.timeline({ delay: 0.15 });
       heroTl
-        .to(".about-hero-badge", { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" })
-        .to(".about-hero-word", { y: 0, opacity: 1, duration: 1.1, stagger: 0.07, ease: "expo.out" }, "-=0.4")
-        .to(".about-hero-sub", { y: 0, opacity: 1, duration: 0.9, ease: "expo.out" }, "-=0.5")
-        .to(".about-hero-stat", { y: 0, opacity: 1, duration: 0.8, stagger: 0.06, ease: "expo.out" }, "-=0.6");
+        .to(".about-hero-badge", { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" })
+        .to(".about-hero-word", { y: 0, opacity: 1, duration: 0.8, stagger: 0.05, ease: "expo.out" }, "-=0.3")
+        .to(".about-hero-sub", { y: 0, opacity: 1, duration: 0.7, ease: "expo.out" }, "-=0.4")
+        .to(".about-hero-stat", { y: 0, opacity: 1, duration: 0.6, stagger: 0.04, ease: "expo.out" }, "-=0.5");
 
       // ── Hero parallax
       if (heroRef.current && !isMobile) {
@@ -527,9 +159,10 @@ export default function About() {
           gsap.set(panels, { x: 0, opacity: 1 });
           if (counters) gsap.set(counters, { y: 0, opacity: 1 });
         } else {
+          gsap.set(panels, { willChange: "transform" });
           const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
           panels.forEach((panel, i) => {
-            tl.to(panel, { x: 0, opacity: 1, duration: 0.9 }, i * 0.22);
+            tl.to(panel, { x: 0, opacity: 1, duration: 0.7 }, i * 0.15);
           });
           if (counters) {
             tl.to(counters, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, "-=0.3");
@@ -538,9 +171,9 @@ export default function About() {
           ScrollTrigger.create({
             trigger: storyRef.current,
             start: "top top",
-            end: `+=${panels.length * 60}vh`,
+            end: `+=${panels.length * 30}vh`,
             pin: true, pinSpacing: true,
-            scrub: 0.6, anticipatePin: 1,
+            scrub: 0.8, anticipatePin: 1,
             animation: tl, invalidateOnRefresh: true,
           });
         }
@@ -549,31 +182,29 @@ export default function About() {
       // ── Manifesto pin
       if (manifestoRef.current) {
         const mWords = manifestoRef.current.querySelectorAll(".about-manifesto-word");
-        gsap.set(mWords, { opacity: isMobile ? 1 : 0.06 });
+        gsap.set(mWords, { opacity: isMobile ? 1 : 0.06, willChange: "opacity" });
         if (!isMobile) {
           ScrollTrigger.create({
             trigger: manifestoRef.current,
             start: "top top",
-            end: `+=${mWords.length * 80}`,
+            end: `+=${mWords.length * 50}`,
             pin: true, pinSpacing: true,
-            scrub: 0.35,
-            animation: gsap.to(mWords, { opacity: 1, stagger: { each: 0.28 }, ease: "none" }),
+            scrub: 0.5,
+            animation: gsap.to(mWords, { opacity: 1, stagger: { each: 0.18 }, ease: "none" }),
           });
         }
       }
 
-      // ── Values stagger
+      // ── Values stagger (scale + blur entrance)
       if (valuesRef.current) {
         const rows = valuesRef.current.querySelectorAll(".about-value-row");
         rows.forEach((row, i) => {
-          gsap.fromTo(row,
-            { y: 60, opacity: 0 },
-            {
-              y: 0, opacity: 1, duration: 0.9, ease: "power3.out",
-              scrollTrigger: { trigger: row, start: "top 88%", toggleActions: "play none none reverse" },
-              delay: i * 0.06,
-            }
-          );
+          gsap.set(row, { scale: 0.88, opacity: 0 });
+          gsap.to(row, {
+            scale: 1, opacity: 1, duration: 1, ease: "power4.out",
+            scrollTrigger: { trigger: row, start: "top 88%", toggleActions: "play none none reverse" },
+            delay: i * 0.06,
+          });
         });
         gsap.fromTo(".about-values-header > *",
           { x: -60, opacity: 0 },
@@ -613,6 +244,33 @@ export default function About() {
         );
       }
 
+      // ── Philosophy text stagger
+      gsap.fromTo(
+        ".about-philosophy-section p",
+        { y: 50, opacity: 0 },
+        {
+          y: 0, opacity: 1, duration: 0.9, stagger: 0.18, ease: "power3.out",
+          scrollTrigger: { trigger: ".about-philosophy-section", start: "top 75%", toggleActions: "play none none reverse" },
+        }
+      );
+      gsap.fromTo(
+        ".about-philosophy-accent, .about-philosophy-section h2:nth-child(2)",
+        { x: -50, opacity: 0 },
+        {
+          x: 0, opacity: 1, duration: 1.1, stagger: 0.12, ease: "expo.out",
+          scrollTrigger: { trigger: ".about-philosophy-section", start: "top 80%", toggleActions: "play none none reverse" },
+        }
+      );
+
+      // ── Footer line reveal
+      gsap.fromTo(".about-footer-line p",
+        { y: 40, opacity: 0, scale: 0.92 },
+        {
+          y: 0, opacity: 1, scale: 1, duration: 1, ease: "expo.out",
+          scrollTrigger: { trigger: ".about-footer-line", start: "top 85%", toggleActions: "play none none reverse" },
+        }
+      );
+
       // ── Closing horizontal scroll
       if (closingRef.current && hTrackRef.current) {
         gsap.fromTo(".about-closing-big",
@@ -639,30 +297,38 @@ export default function About() {
       ScrollTrigger.refresh();
     }, pageRef);
 
+    // ── Hero glow mouse parallax (outside gsap.context to avoid listener nesting)
+    if (heroRef.current && window.innerWidth > 768) {
+      const glows = heroRef.current.querySelectorAll("div[style*='radial-gradient']");
+      if (glows.length >= 2) {
+        const g1 = glows[0], g2 = glows[1];
+        const rect = heroRef.current.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const handleMouse = (e) => {
+          const dx = (e.clientX - cx) / rect.width;
+          const dy = (e.clientY - cy) / rect.height;
+          g1.style.transform = `translate(${dx * 30}px, ${dy * 20}px)`;
+          g2.style.transform = `translate(${dx * -20}px, ${dy * -15}px)`;
+        };
+        heroRef.current.addEventListener("mousemove", handleMouse);
+        ctx.add(() => {
+          heroRef.current?.removeEventListener("mousemove", handleMouse);
+        });
+      }
+    }
+
     return () => ctx.revert();
   }, []);
 
   return (
     <div ref={pageRef} className="about-page">
-      <style>{aboutStyles}</style>
-
       {/* ── HERO ──────────────────────────────────────────────────────── */}
       <section
         ref={heroRef}
         className="about-hero-section"
         style={{ position: "relative", minHeight: "130vh", overflow: "hidden", background: "#070708" }}
       >
-        {/* Particle canvas bg */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 0, opacity: 0.65 }}>
-          <Canvas dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }} camera={{ position: [0, 0, 7], fov: 50 }}>
-            <ambientLight intensity={0.3} />
-            <pointLight position={[4, 4, 4]} color="#1f4aa8" intensity={2} />
-            <Suspense fallback={null}>
-              <AboutParticles count={200} />
-              <Environment preset="city" />
-            </Suspense>
-          </Canvas>
-        </div>
 
         {/* Noise */}
         <div className="about-noise" style={{ position: "absolute", inset: 0, zIndex: 1 }} />
@@ -670,16 +336,16 @@ export default function About() {
         {/* Glows */}
         <div style={{
           position: "absolute", top: "30%", left: "20%",
-          width: 560, height: 560, borderRadius: "50%",
+          width: 400, height: 400, borderRadius: "50%",
           background: "radial-gradient(ellipse, rgba(31,74,168,0.08), transparent 70%)",
-          filter: "blur(60px)", animation: "about-breathe 7s ease-in-out infinite",
+          filter: "blur(30px)", animation: "about-breathe 7s ease-in-out infinite",
           pointerEvents: "none",
         }} />
         <div style={{
           position: "absolute", top: "20%", right: "15%",
-          width: 380, height: 380, borderRadius: "50%",
+          width: 300, height: 300, borderRadius: "50%",
           background: "radial-gradient(ellipse, rgba(31,74,168,0.06), transparent 70%)",
-          filter: "blur(40px)", animation: "about-breathe 9s ease-in-out infinite 2s",
+          filter: "blur(20px)", animation: "about-breathe 9s ease-in-out infinite 2s",
           pointerEvents: "none",
         }} />
 
@@ -980,7 +646,7 @@ export default function About() {
       <section
         ref={valuesRef}
         className="about-values-section"
-        style={{ background: "rgba(5,5,9,0.96)", padding: "10vh clamp(1.5rem,8vw,8rem) 12vh" }}
+        style={{ background: "rgba(5,5,9,0.96)", padding: "10vh clamp(1.5rem,8vw,8rem) 12vh", contentVisibility: "auto", contain: "paint layout style" }}
       >
         <div className="about-values-header" style={{ maxWidth: "72rem", marginBottom: "6vh" }}>
           <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(3rem,7vw,7.5rem)", lineHeight: 0.95, color: "var(--white)" }}>
@@ -1079,16 +745,7 @@ export default function About() {
         className="about-card-section"
         style={{ position: "relative", height: "100vh", overflow: "hidden", background: "rgba(0,0,0,0.98)", display: "flex", alignItems: "center", justifyValue: "center" }}
       >
-        {/* 3D canvas */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
-          <Canvas dpr={[1, 1.25]} gl={{ antialias: false, alpha: false, powerPreference: "high-performance" }} camera={{ position: [0, 0, 10], fov: 40 }}>
-            <ambientLight intensity={1.5} />
-            <Environment preset="city" />
-            <Suspense fallback={null}>
-              <MetalCardOrb />
-            </Suspense>
-          </Canvas>
-        </div>
+        <CardCanvas sectionRef={cardSectionRef} />
 
         {/* Radial vignette */}
         <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", background: "radial-gradient(ellipse 65% 65% at 50% 50%, transparent 20%, rgba(0,0,0,0.85) 100%)" }} />
@@ -1125,36 +782,6 @@ export default function About() {
     padding: "10vh clamp(1.5rem,8vw,8rem)",
   }}
 >
-  {/* 3D Right canvas */}
-  <div
-    style={{
-      position: "absolute",
-      right: window.innerWidth <= 768 ? "-35vw" : "-5vw",
-      top: 0,
-      bottom: 0,
-      width: window.innerWidth <= 768 ? "100vw" : "55vw",
-      opacity: window.innerWidth <= 768 ? 0.15 : 0.65,
-      pointerEvents: "none",
-    }}
-  >
-    <Canvas
-      dpr={[1, 1]}
-      gl={{ antialias: true, alpha: true }}
-      camera={{ position: [0, 0, 7], fov: 55 }}
-    >
-      <ambientLight intensity={0.1} />
-      <pointLight position={[2, 2, 2]} color="#1f4aa8" intensity={2} />
-      <pointLight position={[-2, -2, 2]} color="#1f4aa8" intensity={1.5} />
-
-      <Suspense fallback={null}>
-        <Float speed={1.1} rotationIntensity={0.35} floatIntensity={0.5}>
-          <AboutIco />
-        </Float>
-        <Environment preset="night" />
-      </Suspense>
-    </Canvas>
-  </div>
-
   {/* Left text */}
   <div
     style={{
@@ -1254,7 +881,7 @@ export default function About() {
         </div>
 
         <div className="about-closing-track-wrap" style={{ overflow: "hidden" }}>
-          <div ref={hTrackRef} className="about-closing-track" style={{ display: "flex", flexWrap: "nowrap", paddingLeft: "clamp(1.5rem,8vw,8rem)", willChange: "transform" }}>
+          <div ref={hTrackRef} className="about-closing-track" style={{ display: "flex", flexWrap: "nowrap", paddingLeft: "clamp(1.5rem,8vw,8rem)", willChange: "transform", backfaceVisibility: "hidden", perspective: 1000 }}>
             {[
               { index: 0, title: "Co-working Frameworks", desc: "Premium zones, private desks, and tech-ready meeting spaces designed to support startup productivity and scale.", accent: "#1f4aa8", image: "/gallery1.png", imagePosition: "center" },
               { index: 1, title: "Structured Acceleration", desc: "Focused learning paths, execution sprints, and mentorship loops that help founders build with clarity and speed.", accent: "#1f4aa8", image: structuredAccelerationImg, imagePosition: "center" },
