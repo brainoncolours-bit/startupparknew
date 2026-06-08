@@ -873,8 +873,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── EXCLUSIVE CARD SECTION ── */}
-      <CardSection onPreBook={() => setIsModalOpen(true)} />
+      {/* Exclusive Card Section */}
+      {/* <CardSection onPreBook={() => setIsModalOpen(true)} /> */}
 
       {/* ── AUTO-SCROLLING GALLERY SECTION ── */}
       <Gallery />

@@ -13,17 +13,13 @@ import {
   useGLTF,
   PerspectiveCamera,
   Environment,
-  PresentationControls,
 } from "@react-three/drei";
-import { useThree } from "@react-three/fiber";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true });
 useGLTF.preload("/card.glb");
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function pseudoRandom(index, salt = 0) {
   const value = Math.sin(index * 12.9898 + salt * 78.233) * 43758.5453;
@@ -45,12 +41,11 @@ function refreshAfterLayout() {
   return () => frameIds.forEach((id) => window.cancelAnimationFrame(id));
 }
 
-// ─── Scattered Cards (Foundation Impact section background) ───────────────────
-
 function ScatteredCards({ sectionRef, onReady }) {
   const { scene: cardScene } = useGLTF("/card.glb");
   const meshRef = useRef();
   const rotationStateRef = useRef([]);
+  const isVisibleRef = useRef(false);
   const cardCount = 24;
   const tempObject = useMemo(() => new THREE.Object3D(), []);
 
@@ -144,8 +139,20 @@ function ScatteredCards({ sectionRef, onReady }) {
     return () => ctx.revert();
   }, [scatterData, sectionRef, onReady]);
 
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const trigger = ScrollTrigger.create({
+      trigger: sectionRef.current,
+      onEnter: () => { isVisibleRef.current = true; },
+      onLeave: () => { isVisibleRef.current = false; },
+      onEnterBack: () => { isVisibleRef.current = true; },
+      onLeaveBack: () => { isVisibleRef.current = false; },
+    });
+    return () => trigger.kill();
+  }, [sectionRef]);
+
   useFrame((state) => {
-    if (!meshRef.current) return;
+    if (!meshRef.current || !isVisibleRef.current) return;
     const time = state.clock.getElapsedTime();
     for (let i = 0; i < cardCount; i++) {
       const data = scatterData[i];
@@ -178,256 +185,6 @@ function ScatteredCards({ sectionRef, onReady }) {
     </group>
   );
 }
-
-// ─── Interactive Card Ring ────────────────────────────────────────────────────
-
-function InteractiveCard({ cardRef }) {
-  const { scene } = useGLTF("/card.glb");
-  const meshRef = useRef();
-  const tempObject = useMemo(() => new THREE.Object3D(), []);
-  const cardCount = 14;
-  const ringRadius = 3.8;
-
-  const cardGeometry = useMemo(() => {
-    let geo = null;
-    scene.traverse((child) => {
-      if (child.isMesh && !geo) geo = child.geometry;
-    });
-    return geo;
-  }, [scene]);
-
-  const cardMaterial = useMemo(() => {
-    let mat = null;
-    scene.traverse((child) => {
-      if (child.isMesh && !mat) mat = child.material;
-    });
-    return mat;
-  }, [scene]);
-
-  useLayoutEffect(() => {
-    if (!meshRef.current || !cardGeometry) return;
-    for (let i = 0; i < cardCount; i++) {
-      const angle = (i / cardCount) * Math.PI * 2;
-      tempObject.position.set(
-        Math.cos(angle) * ringRadius,
-        Math.sin(angle) * ringRadius,
-        0
-      );
-      tempObject.rotation.set(0, angle + Math.PI / 2, Math.PI / 2);
-      tempObject.scale.set(0.32, 0.32, 0.32);
-      tempObject.updateMatrix();
-      meshRef.current.setMatrixAt(i, tempObject.matrix);
-    }
-    meshRef.current.instanceMatrix.needsUpdate = true;
-  }, [cardGeometry, tempObject]);
-
-  useFrame((state, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.z += delta * 0.1;
-    }
-  });
-
-  if (!cardGeometry) return null;
-
-  return (
-    <group ref={cardRef} position={[5.5, 0, 0]}>
-      <PresentationControls
-        global={false}
-        cursor={true}
-        snap={true}
-        speed={1}
-        zoom={1}
-        polar={[-Math.PI / 10, Math.PI / 10]}
-        azimuth={[-Math.PI / 10, Math.PI / 10]}
-      >
-        <instancedMesh
-          ref={meshRef}
-          args={[cardGeometry, cardMaterial, cardCount]}
-        />
-      </PresentationControls>
-    </group>
-  );
-}
-
-// ─── Responsive Camera ────────────────────────────────────────────────────────
-
-function ResponsiveCamera() {
-  const { camera, size } = useThree();
-  useEffect(() => {
-    camera.fov = size.width < 768 ? 55 : 35;
-    camera.updateProjectionMatrix();
-  }, [camera, size.width]);
-  return null;
-}
-
-// ─── Phone Cluster (Card Spinning Section) ────────────────────────────────────
-
-function PhoneCluster({ scrollTriggerRef, insideTextRef, onReady }) {
-  const { scene } = useGLTF("/card.glb");
-  const clusterRef = useRef();
-  const phoneRefs = useRef([]);
-  const cardRef = useRef();
-  const createPhone = () => scene.clone();
-
-  useLayoutEffect(() => {
-    let rafId;
-    let tl;
-    let isCancelled = false;
-
-    const setupTimeline = () => {
-      if (isCancelled) return;
-
-      const phones = phoneRefs.current.filter(Boolean);
-      if (
-        !clusterRef.current ||
-        !scrollTriggerRef.current ||
-        !cardRef.current ||
-        phones.length < 5
-      ) {
-        rafId = window.requestAnimationFrame(setupTimeline);
-        return;
-      }
-
-      const radius = 4.8;
-      const angles = phones.map(
-        (_, index) => ((index - 2) / 5) * Math.PI * 2 + Math.PI / 2
-      );
-
-      tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: scrollTriggerRef.current,
-          start: "top top",
-          end: "+=4500",
-          scrub: 0.5,
-          pin: true,
-          pinSpacing: true,
-          invalidateOnRefresh: true,
-          refreshPriority: 10,
-        },
-      });
-
-      gsap.set(clusterRef.current.rotation, { y: 0 });
-      gsap.set(cardRef.current.position, { x: 5.5, y: 0, z: 0 });
-      gsap.set(cardRef.current.scale, { x: 0, y: 0, z: 0 });
-
-      if (insideTextRef?.current) {
-        gsap.set(insideTextRef.current, { autoAlpha: 0, y: 40 });
-      }
-
-      gsap.set(phones[2].scale, { x: 4, y: 4, z: 4 });
-      gsap.set(phones[2].position, { x: 0, y: 0, z: radius });
-
-      phones.forEach((phone, index) => {
-        if (index !== 2) {
-          gsap.set(phone.scale, { x: 0, y: 0, z: 0 });
-          gsap.set(phone.position, { x: 0, y: 0, z: radius - 0.5 });
-        }
-      });
-
-      phones.forEach((phone, index) => {
-        tl.to(phone.scale, { x: 2, y: 2, z: 2, duration: 1 }, 0);
-        tl.to(
-          phone.position,
-          {
-            x: Math.cos(angles[index]) * radius,
-            z: Math.sin(angles[index]) * radius,
-            duration: 1.5,
-          },
-          0.2
-        );
-      });
-
-      tl.to(
-        clusterRef.current.rotation,
-        { y: Math.PI * 2, duration: 4, ease: "power1.inOut" },
-        1.5
-      );
-
-      tl.to(phones[2].position, { x: 0, z: radius, duration: 1.5 }, 5.5);
-      phones.forEach((phone, index) => {
-        if (index !== 2)
-          tl.to(
-            phone.position,
-            { x: 0, z: radius - 1.5, duration: 1.5 },
-            5.5
-          );
-      });
-
-      tl.to(phones[2].position, { z: 25, duration: 2, ease: "expo.in" }, 7.0);
-      tl.to(
-        phones[2].scale,
-        { x: 250, y: 250, z: 250, duration: 2, ease: "expo.in" },
-        7.0
-      );
-      phones.forEach((phone, index) => {
-        if (index !== 2)
-          tl.to(phone.scale, { x: 0, y: 0, z: 0, duration: 0.5 }, 7.0);
-      });
-
-      tl.to(
-        cardRef.current.scale,
-        { x: 1, y: 1, z: 1, duration: 1.5, ease: "back.out(1.2)" },
-        8.5
-      );
-      if (insideTextRef?.current) {
-        tl.to(
-          insideTextRef.current,
-          { autoAlpha: 1, y: 0, duration: 1 },
-          8.5
-        );
-      }
-
-      tl.to(
-        cardRef.current.position,
-        { x: 0, z: 25, duration: 2.5, ease: "power2.in" },
-        10.0
-      );
-      tl.to(
-        cardRef.current.scale,
-        { x: 4, y: 4, z: 4, duration: 2.5, ease: "power2.in" },
-        10.0
-      );
-      if (insideTextRef?.current) {
-        tl.to(
-          insideTextRef.current,
-          { autoAlpha: 0, y: -40, duration: 1.5 },
-          10.0
-        );
-      }
-
-      onReady?.();
-    };
-
-    rafId = window.requestAnimationFrame(setupTimeline);
-
-    return () => {
-      isCancelled = true;
-      if (rafId) window.cancelAnimationFrame(rafId);
-      if (tl?.scrollTrigger) tl.scrollTrigger.kill();
-      if (tl) tl.kill();
-    };
-  }, [scene, scrollTriggerRef, insideTextRef, onReady]);
-
-  return (
-    <group position={[0, -1, 0]}>
-      <group ref={clusterRef}>
-        {Array.from({ length: 5 }, (_, index) => (
-          <group
-            key={index}
-            ref={(node) => {
-              phoneRefs.current[index] = node;
-            }}
-          >
-            <primitive object={createPhone()} />
-          </group>
-        ))}
-      </group>
-      <InteractiveCard cardRef={cardRef} />
-    </group>
-  );
-}
-
-// ─── Tier Data ────────────────────────────────────────────────────────────────
 
 const TIERS = [
   {
@@ -494,8 +251,6 @@ const TIERS = [
   },
 ];
 
-// ─── Animated Counter ─────────────────────────────────────────────────────────
-
 function StatCounter({ target, suffix = "", prefix = "" }) {
   const elRef = useRef(null);
   const hasRun = useRef(false);
@@ -534,8 +289,6 @@ function StatCounter({ target, suffix = "", prefix = "" }) {
     </span>
   );
 }
-
-// ─── Membership Card ──────────────────────────────────────────────────────────
 
 function MembershipCard({ tier, index, containerRef }) {
   const cardRef = useRef(null);
@@ -597,14 +350,12 @@ function MembershipCard({ tier, index, containerRef }) {
         transition: "border-color 0.4s ease, transform 0.4s ease",
       }}
     >
-      {/* Mouse-tracking glow */}
       <div
         ref={glowRef}
         className="pointer-events-none absolute inset-0 z-0"
         style={{ transition: "background 0.15s ease" }}
       />
 
-      {/* Popular badge */}
       {tier.badge && (
         <div className="absolute -top-[13px] left-1/2 -translate-x-1/2 z-20">
           <span className="bg-white text-black text-[0.6rem] font-black tracking-[0.25em] uppercase px-4 py-1">
@@ -614,7 +365,6 @@ function MembershipCard({ tier, index, containerRef }) {
       )}
 
       <div className="relative z-10 flex flex-col h-full p-8 lg:p-10">
-        {/* Tier header */}
         <div className="mb-8">
           <p className="text-[0.65rem] tracking-[0.4em] uppercase text-white/35 font-bold mb-2">
             {tier.tagline}
@@ -632,10 +382,8 @@ function MembershipCard({ tier, index, containerRef }) {
           </div>
         </div>
 
-        {/* Divider */}
         <div className="h-[1px] bg-white/10 mb-8" />
 
-        {/* Perks */}
         <ul className="flex flex-col gap-3.5 flex-1 mb-10">
           {tier.perks.map((perk, i) => (
             <li key={i} className="flex items-start gap-3">
@@ -660,7 +408,6 @@ function MembershipCard({ tier, index, containerRef }) {
           ))}
         </ul>
 
-        {/* CTA */}
         <button
           className="w-full py-3.5 text-[0.75rem] font-black tracking-[0.25em] uppercase transition-all duration-300"
           style={
@@ -694,51 +441,37 @@ function MembershipCard({ tier, index, containerRef }) {
   );
 }
 
-// ─── Main Export ──────────────────────────────────────────────────────────────
-
 export default function Membershipsection() {
-  // Readiness flags (mirrors Home.jsx pattern so ScrollTrigger.refresh fires
-  // only after all async assets are ready)
   const [windowLoaded, setWindowLoaded] = useState(
     () => document.readyState === "complete"
   );
   const [fontsReady, setFontsReady] = useState(
     () => !document.fonts || document.fonts.status === "loaded"
   );
-  const [phoneSceneReady, setPhoneSceneReady] = useState(false);
   const [scatterSceneReady, setScatterSceneReady] = useState(false);
 
-  const markPhoneSceneReady = useCallback(() => setPhoneSceneReady(true), []);
   const markScatterSceneReady = useCallback(
     () => setScatterSceneReady(true),
     []
   );
 
   const refreshReady =
-    windowLoaded && fontsReady && phoneSceneReady && scatterSceneReady;
+    windowLoaded && fontsReady && scatterSceneReady;
 
-  // Section refs
-  const sectionRef = useRef(null);           // membership pricing wrapper
+  const sectionRef = useRef(null);
   const headerRef = useRef(null);
   const subheadRef = useRef(null);
   const statsRef = useRef(null);
   const cardsContainerRef = useRef(null);
   const compareRef = useRef(null);
 
-  // Card-spinning section refs
-  const phoneSectionRef = useRef(null);
-  const insideTextRef = useRef(null);
-
-  // Scatter section refs
   const scatterSectionRef = useRef(null);
   const scatterTextRef = useRef(null);
 
-  // Feature grid refs
   const featureSectionRef = useRef(null);
   const featureHeaderRef = useRef(null);
   const featureRowsRef = useRef([]);
 
-  // ── Window / font load tracking ─────────────────────────────────────────────
   useEffect(() => {
     if (document.readyState === "complete") {
       setWindowLoaded(true);
@@ -768,7 +501,6 @@ export default function Membershipsection() {
     return refreshAfterLayout();
   }, [refreshReady]);
 
-  // ── Header + headline + stats entrance ──────────────────────────────────────
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -807,7 +539,6 @@ export default function Membershipsection() {
     return () => ctx.revert();
   }, []);
 
-  // ── Scatter text entrance ────────────────────────────────────────────────────
   useLayoutEffect(() => {
     if (!scatterTextRef.current) return;
 
@@ -834,7 +565,6 @@ export default function Membershipsection() {
     return () => ctx.revert();
   }, []);
 
-  // ── Compare-row entrance ─────────────────────────────────────────────────────
   useLayoutEffect(() => {
     if (!compareRef.current) return;
     const ctx = gsap.context(() => {
@@ -857,7 +587,6 @@ export default function Membershipsection() {
     return () => ctx.revert();
   }, []);
 
-  // ── Feature grid entrance ────────────────────────────────────────────────────
   useLayoutEffect(() => {
     if (!featureSectionRef.current) return;
 
@@ -908,64 +637,10 @@ export default function Membershipsection() {
   return (
     <main className="w-full bg-black">
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          1. CARD SPINNING SECTION  (moved from Home)
-      ══════════════════════════════════════════════════════════════════════ */}
-      <section
-        ref={phoneSectionRef}
-        className="relative h-screen bg-black overflow-hidden"
-      >
-        <div className="h-full w-full">
-          <Canvas
-            dpr={[1, 1.25]}
-            gl={{
-              antialias: false,
-              powerPreference: "high-performance",
-              alpha: false,
-            }}
-          >
-            <PerspectiveCamera makeDefault position={[0, 0, 18]} fov={35} />
-            <ambientLight intensity={1.8} />
-            <Environment preset="city" />
-            <Suspense fallback={null}>
-              <ResponsiveCamera />
-              <PhoneCluster
-                scrollTriggerRef={phoneSectionRef}
-                insideTextRef={insideTextRef}
-                onReady={markPhoneSceneReady}
-              />
-            </Suspense>
-          </Canvas>
-        </div>
-
-        {/* Overlay text shown mid-animation */}
-        <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
-          <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
-            <div ref={insideTextRef} className="max-w-[550px]">
-              <h2 className="font-serif text-[clamp(2.5rem,5vw,5rem)] font-semibold leading-[1.1] text-white mb-6 uppercase">
-                A world-class
-                <br />
-                ecosystem
-              </h2>
-              <p className="text-gray-400 text-[1.05rem] leading-relaxed max-w-[480px]">
-                Designed exclusively to help founders scale faster. We empower
-                builders with premium infrastructure, cross-functional
-                innovation frameworks, and immediate access to capital pathways
-                from idea to IPO.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          2. OUR FOUNDATION & DRIVEN IMPACT  (scatter cards background)
-      ══════════════════════════════════════════════════════════════════════ */}
       <section
         ref={scatterSectionRef}
         className="relative h-screen w-full bg-black flex items-center justify-center overflow-hidden"
       >
-        {/* Three.js canvas — scattered cards */}
         <div className="absolute inset-0 z-0 h-full w-full">
           <Canvas
             dpr={[1, 1.25]}
@@ -974,6 +649,7 @@ export default function Membershipsection() {
               powerPreference: "high-performance",
               alpha: false,
             }}
+            frameloop="demand"
           >
             <PerspectiveCamera makeDefault position={[0, 0, 20]} fov={40} />
             <ambientLight intensity={1.5} />
@@ -987,7 +663,6 @@ export default function Membershipsection() {
           </Canvas>
         </div>
 
-        {/* Centred text overlay */}
         <div
           ref={scatterTextRef}
           className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl group cursor-default"
@@ -1039,20 +714,15 @@ export default function Membershipsection() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          3. MEMBERSHIP TIERS  (original Membershipsection content)
-      ══════════════════════════════════════════════════════════════════════ */}
       <section
         ref={sectionRef}
         className="relative overflow-hidden bg-black text-white"
       >
-        {/* Radial backdrop */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.04),transparent_55%)]" />
         <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-white/5" />
 
         <div className="relative mx-auto max-w-6xl px-6 py-24 sm:px-10 sm:py-28 lg:px-16 lg:py-32">
 
-          {/* Section label */}
           <div className="mb-20 flex items-center gap-6">
             <span className="h-[1px] flex-1 bg-white/10" />
             <span
@@ -1065,7 +735,6 @@ export default function Membershipsection() {
             <span className="h-[1px] flex-1 bg-white/10" />
           </div>
 
-          {/* Headline */}
           <div
             ref={subheadRef}
             className="text-center mb-6"
@@ -1085,31 +754,15 @@ export default function Membershipsection() {
             </p>
           </div>
 
-          {/* Impact stats strip */}
           <div
             ref={statsRef}
             className="mx-auto max-w-3xl mt-12 mb-20 grid grid-cols-3 divide-x divide-white/10 border border-white/10"
             style={{ opacity: 0 }}
           >
             {[
-              {
-                value: 200,
-                suffix: "+",
-                prefix: "",
-                label: "Startups supported",
-              },
-              {
-                value: 600,
-                suffix: " Cr+",
-                prefix: "₹",
-                label: "Funding unlocked",
-              },
-              {
-                value: 10000,
-                suffix: "+",
-                prefix: "",
-                label: "Jobs created",
-              },
+              { value: 200, suffix: "+", prefix: "", label: "Startups supported" },
+              { value: 600, suffix: " Cr+", prefix: "₹", label: "Funding unlocked" },
+              { value: 10000, suffix: "+", prefix: "", label: "Jobs created" },
             ].map((stat, i) => (
               <div key={i} className="flex flex-col items-center py-6 px-4">
                 <p className="font-serif text-[clamp(1.6rem,3.5vw,2.4rem)] font-semibold text-white leading-none">
@@ -1126,7 +779,6 @@ export default function Membershipsection() {
             ))}
           </div>
 
-          {/* Cards grid */}
           <div ref={cardsContainerRef} className="grid gap-5 md:grid-cols-3">
             {TIERS.map((tier, index) => (
               <MembershipCard
@@ -1138,7 +790,6 @@ export default function Membershipsection() {
             ))}
           </div>
 
-          {/* Enterprise note */}
           <div
             ref={compareRef}
             className="mt-14 flex flex-col sm:flex-row items-center justify-center gap-4 text-center"
@@ -1152,14 +803,10 @@ export default function Membershipsection() {
             </button>
           </div>
 
-          {/* Bottom rule */}
           <div className="mt-20 h-[1px] bg-white/10" />
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          4. WHY STARTUP PARK — ANIMATED FEATURE GRID
-      ══════════════════════════════════════════════════════════════════════ */}
       <section
         ref={featureSectionRef}
         className="relative overflow-hidden bg-black text-white"

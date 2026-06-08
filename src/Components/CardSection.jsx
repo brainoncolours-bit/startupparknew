@@ -45,11 +45,7 @@ export default function MolithraHero({ onPreBook }) {
       <div className="relative z-10 w-full max-w-6xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
         {/* Left Side: Content */}
         <div className="flex-1 space-y-8">
-          <span
-            className="text-[10px] font-bold uppercase tracking-[0.4em] text-blue-500"
-          >
-            Limited Edition
-          </span>
+         
 
           <h2
             className="text-4xl sm:text-5xl md:text-7xl font-bold leading-[1.1] tracking-tighter uppercase"
