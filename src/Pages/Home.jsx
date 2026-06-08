@@ -600,40 +600,43 @@ export default function Home() {
       {/* Header Navigation added into layout flow contextually */}
 
       <section className="relative min-h-screen w-full overflow-hidden text-white">
-        <div className="absolute inset-0">
-          <video
-            ref={heroVideoRef}
-            className="h-full w-full object-cover"
-            src={heroVideo}
-            autoPlay
-            muted
-            loop
-            playsInline
-            onLoadedData={() => setHeroVideoReady(true)}
-            preload="metadata" // Changed from "auto" to "metadata" to save bandwidth and reduce lag
-          />
-        </div>
-        <div className="absolute inset-0 bg-black/70" />
-        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-5 text-center">
-          <span className="mb-4 text-xs font-bold tracking-[0.3em] uppercase text-white/60 bg-white/5 px-4 py-1.5 rounded-full backdrop-blur-sm">
-            Startup Park is Now Open at Bengaluru
-          </span>
-          <h1 className="mx-auto max-w-[14ch] text-[clamp(3.5rem,7.5vw,7.5rem)] font-semibold leading-[0.92] tracking-[-0.05em] font-serif uppercase ">
-            <span className="text-7xl">A Complete</span>
-            <br />
-            Startup Ecosystem
-          </h1>
-          <p className="mt-8 text-[clamp(1rem,1.8vw,1.4rem)] tracking-[0.2em] uppercase font-light text-white/70">
-            Innovate <span className="text-white/40">→</span> Accelerate{" "}
-            <span className="text-white/40">→</span> Succeed
-          </p>
-          <p className="mt-4 max-w-[50ch] text-sm text-gray-400">
-            Explore, connect, and grow with the next generation of innovators.
-            <br />
-            The future of startup innovation has officially begun ✨
-          </p>
-        </div>
-      </section>
+  <div className="absolute inset-0">
+    <video
+      ref={heroVideoRef}
+      className="h-full w-full object-cover"
+      src={heroVideo}
+      autoPlay
+      muted
+      loop
+      playsInline
+      onLoadedData={() => setHeroVideoReady(true)}
+      preload="metadata"
+    />
+  </div>
+  <div className="absolute inset-0 bg-black/70" />
+  <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 sm:px-5 text-center w-full">
+    <span className="mb-4 max-w-[95%] text-center text-[0.65rem] sm:text-xs font-bold tracking-[0.15em] sm:tracking-[0.3em] uppercase text-white/60 bg-white/5 px-3 sm:px-4 py-1.5 rounded-full backdrop-blur-sm">
+      Startup Park is Now Open at Bengaluru
+    </span>
+    
+    <h1 className="mx-auto w-full sm:max-w-[14ch] text-[clamp(2.5rem,10vw,7.5rem)] font-semibold leading-[0.92] tracking-[-0.05em] font-serif uppercase break-words">
+      <span className="text-5xl sm:text-6xl md:text-7xl">A Complete</span>
+      <br />
+      Startup Ecosystem
+    </h1>
+    
+    <p className="mt-8 text-[clamp(0.75rem,2.5vw,1.4rem)] tracking-[0.15em] sm:tracking-[0.2em] uppercase font-light text-white/70">
+      Innovate <span className="text-white/40">→</span> Accelerate{" "}
+      <span className="text-white/40">→</span> Succeed
+    </p>
+    
+    <p className="mt-4 max-w-[50ch] text-xs sm:text-sm text-gray-400">
+      Explore, connect, and grow with the next generation of innovators.
+      <br className="hidden sm:block" />
+      The future of startup innovation has officially begun ✨
+    </p>
+  </div>
+</section>
 
       <section
         ref={storySectionRef}
