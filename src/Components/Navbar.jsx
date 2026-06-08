@@ -10,7 +10,7 @@ const navItems = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
   { label: "Services", to: "/services" },
-  { label: "Blogs", to: "/blogs" },
+  { label: "Gallary", to: "/blogs" },
   { label: "Membership", to: "/membership" },
   { label: "Coworking", to: "/coworking" },
   { label: "Contact", to: "/contact" },
