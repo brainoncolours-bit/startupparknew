@@ -197,8 +197,8 @@ export default function CardSections({ onPreBook }) {
             </motion.div>
           </div>
         </div>
-        <CardSection />
       </div>
+      <CardSection />
     </>
   );
 }

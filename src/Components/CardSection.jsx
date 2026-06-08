@@ -21,7 +21,7 @@ export default function MolithraHero({ onPreBook }) {
   ];
 
   return (
-    <section className="relative w-full min-h-screen bg-[#050505] overflow-visible lg:overflow-hidden flex flex-col items-center justify-start lg:justify-center py-24 lg:py-20 text-white">
+    <section className="relative w-full min-h-screen bg-[#050505] overflow-visible lg:overflow-hidden flex flex-col items-center justify-start lg:justify-center pt-12 pb-24 lg:pt-12 lg:pb-20 text-white">
       {/* Animated Background Glow (Blue Tone) */}
       <div
         className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.15)_0%,transparent_70%)]"

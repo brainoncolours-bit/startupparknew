@@ -17,7 +17,7 @@ import AdminDashboard from "./Pages/Admin/Dashboard";
 import CreatePost from "./Pages/Admin/CreatePost";
 import EditPost from "./Pages/Admin/EditPost";
 import Coworking from "./Pages/Coworking";
-import PolicyPage from './pages/PolicyPage';
+import Policypage from './Pages/Policypage';
 
 function ScrollManager({ lenisRef }) {
   const location = useLocation();
@@ -127,7 +127,7 @@ function App() {
         <Route path="/admin/create-post" element={<CreatePost />} />
         <Route path="/admin/edit-post/:id" element={<EditPost />} />
         <Route path="/coworking" element={<Coworking />} />
-        <Route path="/:policySlug" element={<PolicyPage />} />
+        <Route path="/:policySlug" element={<Policypage />} />
       </Routes>
       {!isAdminPage && <Footer />}
     </>
