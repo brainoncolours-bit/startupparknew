@@ -15,5 +15,17 @@ export default defineConfig({
   customLogger: logger,
   build: {
     chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules/three")) return "three";
+          if (id.includes("node_modules/@react-three")) return "react-three";
+          if (id.includes("node_modules/gsap")) return "gsap";
+          if (id.includes("node_modules/framer-motion")) return "framer-motion";
+          if (id.includes("node_modules/@supabase")) return "supabase";
+          if (id.includes("node_modules/lenis")) return "lenis";
+        },
+      },
+    },
   },
 })

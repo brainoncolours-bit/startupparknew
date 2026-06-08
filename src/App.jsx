@@ -5,19 +5,20 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
-import Home from "./Pages/Home";
-import About from "./Pages/About";
-import Services from "./Pages/Services";
-import Contacts from "./Pages/Contacts";
-import Blogs from "./Pages/Blogs";
-import BlogDetail from "./Pages/BlogDetail";
-import Membership from "./Pages/Membership";
-import AdminLogin from "./Pages/Admin/Login";
-import AdminDashboard from "./Pages/Admin/Dashboard";
-import CreatePost from "./Pages/Admin/CreatePost";
-import EditPost from "./Pages/Admin/EditPost";
-import Coworking from "./Pages/Coworking";
-import Policypage from './Pages/Policypage';
+
+const Home = lazy(() => import("./Pages/Home"));
+const About = lazy(() => import("./Pages/About"));
+const Services = lazy(() => import("./Pages/Services"));
+const Contacts = lazy(() => import("./Pages/Contacts"));
+const Blogs = lazy(() => import("./Pages/Blogs"));
+const BlogDetail = lazy(() => import("./Pages/BlogDetail"));
+const Membership = lazy(() => import("./Pages/Membership"));
+const AdminLogin = lazy(() => import("./Pages/Admin/Login"));
+const AdminDashboard = lazy(() => import("./Pages/Admin/Dashboard"));
+const CreatePost = lazy(() => import("./Pages/Admin/CreatePost"));
+const EditPost = lazy(() => import("./Pages/Admin/EditPost"));
+const Coworking = lazy(() => import("./Pages/Coworking"));
+const Policypage = lazy(() => import("./Pages/Policypage"));
 
 function ScrollManager({ lenisRef }) {
   const location = useLocation();
@@ -114,21 +115,23 @@ function App() {
     <>
       <ScrollManager lenisRef={lenisRef} />
       {!isAdminPage && <Navbar />}
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/contact" element={<Contacts />} />
-        <Route path="/membership" element={<Membership />} />
-        <Route path="/blogs" element={<Blogs />} />
-        <Route path="/blogs/:id" element={<BlogDetail />} />
-        <Route path="/admin" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/create-post" element={<CreatePost />} />
-        <Route path="/admin/edit-post/:id" element={<EditPost />} />
-        <Route path="/coworking" element={<Coworking />} />
-        <Route path="/:policySlug" element={<Policypage />} />
-      </Routes>
+      <Suspense fallback={<div className="h-screen w-screen bg-black" />}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/contact" element={<Contacts />} />
+          <Route path="/membership" element={<Membership />} />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blogs/:id" element={<BlogDetail />} />
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/create-post" element={<CreatePost />} />
+          <Route path="/admin/edit-post/:id" element={<EditPost />} />
+          <Route path="/coworking" element={<Coworking />} />
+          <Route path="/:policySlug" element={<Policypage />} />
+        </Routes>
+      </Suspense>
       {!isAdminPage && <Footer />}
     </>
   );

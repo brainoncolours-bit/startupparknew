@@ -1,10 +1,9 @@
-import React, { Suspense, useState, useRef } from "react";
+import React, { Suspense, lazy, useState, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, MeshDistortMaterial } from "@react-three/drei";
-import * as THREE from "three";
 import logo from "../assets/logo.png";
+
+const NavCanvas = lazy(() => import("./NavCanvas"));
 
 const navItems = [
   { label: "Home", to: "/" },
@@ -15,39 +14,6 @@ const navItems = [
   { label: "Coworking", to: "/coworking" },
   { label: "Contact", to: "/contact" },
 ];
-
-function ActiveLight({ activeIndex }) {
-  const meshRef = useRef();
-  const xPos = (activeIndex - (navItems.length - 1) / 2) * 1.6;
-
-  useFrame(() => {
-    if (meshRef.current) {
-      meshRef.current.position.x = THREE.MathUtils.lerp(
-        meshRef.current.position.x,
-        xPos,
-        0.1
-      );
-    }
-  });
-
-  return (
-    <Float speed={4} rotationIntensity={1} floatIntensity={2}>
-      <mesh ref={meshRef} position={[0, 0, 0]}>
-        <sphereGeometry args={[0.5, 24, 24]} />
-        <MeshDistortMaterial
-          color="#ffffff"
-          speed={2}
-          distort={0.25}
-          radius={1}
-          emissive="#ffffff"
-          emissiveIntensity={0.35}
-          transparent
-          opacity={0.12}
-        />
-      </mesh>
-    </Float>
-  );
-}
 
 export default function Navbar() {
   const [hoveredPath, setHoveredPath] = useState(null);
@@ -99,15 +65,11 @@ export default function Navbar() {
         {/* Pill nav */}
         <div className="relative flex w-[min(96vw,920px)] items-center justify-between rounded-full border border-white/12 bg-black/45 px-6 py-2 shadow-2xl backdrop-blur-2xl max-w-5xl">
 
-          {/* Three.js Canvas Layer */}
+          {/* Three.js Canvas Layer (lazy loaded) */}
           <div className="absolute inset-0 z-0 overflow-hidden rounded-full pointer-events-none">
-            <Canvas dpr={0.75} camera={{ position: [0, 0, 5], fov: 26 }}>
-              <ambientLight intensity={0.5} />
-              <pointLight position={[10, 10, 10]} intensity={1} />
-              <Suspense fallback={null}>
-                <ActiveLight activeIndex={activeIndex} />
-              </Suspense>
-            </Canvas>
+            <Suspense fallback={null}>
+              <NavCanvas activeIndex={activeIndex} />
+            </Suspense>
           </div>
 
           <nav className="flex z-10 w-full items-center justify-between gap-3">
