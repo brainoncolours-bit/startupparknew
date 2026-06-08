@@ -16,6 +16,7 @@ import AdminLogin from "./Pages/Admin/Login";
 import AdminDashboard from "./Pages/Admin/Dashboard";
 import CreatePost from "./Pages/Admin/CreatePost";
 import EditPost from "./Pages/Admin/EditPost";
+import Coworking from "./Pages/Coworking";
 
 function ScrollManager({ lenisRef }) {
   const location = useLocation();
@@ -124,6 +125,7 @@ function App() {
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/create-post" element={<CreatePost />} />
         <Route path="/admin/edit-post/:id" element={<EditPost />} />
+        <Route path="/coworking" element={<Coworking />} />
       </Routes>
       {!isAdminPage && <Footer />}
     </>

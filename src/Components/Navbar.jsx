@@ -12,6 +12,7 @@ const navItems = [
   { label: "Services", to: "/services" },
   { label: "Blogs", to: "/blogs" },
   { label: "Membership", to: "/membership" },
+  { label: "Coworking", to: "/coworking" },
   { label: "Contact", to: "/contact" },
 ];
 
@@ -66,7 +67,7 @@ export default function Navbar() {
         <img src={logo} alt="Startup Park" className="h-9 sm:h-11 w-auto" />
       </NavLink>
 
-      <div className="relative flex w-[min(96vw,920px)] items-center justify-between rounded-full border border-white/12 bg-black/45 px-3 sm:px-6 py-2 shadow-2xl backdrop-blur-2xl max-w-4xl">
+      <div className="relative flex w-[min(96vw,920px)] items-center justify-between rounded-full border border-white/12 bg-black/45 px-3 sm:px-6 py-2 shadow-2xl backdrop-blur-2xl max-w-5xl">
         
         {/* Three.js Canvas Layer */}
         <div className="absolute inset-0 z-0 overflow-hidden rounded-full pointer-events-none">
@@ -88,7 +89,7 @@ export default function Navbar() {
               onMouseEnter={() => setHoveredPath(item.to)}
               onMouseLeave={() => setHoveredPath(null)}
               className={() =>
-                `relative z-10 flex-1 rounded-full px-3 sm:px-4 py-2.5 text-center text-[0.8rem] sm:text-[0.95rem] font-bold uppercase tracking-[0.18em] transition-all duration-700 ${
+                `relative z-10 flex-1 rounded-full px-1.5 sm:px-2 py-2.5 text-center text-[0.75rem] lg:text-[0.85rem] font-bold uppercase tracking-[0.12em] transition-all duration-700 ${
                   location.pathname === item.to 
                     ? "text-white scale-105" 
                     : "text-white/40 hover:text-white/80"

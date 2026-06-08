@@ -22,6 +22,8 @@ import heroVideo from "/cover.mp4";
 import PreBookModal from "../Components/Modals/PreBookModal";
 import Gallery from "../Components/Gallery";
 import CardSection from "../Components/CardSection";
+import { useNavigate } from "react-router-dom";
+import ecosystemImg from "../assets/gallerytwo/image copy 2.png";
 
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true });
@@ -440,6 +442,7 @@ export default function Home() {
   const featureHeaderRef = useRef(null);
   const featureRowsRef = useRef([]);
   const heroVideoRef = useRef(null);
+  const navigate = useNavigate();
   const insideTextRef = useRef(null);
   const refreshReady =
     windowLoaded &&
@@ -613,12 +616,12 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/70" />
         <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-5 text-center">
           <span className="mb-4 text-xs font-bold tracking-[0.3em] uppercase text-white/60 bg-white/5 px-4 py-1.5 rounded-full backdrop-blur-sm">
-            Startup Park is Now Open
+            Startup Park is Now Open at Bengaluru
           </span>
-          <h1 className="mx-auto max-w-[14ch] text-[clamp(3.5rem,7.5vw,7.5rem)] font-semibold leading-[0.92] tracking-[-0.05em] font-serif uppercase">
-            India’s Launchpad
+          <h1 className="mx-auto max-w-[14ch] text-[clamp(3.5rem,7.5vw,7.5rem)] font-semibold leading-[0.92] tracking-[-0.05em] font-serif uppercase ">
+            <span className="text-7xl">A Complete</span>
             <br />
-            for Founders
+            Startup Ecosystem
           </h1>
           <p className="mt-8 text-[clamp(1rem,1.8vw,1.4rem)] tracking-[0.2em] uppercase font-light text-white/70">
             Innovate <span className="text-white/40">→</span> Accelerate{" "}
@@ -649,55 +652,67 @@ export default function Home() {
           </div>
         </div>
       </section>
-
+       
+       {/* Card rotating section */}
       <section
-        ref={phoneSectionRef}
-        className="relative h-screen bg-black overflow-hidden"
+  ref={phoneSectionRef}
+  className="relative h-screen bg-black overflow-hidden"
+>
+  {/* <div className="h-full w-full">
+    <Canvas
+      dpr={[1, 1.25]}
+      gl={{
+        antialias: false,
+        powerPreference: "high-performance",
+        alpha: false,
+      }}
+    >
+      <PerspectiveCamera makeDefault position={[0, 0, 18]} fov={35} />
+      <ambientLight intensity={1.8} />
+      <Environment preset="city" />
+      <Suspense fallback={null}>
+        <ResponsiveCamera />
+        <PhoneCluster
+          scrollTriggerRef={phoneSectionRef}
+          insideTextRef={insideTextRef}
+          onReady={markPhoneSceneReady}
+        />
+      </Suspense>
+    </Canvas>
+  </div> */}
+  <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
+    <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 lg:grid lg:grid-cols-2 lg:gap-20 xl:gap-24 items-center">
+      
+      {/* Left side: Text content */}
+      <div
+        ref={insideTextRef}
+        className="lg:col-start-1 mb-12 lg:mb-0"
       >
-        <div className="h-full w-full">
-          <Canvas
-            dpr={[1, 1.25]}
-            gl={{
-              antialias: false,
-              powerPreference: "high-performance",
-              alpha: false,
-            }}
-          >
-            <PerspectiveCamera makeDefault position={[0, 0, 18]} fov={35} />
-            <ambientLight intensity={1.8} />
-            <Environment preset="city" />
-            <Suspense fallback={null}>
-              <ResponsiveCamera />
-              <PhoneCluster
-                scrollTriggerRef={phoneSectionRef}
-                insideTextRef={insideTextRef}
-                onReady={markPhoneSceneReady}
-              />
-            </Suspense>
-          </Canvas>
-        </div>
-        <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
-          <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
-            <div
-              ref={insideTextRef}
-              className="max-w-[550px]"
-            >
-              <h2 className="font-serif text-[clamp(2.5rem,5vw,5rem)] font-semibold leading-[1.1] text-white mb-6 uppercase">
-                A world-class
-                <br />
-                ecosystem
-              </h2>
-              <p className="text-gray-400 text-[1.05rem] leading-relaxed max-w-[480px]">
-                Designed exclusively to help founders scale faster. We empower
-                builders with premium infrastructure, cross-functional
-                innovation frameworks, and immediate access to capital pathways
-                from idea to IPO.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+        <h2 className="font-serif text-[clamp(2.5rem,5vw,5rem)] font-semibold leading-[1.1] text-white mb-6 uppercase">
+          A world-class
+          <br />
+          ecosystem
+        </h2>
+        <p className="text-gray-400 text-[1.05rem] leading-relaxed max-w-[480px]">
+          Designed exclusively to help founders scale faster. We empower
+          builders with premium infrastructure, cross-functional
+          innovation frameworks, and immediate access to capital pathways
+          from idea to IPO.
+        </p>
+      </div>
 
+      {/* Right side: Image content with proper asset reference */}
+      <div className="lg:col-start-2 flex items-center justify-center">
+        <img
+          src={ecosystemImg}
+          alt="Ecosystem illustration"
+          className="max-h-[70vh] w-auto object-contain"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+       {/* card blasting section */}
       <section
   ref={scatterSectionRef}
   className="relative h-screen w-full bg-black flex items-center justify-center overflow-hidden"
@@ -772,7 +787,7 @@ export default function Home() {
       competitive tech markets.
     </p>
   </div>
-</section>
+    </section>
 
       {/* RETAINED ANIMATED FEATURE GRID (Why Startup Park Framework) */}
       <section
@@ -798,6 +813,7 @@ export default function Home() {
                 id: 0,
                 title: "spaces",
                 desc: "Premium tech-enabled co-working zones, innovation prototyping labs, and media-ready demo stages.",
+                route: "/coworking",
                 icon: (
                   <path
                     d="M22 70L62 30 M62 30H45 M62 30V47"
@@ -811,6 +827,7 @@ export default function Home() {
                 id: 1,
                 title: "growth",
                 desc: "Structured incubator roadmaps, milestone-driven acceleration tracks, and elite masterclasses.",
+                route: "services/",
                 icon: (
                   <path
                     d="M30 35H62V69H30V35Z M38 35V26C38 19.3726 43.3726 14 50 14C56.6274 14 62 19.3726 62 26V35"
@@ -823,6 +840,7 @@ export default function Home() {
                 id: 2,
                 title: "support",
                 desc: "Direct 1:1 access to veteran multi-exit mentors alongside full legal, governance, and cap-table help.",
+                route: "/contact",
                 icon: (
                   <path
                     d="M20 24h18v44H20z M54 24h18v44H54z M46 18v56"
@@ -835,12 +853,13 @@ export default function Home() {
               },
             ].map((item, i) => (
               <div
-                key={i}
-                ref={(node) => {
-                  featureRowsRef.current[i] = node;
-                }}
-                className="relative overflow-hidden group"
-              >
+  key={i}
+  ref={(node) => {
+    featureRowsRef.current[i] = node;
+  }}
+  onClick={() => navigate(item.route)}
+  className="relative overflow-hidden group cursor-pointer"
+>
                 <div className="row-content grid gap-10 py-16 md:grid-cols-[1fr_auto] md:items-center">
                   <div className="max-w-xl">
                     <h3 className="font-sans text-[clamp(3.5rem,7vw,6rem)] font-bold italic leading-[0.85] tracking-[-0.07em] uppercase transition-colors duration-500 group-hover:text-white text-white/90">

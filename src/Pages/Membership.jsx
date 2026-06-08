@@ -4,6 +4,10 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Center, Float, Environment } from "@react-three/drei";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { CheckCircle2, Sparkles } from "lucide-react";
+import MembershipSection from "../Pages/Membershipsection";
+// or wherever you place the file
+
+// Then in your JSX, between sections:
 
 // 3D Model Controller to handle smooth scroll-driven kinematics
 function Scene({ scrollProgress }) {
@@ -152,8 +156,13 @@ export default function CardSection({ onPreBook }) {
           </motion.div>
 
         </div>
+
       </div>
+        <MembershipSection />
+
     </div>
+    
+
   );
 }
 
