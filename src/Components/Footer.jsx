@@ -1,6 +1,5 @@
-
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 // Custom SVG Social Icons (Lucide 1.8.0+ removed brand icons)
@@ -138,7 +137,7 @@ export default function HyperAnimatedFooter() {
             maxWidth: '320px',
             margin: 0
           }}>
-            India’s premium hyper-growth pipeline. We transform complex engineering concepts into inevitable market leaders.
+            India's premium hyper-growth pipeline. We transform complex engineering concepts into inevitable market leaders.
           </p>
         </div>
 
@@ -241,10 +240,50 @@ export default function HyperAnimatedFooter() {
 
       </div>
 
+      {/* Policy Links Row */}
+      <div style={{
+        maxWidth: '1200px',
+        margin: '2.5rem auto 0',
+        padding: '0 2rem',
+        position: 'relative',
+        zIndex: 2,
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+        flexWrap: 'wrap'
+      }}>
+        {[
+          { label: 'Privacy Policy', to: '/privacy-policy' },
+          { label: 'Terms & Conditions', to: '/terms-and-conditions' },
+          { label: 'Refund Policy', to: '/refund-policy' }
+        ].map((policy, index, arr) => (
+          <React.Fragment key={policy.to}>
+            <NavLink
+              to={policy.to}
+              style={{
+                fontSize: '0.72rem',
+                fontWeight: 600,
+                color: 'rgba(255,255,255,0.35)',
+                textDecoration: 'none',
+                letterSpacing: '0.05em',
+                transition: 'color 0.25s ease',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#64c8ff'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.35)'; }}
+            >
+              {policy.label}
+            </NavLink>
+            {index < arr.length - 1 && (
+              <span style={{ color: 'rgba(255,255,255,0.12)', fontSize: '0.72rem', userSelect: 'none' }}>|</span>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+
       {/* Bottom Infrastructure Band */}
       <div style={{
         maxWidth: '1200px',
-        margin: '4rem auto 0',
+        margin: '1.5rem auto 0',
         padding: '2rem 2rem 0',
         borderTop: '1px solid rgba(255,255,255,0.03)',
         display: 'flex',
