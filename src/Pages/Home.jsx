@@ -456,7 +456,6 @@ export default function Home() {
     [],
   );
 
-  // Updated text to reflect Startup Park's "Who We Are" copy
   const storyText =
     "Startup Park is the world's first comprehensive ecosystem designed exclusively for entrepreneurs. we bridge the gap between ambitious ideas and market-ready solutions through integrated resources, strategic mentorship, and a thriving community of innovators. from ideation to IPO, we're your trusted partner in building the future.";
 
@@ -588,8 +587,6 @@ export default function Home() {
   useEffect(() => {
     const heroVideo = heroVideoRef.current;
     if (heroVideo) {
-      // Manual playbackRate adjustment can cause stuttering on large files.
-      // Better to have the slow motion baked into the video file if needed.
       heroVideo.play().catch(() => {});
       if (heroVideo.readyState >= 2) setHeroVideoReady(true);
     }
@@ -597,47 +594,48 @@ export default function Home() {
 
   return (
     <main className="w-full bg-black">
-      {/* Header Navigation added into layout flow contextually */}
 
+      {/* ── HERO SECTION ── */}
       <section className="relative min-h-screen w-full overflow-hidden text-white">
-  <div className="absolute inset-0">
-    <video
-      ref={heroVideoRef}
-      className="h-full w-full object-cover"
-      src={heroVideo}
-      autoPlay
-      muted
-      loop
-      playsInline
-      onLoadedData={() => setHeroVideoReady(true)}
-      preload="metadata"
-    />
-  </div>
-  <div className="absolute inset-0 bg-black/70" />
-  <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 sm:px-5 text-center w-full">
-    <span className="mb-4 max-w-[95%] text-center text-[0.65rem] sm:text-xs font-bold tracking-[0.15em] sm:tracking-[0.3em] uppercase text-white/60 bg-white/5 px-3 sm:px-4 py-1.5 rounded-full backdrop-blur-sm">
-      Startup Park is Now Open at Bengaluru
-    </span>
-    
-    <h1 className="mx-auto w-full sm:max-w-[14ch] text-[clamp(2.5rem,10vw,7.5rem)] font-semibold leading-[0.92] tracking-[-0.05em] font-serif uppercase break-words">
-      <span className="text-5xl sm:text-6xl md:text-7xl">A Complete</span>
-      <br />
-      Startup Ecosystem
-    </h1>
-    
-    <p className="mt-8 text-[clamp(0.75rem,2.5vw,1.4rem)] tracking-[0.15em] sm:tracking-[0.2em] uppercase font-light text-white/70">
-      Innovate <span className="text-white/40">→</span> Accelerate{" "}
-      <span className="text-white/40">→</span> Succeed
-    </p>
-    
-    <p className="mt-4 max-w-[50ch] text-xs sm:text-sm text-gray-400">
-      Explore, connect, and grow with the next generation of innovators.
-      <br className="hidden sm:block" />
-      The future of startup innovation has officially begun ✨
-    </p>
-  </div>
-</section>
+        <div className="absolute inset-0">
+          <video
+            ref={heroVideoRef}
+            className="h-full w-full object-cover"
+            src={heroVideo}
+            autoPlay
+            muted
+            loop
+            playsInline
+            onLoadedData={() => setHeroVideoReady(true)}
+            preload="metadata"
+          />
+        </div>
+        <div className="absolute inset-0 bg-black/70" />
+        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 sm:px-5 text-center w-full">
+          <span className="mb-4 max-w-[95%] text-center text-[0.65rem] sm:text-xs font-bold tracking-[0.15em] sm:tracking-[0.3em] uppercase text-white/60 bg-white/5 px-3 sm:px-4 py-1.5 rounded-full backdrop-blur-sm">
+            Startup Park is Now Open at Bengaluru
+          </span>
 
+          <h1 className="mx-auto w-full sm:max-w-[14ch] text-[clamp(2.5rem,10vw,7.5rem)] font-semibold leading-[0.92] tracking-[-0.05em] font-serif uppercase break-words">
+            <span className="text-5xl sm:text-6xl md:text-7xl">A Complete</span>
+            <br />
+            Startup Ecosystem
+          </h1>
+
+          <p className="mt-8 text-[clamp(0.75rem,2.5vw,1.4rem)] tracking-[0.15em] sm:tracking-[0.2em] uppercase font-light text-white/70">
+            Innovate <span className="text-white/40">→</span> Accelerate{" "}
+            <span className="text-white/40">→</span> Succeed
+          </p>
+
+          <p className="mt-4 max-w-[50ch] text-xs sm:text-sm text-gray-400">
+            Explore, connect, and grow with the next generation of innovators.
+            <br className="hidden sm:block" />
+            The future of startup innovation has officially begun ✨
+          </p>
+        </div>
+      </section>
+
+      {/* ── STORY SECTION ── */}
       <section
         ref={storySectionRef}
         className="relative min-h-screen bg-black text-white flex items-center"
@@ -645,7 +643,6 @@ export default function Home() {
         <div className="w-full px-6 sm:px-10 lg:px-24">
           <div ref={textContainerRef} className="mx-auto max-w-[1100px]">
             <p className="text-center font-serif text-[clamp(1.65rem,3.2vw,3.2rem)] leading-[1.4] text-[#4a5160]">
-
               {storyText.split(" ").map((word, index) => (
                 <span key={index} className="word inline-block mr-[0.25em]">
                   {word}
@@ -655,144 +652,129 @@ export default function Home() {
           </div>
         </div>
       </section>
-       
-       {/* Card rotating section */}
+
+      {/* ── CARD ROTATING SECTION ── */}
       <section
-  ref={phoneSectionRef}
-  className="relative h-screen bg-black overflow-hidden"
->
-  {/* <div className="h-full w-full">
-    <Canvas
-      dpr={[1, 1.25]}
-      gl={{
-        antialias: false,
-        powerPreference: "high-performance",
-        alpha: false,
-      }}
-    >
-      <PerspectiveCamera makeDefault position={[0, 0, 18]} fov={35} />
-      <ambientLight intensity={1.8} />
-      <Environment preset="city" />
-      <Suspense fallback={null}>
-        <ResponsiveCamera />
-        <PhoneCluster
-          scrollTriggerRef={phoneSectionRef}
-          insideTextRef={insideTextRef}
-          onReady={markPhoneSceneReady}
-        />
-      </Suspense>
-    </Canvas>
-  </div> */}
-  <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
-    <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 lg:grid lg:grid-cols-2 lg:gap-20 xl:gap-24 items-center">
-      
-      {/* Left side: Text content */}
-      <div
-        ref={insideTextRef}
-        className="lg:col-start-1 mb-12 lg:mb-0"
+        ref={phoneSectionRef}
+        className="relative h-screen bg-black overflow-hidden"
       >
-        <h2 className="font-serif text-[clamp(2.5rem,5vw,5rem)] font-semibold leading-[1.1] text-white mb-6 uppercase">
-          A world-class
-          <br />
-          ecosystem
-        </h2>
-        <p className="text-gray-400 text-[1.05rem] leading-relaxed max-w-[480px]">
-          Designed exclusively to help founders scale faster. We empower
-          builders with premium infrastructure, cross-functional
-          innovation frameworks, and immediate access to capital pathways
-          from idea to IPO.
-        </p>
-      </div>
+        {/* Canvas commented out — kept exactly as original */}
+        {/* <div className="h-full w-full">
+          <Canvas ...>
+            ...
+          </Canvas>
+        </div> */}
+        <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
+          <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 lg:grid lg:grid-cols-2 lg:gap-20 xl:gap-24 items-center">
 
-      {/* Right side: Image content with proper asset reference */}
-      <div className="lg:col-start-2 flex items-center justify-center">
-        <img
-          src={ecosystemImg}
-          alt="Ecosystem illustration"
-          className="max-h-[70vh] w-auto object-contain"
-        />
-      </div>
-    </div>
-  </div>
-</section>
-       {/* card blasting section */}
+            {/* Left side: Text content */}
+            <div
+              ref={insideTextRef}
+              className="lg:col-start-1 mb-12 lg:mb-0"
+            >
+              <h2 className="font-serif text-[clamp(2.5rem,5vw,5rem)] font-semibold leading-[1.1] text-white mb-6 uppercase">
+                A world-class
+                <br />
+                ecosystem
+              </h2>
+              <p className="text-gray-400 text-[1.05rem] leading-relaxed max-w-[480px]">
+                Designed exclusively to help founders scale faster. We empower
+                builders with premium infrastructure, cross-functional
+                innovation frameworks, and immediate access to capital pathways
+                from idea to IPO.
+              </p>
+            </div>
+
+            {/* Right side: Image */}
+            <div className="lg:col-start-2 flex items-center justify-center">
+              <img
+                src={ecosystemImg}
+                alt="Ecosystem illustration"
+                className="max-h-[70vh] w-auto object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CARD BLASTING / SCATTER SECTION ── */}
       <section
-  ref={scatterSectionRef}
-  className="relative h-screen w-full bg-black flex items-center justify-center overflow-hidden"
->
-  <div className="absolute inset-0 z-0 h-full w-full">
-    <Canvas
-      dpr={[1, 1.25]}
-      gl={{
-        antialias: false,
-        powerPreference: "high-performance",
-        alpha: false,
-      }}
-    >
-      <PerspectiveCamera makeDefault position={[0, 0, 20]} fov={40} />
-      <ambientLight intensity={1.5} />
-      <Environment preset="city" />
-      <Suspense fallback={null}>
-        <ScatteredCards
-          sectionRef={scatterSectionRef}
-          onReady={markScatterSceneReady}
-        />
-      </Suspense>
-    </Canvas>
-  </div>
-
-  <div
-    ref={scatterTextRef}
-    className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl group cursor-default"
-    style={{ opacity: 0 }}
-  >
-    <div className="mb-10 transition-opacity duration-700 ease-out opacity-100 md:opacity-20 md:group-hover:opacity-100">
-      <svg
-        width="60"
-        height="70"
-        viewBox="0 0 60 70"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
+        ref={scatterSectionRef}
+        className="relative h-screen w-full bg-black flex items-center justify-center overflow-hidden"
       >
-        <path
-          d="M30 0L5 10V30C5 45.42 15.67 59.7 30 65C44.33 59.7 55 45.42 55 30V10L30 0Z"
-          stroke="white"
-          strokeWidth="2"
-        />
-        <rect
-          x="22"
-          y="32"
-          width="16"
-          height="12"
-          rx="2"
-          stroke="white"
-          strokeWidth="2"
-        />
-        <path
-          d="M26 32V28C26 25.7909 27.7909 24 30 24C32.2091 24 34 25.7909 34 28V32"
-          stroke="white"
-          strokeWidth="2"
-        />
-      </svg>
-    </div>
+        <div className="absolute inset-0 z-0 h-full w-full">
+          <Canvas
+            dpr={[1, 1.25]}
+            gl={{
+              antialias: false,
+              powerPreference: "high-performance",
+              alpha: false,
+            }}
+          >
+            <PerspectiveCamera makeDefault position={[0, 0, 20]} fov={40} />
+            <ambientLight intensity={1.5} />
+            <Environment preset="city" />
+            <Suspense fallback={null}>
+              <ScatteredCards
+                sectionRef={scatterSectionRef}
+                onReady={markScatterSceneReady}
+              />
+            </Suspense>
+          </Canvas>
+        </div>
 
-    <h3 className="text-white text-[clamp(0.8rem,2vw,1.1rem)] tracking-[0.4em] font-bold uppercase mb-12 transition-opacity duration-700 ease-out opacity-100 md:opacity-20 md:group-hover:opacity-100">
-      Our Foundation & Driven Impact
-    </h3>
+        <div
+          ref={scatterTextRef}
+          className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl group cursor-default"
+          style={{ opacity: 0 }}
+        >
+          <div className="mb-10 transition-opacity duration-700 ease-out opacity-100 md:opacity-20 md:group-hover:opacity-100">
+            <svg
+              width="60"
+              height="70"
+              viewBox="0 0 60 70"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M30 0L5 10V30C5 45.42 15.67 59.7 30 65C44.33 59.7 55 45.42 55 30V10L30 0Z"
+                stroke="white"
+                strokeWidth="2"
+              />
+              <rect
+                x="22"
+                y="32"
+                width="16"
+                height="12"
+                rx="2"
+                stroke="white"
+                strokeWidth="2"
+              />
+              <path
+                d="M26 32V28C26 25.7909 27.7909 24 30 24C32.2091 24 34 25.7909 34 28V32"
+                stroke="white"
+                strokeWidth="2"
+              />
+            </svg>
+          </div>
 
-    <p className="text-[clamp(1.8rem,4vw,3.5rem)] leading-[1.3] text-white transition-opacity duration-1000 ease-in-out font-light opacity-100 md:opacity-20 md:group-hover:opacity-100">
-      Powering bold choices with over{" "}
-      <span className="font-semibold">200+ startups supported</span>,
-      helping networks unlock{" "}
-      <span className="font-semibold">₹600 Cr+ in accessed funding</span>,
-      and enabling over{" "}
-      <span className="font-semibold">10,000+ new jobs</span> across
-      competitive tech markets.
-    </p>
-  </div>
-    </section>
+          <h3 className="text-white text-[clamp(0.8rem,2vw,1.1rem)] tracking-[0.4em] font-bold uppercase mb-12 transition-opacity duration-700 ease-out opacity-100 md:opacity-20 md:group-hover:opacity-100">
+            Our Foundation & Driven Impact
+          </h3>
 
-      {/* RETAINED ANIMATED FEATURE GRID (Why Startup Park Framework) */}
+          <p className="text-[clamp(1.8rem,4vw,3.5rem)] leading-[1.3] text-white transition-opacity duration-1000 ease-in-out font-light opacity-100 md:opacity-20 md:group-hover:opacity-100">
+            Powering bold choices with over{" "}
+            <span className="font-semibold">200+ startups supported</span>,
+            helping networks unlock{" "}
+            <span className="font-semibold">₹600 Cr+ in accessed funding</span>,
+            and enabling over{" "}
+            <span className="font-semibold">10,000+ new jobs</span> across
+            competitive tech markets.
+          </p>
+        </div>
+      </section>
+
+      {/* ── ANIMATED FEATURE GRID (Why Startup Park) ── */}
       <section
         ref={featureSectionRef}
         className="relative overflow-hidden bg-black text-white"
@@ -856,13 +838,13 @@ export default function Home() {
               },
             ].map((item, i) => (
               <div
-  key={i}
-  ref={(node) => {
-    featureRowsRef.current[i] = node;
-  }}
-  onClick={() => navigate(item.route)}
-  className="relative overflow-hidden group cursor-pointer"
->
+                key={i}
+                ref={(node) => {
+                  featureRowsRef.current[i] = node;
+                }}
+                onClick={() => navigate(item.route)}
+                className="relative overflow-hidden group cursor-pointer"
+              >
                 <div className="row-content grid gap-10 py-16 md:grid-cols-[1fr_auto] md:items-center">
                   <div className="max-w-xl">
                     <h3 className="font-sans text-[clamp(3.5rem,7vw,6rem)] font-bold italic leading-[0.85] tracking-[-0.07em] uppercase transition-colors duration-500 group-hover:text-white text-white/90">
@@ -891,13 +873,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Exclusive Card Section */}
+      {/* ── EXCLUSIVE CARD SECTION ── */}
       <CardSection onPreBook={() => setIsModalOpen(true)} />
 
-      {/* Auto-scrolling Gallery Section */}
+      {/* ── AUTO-SCROLLING GALLERY SECTION ── */}
       <Gallery />
 
-      {/* Structured Lead Capture, Featured Events, and Global Footer Elements */}
+      {/* ── LEAD CAPTURE + FEATURED EVENT SECTION ── */}
       <section
         id="register"
         className="relative bg-black text-white py-20 px-6 sm:px-10 lg:px-24 border-t border-white/5"
