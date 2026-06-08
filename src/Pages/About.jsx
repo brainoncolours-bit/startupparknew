@@ -469,12 +469,10 @@ export default function About() {
 
   // Updated Team Data to mirror Startup Park's internal network / operators
   const team = [
-    { name: "Shafi Shoukath", role: "Founder, Startup Park", color: "#1f4aa8" },
-    { name: "Mazin Arbaz", role: "Creative Lead", color: "#1f4aa8" },
-    { name: "Kiran", role: "Head of Technology", color: "#1f4aa8" },
-    { name: "Sourav", role: "Product Strategy", color: "#1f4aa8" },
-    { name: "Hashir", role: "Startup Activation", color: "#1f4aa8" },
-    { name: "Nawaf", role: "Venture Growth", color: "#1f4aa8" },
+    { name: "Name", role: "Designation", color: "#1f4aa8" },
+    { name: "Name", role: "Designation", color: "#1f4aa8" },
+    { name: "Name", role: "Designation", color: "#1f4aa8" },
+    
   ];
 
   // Updated Mission/Vision text tokens for on-scroll reveal
