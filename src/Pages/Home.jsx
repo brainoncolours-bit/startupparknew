@@ -23,7 +23,7 @@ import PreBookModal from "../Components/Modals/PreBookModal";
 import Gallery from "../Components/Gallery";
 import CardSection from "../Components/CardSection";
 import { useNavigate } from "react-router-dom";
-import ecosystemImg from "../assets/gallerytwo/image copy 2.png";
+import ecosystemImg from "/gallery1.png";
 
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true });
