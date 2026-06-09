@@ -1,5 +1,4 @@
-﻿
-import { useEffect, useRef, useState, Suspense } from "react";
+﻿import { useEffect, useRef, useState, Suspense } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
@@ -1228,6 +1227,12 @@ function Services() {
   useEffect(() => {
     const scope = rootRef.current;
     if (!scope) return;
+
+    // ── Collect all ScrollTriggers created in this effect so we can kill
+    //    ONLY these on unmount, without touching triggers from other pages.
+    const ownTriggers = [];
+    const trackST = (st) => { ownTriggers.push(st); return st; };
+
     const selectAll = (selector) => Array.from(scope.querySelectorAll(selector));
     const toIfExists = (selector, vars) => {
       const targets = selectAll(selector);
@@ -1246,7 +1251,7 @@ function Services() {
       stLines.forEach((l, i) =>
         stTl.to(l, { y: 0, opacity: 1, scale: 1, duration: 0.95, ease: "power3.out" }, i * 0.28),
       );
-      ScrollTrigger.create({
+      trackST(ScrollTrigger.create({
         trigger: scope.querySelector("#statement"),
         start: "top top",
         end: `+=${stLines.length * 55}vh`,
@@ -1256,7 +1261,7 @@ function Services() {
         fastScrollEnd: true,
         animation: stTl,
         invalidateOnRefresh: true,
-      });
+      }));
       toIfExists(".statement-bg", {
         scale: 1.08,
         y: -12,
@@ -1267,6 +1272,7 @@ function Services() {
           start: "top top",
           end: `+=${stLines.length * 35}vh`,
           scrub: 1.2,
+          onInit: (self) => trackST(self),
         },
       });
     }
@@ -1278,6 +1284,7 @@ function Services() {
         trigger: "#process",
         start: "top 80%",
         toggleActions: "play none none reverse",
+        onInit: (self) => trackST(self),
       },
       duration: 0.8,
       ease: "power3.out",
@@ -1290,6 +1297,7 @@ function Services() {
           trigger: step,
           start: "top 85%",
           toggleActions: "play none none reverse",
+          onInit: (self) => trackST(self),
         },
         duration: 0.7,
         delay: i * 0.1,
@@ -1304,16 +1312,17 @@ function Services() {
           start: "top 70%",
           end: "bottom 60%",
           scrub: 1,
+          onInit: (self) => trackST(self),
         },
       });
     }
     ["dot1", "dot2", "dot3", "dot4"].forEach((id, i) =>
-      ScrollTrigger.create({
+      trackST(ScrollTrigger.create({
         trigger: "#process",
         start: `top+=${i * 80} 70%`,
         onEnter: () => scope.querySelector(`#${id}`)?.classList.add("active"),
         onLeaveBack: () => scope.querySelector(`#${id}`)?.classList.remove("active"),
-      }),
+      })),
     );
 
     toIfExists(".features-label", {
@@ -1323,6 +1332,7 @@ function Services() {
         trigger: "#features",
         start: "top 80%",
         toggleActions: "play none none reverse",
+        onInit: (self) => trackST(self),
       },
       duration: 0.6,
     });
@@ -1334,6 +1344,7 @@ function Services() {
           trigger: card,
           start: "top 88%",
           toggleActions: "play none none reverse",
+          onInit: (self) => trackST(self),
         },
         duration: 0.7,
         delay: i * 0.1,
@@ -1352,7 +1363,7 @@ function Services() {
 
     if (track && pin) {
       const gw = () => track.scrollWidth - pin.offsetWidth;
-      ScrollTrigger.create({
+      trackST(ScrollTrigger.create({
         trigger: "#hscroll-outer",
         start: "top top",
         end: () => `+=${gw()}`,
@@ -1360,7 +1371,7 @@ function Services() {
         scrub: 1.2,
         animation: gsap.to(track, { x: () => -gw(), ease: "none" }),
         invalidateOnRefresh: true,
-      });
+      }));
     }
 
     const ctaTl = gsap.timeline({
@@ -1368,6 +1379,7 @@ function Services() {
         trigger: "#cta",
         start: "top 70%",
         toggleActions: "play none none reverse",
+        onInit: (self) => trackST(self),
       },
     });
     if (selectAll(".cta-heading").length) {
@@ -1379,6 +1391,10 @@ function Services() {
     if (selectAll(".cta-sub").length) {
       ctaTl.to(".cta-sub", { opacity: 1, duration: 0.6 }, "-=0.3");
     }
+
+    // Track the ctaTl's ScrollTrigger after the timeline is created
+    if (ctaTl.scrollTrigger) trackST(ctaTl.scrollTrigger);
+
     if (ctaGlow)
       gsap.to(ctaGlow, {
         scale: 1.15,
@@ -1392,10 +1408,14 @@ function Services() {
     requestAnimationFrame(() => ScrollTrigger.refresh());
     const onLoad = () => ScrollTrigger.refresh();
     window.addEventListener("load", onLoad);
+
     return () => {
       window.removeEventListener("load", onLoad);
       gsap.killTweensOf([ctaGlow, track]);
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      // ── FIX: kill ONLY the ScrollTriggers this component created.
+      //    Never call ScrollTrigger.getAll().forEach(t => t.kill()) here —
+      //    that would kill triggers belonging to the incoming Home page too.
+      ownTriggers.forEach((t) => t.kill());
       gsap.utils.toArray(".feature-card").forEach((c) => {
         if (c._onCardMove) c.removeEventListener("mousemove", c._onCardMove);
       });
