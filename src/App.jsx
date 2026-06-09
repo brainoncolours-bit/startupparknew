@@ -19,7 +19,8 @@ const CreatePost = lazy(() => import("./Pages/Admin/CreatePost"));
 const EditPost = lazy(() => import("./Pages/Admin/EditPost"));
 const Coworking = lazy(() => import("./Pages/Coworking"));
 const Policypage = lazy(() => import("./Pages/Policypage"));
-
+// ✅ CORRECT
+const InvestorCard = lazy(() => import("./Pages/InvestorCard"));
 function ScrollManager({ lenisRef }) {
   const location = useLocation();
 
@@ -122,6 +123,7 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contacts />} />
           <Route path="/membership" element={<Membership />} />
+          <Route path="/investor" element={<InvestorCard />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blogs/:id" element={<BlogDetail />} />
           <Route path="/admin" element={<AdminLogin />} />
