@@ -9,10 +9,10 @@ const navItems = [
   { label: "Home",         to: "/"          },
   { label: "About",        to: "/about"     },
   { label: "Services",     to: "/services"  },
-  { label: "Gallery",      to: "/blogs"     },
   { label: "Founder Card", to: "/membership"},
   { label: "Investor Card",to: "/investor"  },
   { label: "Coworking",    to: "/coworking" },
+  { label: "Gallery",      to: "/blogs"     },
   { label: "Contact",      to: "/contact"   },
 ];
 
