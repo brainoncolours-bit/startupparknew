@@ -8,7 +8,7 @@ const benefits = [
   "Branding and personal branding benefits",
   "Media and advertising support",
   "Incubation workshop access",
-  "Inverstors community membership",
+  "Founders community membership",
   "Startup tools and software offers",
   "Skill and career support",
   "HR training",
@@ -26,22 +26,44 @@ export default function CardSections({ onPreBook }) {
           {/* ── TOP SECTION: Cards side-by-side ── */}
           <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12">
 
-            {/* ── Card 1: Investors Card (image) ── */}
+            {/* ── Card 1: Founder Card Gold (coming soon) ── */}
             <div className="flex flex-col items-center gap-4 w-full lg:w-auto">
-              {/* Live badge */}
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-blue-500/40 bg-blue-500/10 text-blue-400 text-[10px] font-semibold uppercase tracking-widest">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-                Available Now
+              {/* Coming soon badge */}
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber-500/40 bg-amber-500/10 text-amber-400 text-[10px] font-semibold uppercase tracking-widest">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                Coming Soon
               </span>
 
-              {/* Card image with float animation */}
+              {/* Card image with glow + shimmer overlay */}
               <div className="relative h-[380px] lg:h-[52vh] w-full max-w-xs lg:max-w-sm flex items-center justify-center">
+
+                {/* Ambient glow behind card */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500/10 via-transparent to-yellow-600/10 blur-2xl pointer-events-none" />
+
+                {/* Floating animation wrapper */}
                 <div className="relative w-[80%] max-w-[260px] animate-float-card">
+                  {/* Frosted lock overlay */}
+                  <div className="absolute inset-0 rounded-2xl z-10 bg-black/20 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                    <svg className="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span className="text-amber-400 text-[10px] font-semibold tracking-widest uppercase">Coming Soon</span>
+                  </div>
+
+                  {/* Shimmer strip */}
+                  <div
+                    className="absolute inset-0 rounded-2xl z-10 pointer-events-none overflow-hidden"
+                    style={{ animation: "shimmer 3s ease-in-out infinite" }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/8 to-transparent -translate-x-full" style={{ animation: "shimmerSlide 3s ease-in-out infinite" }} />
+                  </div>
+
+                  {/* Actual card image */}
                   <img
                     src="/goldcard.png"
-                    alt="Investors Card"
-                    className="w-full h-auto object-contain drop-shadow-[0_8px_40px_rgba(59,130,246,0.25)] rounded-2xl"
-                    style={{ filter: "drop-shadow(0 0 24px rgba(59,130,246,0.18))" }}
+                    alt="Founder Card Gold – Coming Soon"
+                    className="w-full h-auto object-contain drop-shadow-[0_8px_40px_rgba(251,191,36,0.25)] rounded-2xl"
+                    style={{ filter: "drop-shadow(0 0 24px rgba(251,191,36,0.18))" }}
                   />
                 </div>
               </div>
@@ -61,7 +83,7 @@ export default function CardSections({ onPreBook }) {
               <div className="flex-1 h-px bg-gradient-to-r from-transparent via-neutral-700 to-transparent" />
             </div>
 
-            {/* ── Card 2: Premium Investor Card (coming soon) ── */}
+            {/* ── Card 2: Founder Card Platinum (coming soon) ── */}
             <div className="flex flex-col items-center gap-4 w-full lg:w-auto">
               {/* Coming soon badge */}
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber-500/40 bg-amber-500/10 text-amber-400 text-[10px] font-semibold uppercase tracking-widest">
@@ -96,7 +118,7 @@ export default function CardSections({ onPreBook }) {
                   {/* Actual card image */}
                   <img
                     src="/founderscard.png"
-                    alt="Premium Investor Card – Coming Soon"
+                    alt="Founder Card Platinum – Coming Soon"
                     className="w-full h-auto object-contain drop-shadow-[0_8px_40px_rgba(251,191,36,0.25)] rounded-2xl"
                     style={{ filter: "drop-shadow(0 0 24px rgba(251,191,36,0.18))" }}
                   />
