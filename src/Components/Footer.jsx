@@ -254,7 +254,7 @@ export default function HyperAnimatedFooter() {
               Opposite to Madiwala,<br />
               Sidharata Colony, Santhosapuram,<br />
               Koramangala 2nd Block,<br />
-              Koramangala, Bengaluru,<br />
+              Bengaluru,
               Karnataka 560068
             </p>
           </div>
