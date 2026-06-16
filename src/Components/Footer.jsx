@@ -236,6 +236,29 @@ export default function HyperAnimatedFooter() {
               </a>
             ))}
           </div>
+
+          {/* Address Block */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
+              <div style={{ width: '6px', height: '6px', background: '#64c8ff' }} />
+              <span style={{ fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#64c8ff' }}>Location //</span>
+            </div>
+            <p style={{
+              fontSize: '0.8rem',
+              lineHeight: 1.7,
+              color: 'rgba(255,255,255,0.35)',
+              margin: 0,
+              maxWidth: '280px'
+            }}>
+              Total Mall, Police Station,<br />
+              Opposite to Madiwala,<br />
+              Sidharata Colony, Santhosapuram,<br />
+              Koramangala 2nd Block,<br />
+              Koramangala, Bengaluru,<br />
+              Karnataka 560068
+            </p>
+          </div>
+
         </div>
 
       </div>

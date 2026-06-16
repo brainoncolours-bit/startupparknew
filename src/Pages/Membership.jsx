@@ -1,17 +1,5 @@
-import React, { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { useGLTF, Center, Float, Environment } from "@react-three/drei";
+import React from "react";
 import { CheckCircle2 } from "lucide-react";
-
-function FoundersCard() {
-  const { scene } = useGLTF("/card.glb");
-
-  return (
-    <Center>
-      <primitive object={scene} scale={1.4} />
-    </Center>
-  );
-}
 
 const benefits = [
   "1 seat for 1 month at Startup Park",
@@ -20,7 +8,7 @@ const benefits = [
   "Branding and personal branding benefits",
   "Media and advertising support",
   "Incubation workshop access",
-  "Founders community membership",
+  "Inverstors community membership",
   "Startup tools and software offers",
   "Skill and career support",
   "HR training",
@@ -38,7 +26,7 @@ export default function CardSections({ onPreBook }) {
           {/* ── TOP SECTION: Cards side-by-side ── */}
           <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12">
 
-            {/* ── Card 1: 3D Founders Card ── */}
+            {/* ── Card 1: Investors Card (image) ── */}
             <div className="flex flex-col items-center gap-4 w-full lg:w-auto">
               {/* Live badge */}
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-blue-500/40 bg-blue-500/10 text-blue-400 text-[10px] font-semibold uppercase tracking-widest">
@@ -46,26 +34,19 @@ export default function CardSections({ onPreBook }) {
                 Available Now
               </span>
 
-              {/* 3D Canvas - Fixed height on mobile to prevent squishing */}
-              <div className="h-[380px] lg:h-[52vh] w-full max-w-xs lg:max-w-sm">
-                <Canvas
-                  camera={{ position: [0, 0, 5], fov: 40 }}
-                  dpr={[1, 1.25]}
-                  gl={{ antialias: false, powerPreference: "high-performance" }}
-                >
-                  <ambientLight intensity={0.5} />
-                  <pointLight position={[10, 10, 10]} intensity={1.2} color="#3b82f6" />
-                  <directionalLight position={[-5, 5, -2]} intensity={0.6} color="#6366f1" />
-                  <Suspense fallback={null}>
-                    <Float speed={1.2} rotationIntensity={0} floatIntensity={0.3}>
-                      <FoundersCard />
-                    </Float>
-                    <Environment preset="studio" />
-                  </Suspense>
-                </Canvas>
+              {/* Card image with float animation */}
+              <div className="relative h-[380px] lg:h-[52vh] w-full max-w-xs lg:max-w-sm flex items-center justify-center">
+                <div className="relative w-[80%] max-w-[260px] animate-float-card">
+                  <img
+                    src="/goldcard.png"
+                    alt="Investors Card"
+                    className="w-full h-auto object-contain drop-shadow-[0_8px_40px_rgba(59,130,246,0.25)] rounded-2xl"
+                    style={{ filter: "drop-shadow(0 0 24px rgba(59,130,246,0.18))" }}
+                  />
+                </div>
               </div>
 
-              <p className="text-neutral-400 text-xs tracking-wide font-medium">Founders Card</p>
+              <p className="text-neutral-400 text-xs tracking-wide font-medium">Founder Card Gold</p>
             </div>
 
             {/* ── Divider (vertical on desktop, horizontal on mobile) ── */}
@@ -88,13 +69,13 @@ export default function CardSections({ onPreBook }) {
                 Coming Soon
               </span>
 
-              {/* Card image with glow + shimmer overlay - Fixed height on mobile */}
+              {/* Card image with glow + shimmer overlay */}
               <div className="relative h-[380px] lg:h-[52vh] w-full max-w-xs lg:max-w-sm flex items-center justify-center">
 
                 {/* Ambient glow behind card */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500/10 via-transparent to-yellow-600/10 blur-2xl pointer-events-none" />
 
-                {/* Floating animation wrapper - Class conditionally animate via CSS */}
+                {/* Floating animation wrapper */}
                 <div className="relative w-[80%] max-w-[260px] animate-float-card">
                   {/* Frosted lock overlay */}
                   <div className="absolute inset-0 rounded-2xl z-10 bg-black/20 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2 opacity-0 hover:opacity-100 transition-opacity duration-300">
@@ -122,7 +103,7 @@ export default function CardSections({ onPreBook }) {
                 </div>
               </div>
 
-              <p className="text-neutral-400 text-xs tracking-wide font-medium">Founder Card Gold</p>
+              <p className="text-neutral-400 text-xs tracking-wide font-medium">Founder Card Platinum</p>
             </div>
           </div>
 
@@ -180,7 +161,6 @@ export default function CardSections({ onPreBook }) {
           0% { transform: translateX(-100%); }
           60%, 100% { transform: translateX(200%); }
         }
-        /* Mobile-static toggle */
         .animate-float-card {
           animation: floatY 3.5s ease-in-out infinite;
         }
@@ -194,5 +174,3 @@ export default function CardSections({ onPreBook }) {
     </>
   );
 }
-
-useGLTF.preload("/card.glb");
